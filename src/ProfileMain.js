@@ -8,21 +8,21 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import SmartImage from "./rnff/src/components/SmartImage";
-import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, Feather, MaterialCommunityIcons, MaterialIcons } from "react-native-vector-icons";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
+// import { unregisterExpoPushToken } from './PushNotifications';
+import { NavigationActions } from 'react-navigation';
 import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
 import Util from "./Util";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import Intro from './Intro';
 import ChatMain from './ChatMain';
-// import { unregisterExpoPushToken } from './PushNotifications';
-import { NavigationActions } from 'react-navigation';
 import * as WebBrowser from 'expo-web-browser';
 
 type InjectedProps = {
@@ -755,11 +755,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: 36,
+                                                width: '100%', height: 40,
                                                 // justifyContent: 'center', paddingLeft: 2
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
+                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
                                                     {Platform.OS === 'android' ? "Girls You've Reviewed" : "Posts You've Commented"}
                                                 </Text>
                                                 {
@@ -773,7 +773,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         height: Cons.redDotWidth
                                                     }} />
                                                 }
-                                                <AntDesign name='staro' color={Theme.color.text2} size={22} style={{ position: 'absolute', right: 0 }} />
+                                                <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -791,13 +791,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: 36,
+                                                width: '100%', height: 40,
                                                 justifyContent: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
+                                                <Text style={{ fontSize: 20, lineHeight: 24, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
                                                     {Platform.OS === 'android' ? 'Advertise Yourself or Your Girls' : 'Create a New Post'}
                                                 </Text>
-                                                <Feather name='edit-3' color={'#f1c40f'} size={22} style={{ position: 'absolute', right: 0 }} />
+                                                <MaterialIcons name='add-to-photos' color={'#f1c40f'} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -817,11 +817,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 <View style={{
-                                                    width: '100%', height: 36,
+                                                    width: '100%', height: 40,
                                                     // justifyContent: 'center', paddingLeft: 2
                                                     flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
-                                                    <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
+                                                    <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
                                                         {Platform.OS === 'android' ? "Customers You've Reviewed" : "Users You've Commented"}
                                                     </Text>
                                                     {
@@ -837,7 +837,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         }} />
                                                         */
                                                     }
-                                                    <MaterialCommunityIcons name='comment-text-outline' color={Theme.color.text2} size={21} style={{ position: 'absolute', right: 0 }} />
+                                                    <MaterialCommunityIcons name='comment-text-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                                 </View>
                                             </TouchableOpacity>
                                         }
@@ -859,11 +859,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: 36,
+                                                width: '100%', height: 40,
                                                 justifyContent: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Settings'}</Text>
-                                                <Feather name='settings' color={Theme.color.text2} size={21} style={{ position: 'absolute', right: 1 }} />
+                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Settings'}</Text>
+                                                <Feather name='settings' color={Theme.color.text2} size={23} style={{ position: 'absolute', right: 1 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -871,6 +871,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         */}
 
                                         {/* Terms of Service */}
+                                        {/*
                                         <TouchableOpacity
                                             onPress={async () => {
                                                 const URL = `https://rowena-88cfd.web.app/terms.html`;
@@ -878,17 +879,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: 36,
+                                                width: '100%', height: 40,
                                                 justifyContent: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Terms of Service'}</Text>
-                                                <Feather name='book' color={Theme.color.text3} size={20} style={{ position: 'absolute', right: 1 }} />
+                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Terms of Service'}</Text>
+                                                <Feather name='book' color={Theme.color.text3} size={22} style={{ position: 'absolute', right: 1 }} />
                                             </View>
                                         </TouchableOpacity>
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                                        */}
 
                                         {/* Log out */}
+                                        {/*
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (!profile) return;
@@ -913,127 +916,29 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // hide indicator
                                                     !this.closed && this.setState({ isLoadingFeeds: false });
                                                 });
-
-                                                /*
-                                                this.openDialog('alert', 'Log out', 'Are you sure you want to remove all data from this device?', async () => {
-                                                    // feeds
-                                                    // storage
-                                                    // user profile & auth
-
-                                                    // comment store
-                                                    //// reviews, comments
-
-                                                    // chat
-                                                    // token
-
-
-                                                    // 1. unsubscribe profile first!
-                                                    this.props.profileStore.final();
-
-                                                    // 2. remove all the created feeds (place - feed)
-                                                    const uid = profile.uid;
-                                                    const feeds = profile.feeds;
-                                                    const length = feeds.length;
-
-                                                    for (let i = 0; i < length; i++) {
-                                                        const feed = feeds[i];
-                                                        await Firebase.removeFeed(uid, feed.placeId, feed.feedId);
-                                                    }
-
-                                                    // 3. delete all the chat rooms
-                                                    await Firebase.deleteChatRooms(uid);
-
-                                                    // 4. remove push token (tokens - uid)
-                                                    await Firebase.deleteToken(uid);
-
-                                                    // 5. remove all the received comments (users - user - comments - all the documents)
-                                                    // 6. remove database (user profile & remove auth)
-                                                    await Firebase.deleteProfile(uid);
-                                                });
-                                                */
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: 36,
+                                                width: '100%', height: 40,
                                                 justifyContent: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
-                                                <AntDesign name='logout' color={Theme.color.text3} size={20} style={{ position: 'absolute', right: 0 }} />
+                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
+                                                <AntDesign name='logout' color={Theme.color.text3} size={22} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                                        */}
                                     </View>
-
-                                    {/*
-                                    <View style={{
-                                        // backgroundColor: 'green',
-                                        width: '100%',
-                                        flexDirection: 'row',
-                                        alignItems: 'center', justifyContent: 'center',
-                                        backgroundColor: '#123456'
-                                        // position: "absolute", top: baselineTop + 120, left: 0
-                                    }}
-                                    >
-                                        <View style={{
-                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                            alignItems: 'center', justifyContent: 'center'
-                                        }}>
-                                            <Text style={styles.infoText1}>20</Text>
-                                            <Text style={styles.infoText2}>reviews</Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                borderLeftWidth: 5,
-                                                borderLeftColor: Theme.color.line,
-                                                //height: bodyInfoItemHeight * 0.5
-                                            }}
-                                        />
-                                        <View style={{
-                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                            alignItems: 'center', justifyContent: 'center'
-                                        }}>
-                                            <Text style={styles.infoText1}>0</Text>
-                                            <Text style={styles.infoText2}>posts</Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                borderLeftWidth: 5,
-                                                borderLeftColor: Theme.color.line,
-                                                //height: bodyInfoItemHeight * 0.5
-                                            }}
-                                        />
-                                        <View style={{
-                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                            alignItems: 'center', justifyContent: 'center'
-                                        }}>
-                                            <Text style={styles.infoText1}>Weight</Text>
-                                            <Text style={styles.infoText2}>48</Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                borderLeftWidth: 5,
-                                                borderLeftColor: Theme.color.line,
-                                                //height: bodyInfoItemHeight * 0.5
-                                            }}
-                                        />
-                                        <View style={{
-                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                            alignItems: 'center', justifyContent: 'center'
-                                        }}>
-                                            <Text style={styles.infoText1}>Bust Size</Text>
-                                            <Text style={styles.infoText2}>C</Text>
-                                        </View>
-                                    </View>
-                                    */}
 
                                 </View>
 
-                                {/* VERSION & Your Posts */}
+                                {/* VERSION | Your Posts */}
                                 {
+                                    /*
                                     this.state.totalFeedsSize === 0 &&
                                     <View style={{
-                                        width: '100%', height: 36,
+                                        width: '100%', height: 40,
                                         justifyContent: 'center', alignItems: 'center'
                                     }}>
                                         <TouchableOpacity onPress={() => {
@@ -1042,6 +947,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             <Text style={{ fontSize: 16, color: Theme.color.text4, fontFamily: "Roboto-Light" }}>VERSION {Cons.version} ({Cons.buildNumber})</Text>
                                         </TouchableOpacity>
                                     </View>
+                                    */
                                 }
                                 {
                                     this.state.totalFeedsSize > 0 &&
