@@ -742,7 +742,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         {/* See my ratings & reviews */}
 
-                                        {/* Girls You've Reviewed */}
+                                        {/* Girls You've Reviewed / Posts You've Commented */}
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (!profile) return;
@@ -779,7 +779,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
-                                        {/* Advertise Yourself or Your Girls */}
+                                        {/* Advertise Yourself or Your Girls / Create a New Post */}
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (!profile) return;
@@ -803,7 +803,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
-                                        {/* Customers You've Reviewed */}
+                                        {/* Customers You've Reviewed / Users You've Commented */}
                                         {
                                             comments && comments.length > 0 &&
                                             <TouchableOpacity
@@ -1028,6 +1028,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     */}
 
                                 </View>
+
+                                {/* VERSION & Your Posts */}
                                 {
                                     this.state.totalFeedsSize === 0 &&
                                     <View style={{
@@ -1045,9 +1047,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     this.state.totalFeedsSize > 0 &&
                                     <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
                                         <Text style={styles.title}>
-                                            {
-                                                'Your posts'
-                                            }
+                                            {'Your posts'}
                                             {
                                                 this.state.totalFeedsSize > 0 &&
                                                 <Text style={{
