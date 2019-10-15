@@ -12,8 +12,12 @@ import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
+
+import *  as ReactNative from 'react-native';
+
 import { registerExpoPushToken } from './PushNotifications';
 import autobind from "autobind-decorator";
+import * as WebBrowser from 'expo-web-browser';
 
 // const AnimatedImage = Animated.createAnimatedComponent(Image);
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
@@ -293,7 +297,7 @@ export default class AuthMain extends React.Component {
                         <Text style={{ marginBottom: 5, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(221, 221, 221, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
                         </Text>
-                        */}
+                    */}
                     <TouchableOpacity
                         onPress={() => {
                             if (this._showNotification) {
@@ -386,14 +390,35 @@ export default class AuthMain extends React.Component {
                                 <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
                             </Text>
                         </TouchableOpacity>
-                        */}
+                    */}
 
+                    {/*
                     <Text style={{ position: 'absolute', bottom: 20, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>
                         Don't worry! We don't post anything to Facebook.
-                        </Text>
+                    </Text>
+                    */}
+
+                    <ReactNative.Text style={styles.agreement}>
+                        {"By tapping Continue with Facebook, Sign up with Mobile, Sign up with Email, I agree to Rowena's "}
+                        <ReactNative.Text style={styles.underline}
+                            onPress={async () => {
+                                const URL = `https://rowena-88cfd.web.app/privacy_policy.html`;
+                                let result = await WebBrowser.openBrowserAsync(URL);
+                            }}
+                        >{"Terms of Service"}
+                        </ReactNative.Text>
+                        {", "}
+                        <ReactNative.Text style={styles.underline}
+                            onPress={async () => {
+                                const URL = `https://rowena-88cfd.web.app/privacy_policy.html`;
+                                let result = await WebBrowser.openBrowserAsync(URL);
+                            }}
+                        >{"Privacy Policy"}
+                        </ReactNative.Text>
+                        {"."}
+                    </ReactNative.Text>
                 </View>
             </View>
-
         );
     }
 
@@ -540,5 +565,14 @@ const styles = StyleSheet.create({
         height: 24,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    agreement: {
+        position: 'absolute', bottom: 16,
+        fontSize: 13, lineHeight: 18, fontFamily: "Roboto-Light", color: 'rgba(240, 240, 240, 0.8)',
+        paddingHorizontal: 16
+    },
+    underline: {
+        fontSize: 13, lineHeight: 18, fontFamily: "Roboto-Light", color: 'rgba(240, 240, 240, 0.8)',
+        textDecorationLine: 'underline'
     }
 });

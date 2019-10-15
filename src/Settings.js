@@ -171,7 +171,7 @@ export default class Settings extends React.Component<InjectedProps> {
 
                             // remove push token
                             // await unregisterExpoPushToken(profile.uid);
-                            await Firebase.deleteToken(uid);
+                            await Firebase.deleteToken(profile.uid);
 
                             await Firebase.signOut(profile.uid);
 
