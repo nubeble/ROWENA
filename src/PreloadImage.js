@@ -3,7 +3,8 @@ import { Platform } from 'react-native';
 
 // const splash = require('../assets/splash.png');
 const logo = require('../assets/logo.png');
-const background = require('../assets/background.png');
+// const background = require('../assets/background.png');
+const background = Platform.OS === 'android' ? require('../assets/android_background.png') : require('../assets/ios_background.png');
 
 // const user = require('../assets/icon/user.png');
 const birth = require('../assets/icon/birth.png');
