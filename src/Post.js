@@ -835,31 +835,28 @@ export default class Post extends React.Component<InjectedProps> {
         let views = null;
         const visits = this.getVisitCount(post.visits);
         if (visits === 0) {
-            views = Platform.OS === 'android' ? 'No views yet' : '0 views';
+            // views = Platform.OS === 'android' ? 'No views yet' : '0 views';
+            views = 'No views yet';
         } else if (visits === 1) {
-            // views = '1 view';
-            views = '1 views';
+            views = '1 view';
         } else {
             views = Util.numberWithCommas(visits) + ' views';
         }
-        // views = '263 views'; // Test
 
         let likes = null;
         const _likes = post.likes.length;
         if (_likes === 0) {
-            likes = Platform.OS === 'android' ? 'No likes yet' : '0 likes';
+            // likes = Platform.OS === 'android' ? 'No likes yet' : '0 likes';
+            likes = 'No likes yet';
         } else if (_likes === 1) {
-            // likes = '1 like';
-            likes = '1 likes';
+            likes = '1 like';
         } else {
             likes = Util.numberWithCommas(_likes) + ' likes';
         }
-        // likes = '32 likes'; // Test
 
         let showSettingsButton = false;
 
         const distance = Util.getDistance(post.location, Vars.location);
-        // const distance = '6 km away'; // Test
 
         if (distance === '? km away' || distance === '? miles away') showSettingsButton = true;
 
@@ -903,13 +900,20 @@ export default class Post extends React.Component<InjectedProps> {
                         */}
 
                         {/* views & likes */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={[styles.views, { marginRight: 4 }]}>{views}</Text>
-                            <Octicons name='primitive-dot' color={Theme.color.title} size={10} style={{ marginHorizontal: 4 }} />
-                            <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
-                                <Text style={styles.likes}>{likes}</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {
+                            Platform.OS === 'android' ?
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={[styles.views, { marginRight: 4 }]}>{views}</Text>
+                                    <Octicons name='primitive-dot' color={Theme.color.title} size={10} style={{ marginHorizontal: 4 }} />
+                                    <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
+                                        <Text style={styles.likes}>{likes}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                :
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={styles.views}>{views}</Text>
+                                </View>
+                        }
                     </View>
 
                     {/* name */}
@@ -1612,7 +1616,6 @@ export default class Post extends React.Component<InjectedProps> {
             likesCount = post.likes.length;
         }
 
-
         if (post.reviewCount > 0) {
             if (Platform.OS === 'android') {
                 // ratings & reviews
@@ -1746,7 +1749,6 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
             );
         } else {
-
             const cityName = data.cityName;
             const numberOfGirls = data.numberOfGirls;
             const averageRating = data.averageRating;

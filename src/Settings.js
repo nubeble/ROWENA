@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, BackHandler, FlatList, ActivityIndicator, Image } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
-import { Ionicons, AntDesign, Feather } from "react-native-vector-icons";
+import { Ionicons, AntDesign, Feather, MaterialIcons } from "react-native-vector-icons";
 import { Cons, Vars } from './Globals';
 import SmartImage from './rnff/src/components/SmartImage';
 import * as Permissions from 'expo-permissions';
@@ -133,7 +133,7 @@ export default class Settings extends React.Component<InjectedProps> {
                         justifyContent: 'center', paddingLeft: 2
                     }}>
                         <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Privacy Policy'}</Text>
-                        <Feather name='shield' color={Theme.color.text3} size={22} style={{ position: 'absolute', right: 0 }} />
+                        <MaterialIcons name='security' color={Theme.color.text3} size={22} style={{ position: 'absolute', right: 0 }} />
                     </View>
                 </TouchableOpacity>
 

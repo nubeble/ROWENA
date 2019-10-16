@@ -1729,7 +1729,7 @@ export default class Util extends React.Component {
     }
 
     static getRandomCity() {
-        const rn = Math.round(Math.random() * 100) % 13; // 0 ~ 12
+        const rn = Math.round(Math.random() * 100) % 30; // 0 ~ 29
         switch (rn) {
             case 0: return "Bangkok";
             case 1: return "Pattaya";
@@ -1750,6 +1750,25 @@ export default class Util extends React.Component {
             case 10: return "Jakarta";
             case 11: return "Batam";
             case 12: return "Kuala Lumpur";
+
+
+            case 13: return "London";
+            case 14: return "San Francisco";
+            case 15: return "Los Angeles";
+            case 16: return "New York";
+            case 17: return "Miami";
+            case 18: return "Mexico City";
+            case 19: return "Madrid";
+            case 20: return "Paris";
+            case 21: return "Budapest";
+            case 22: return "Roma";
+            case 23: return "Praha";
+            case 24: return "Puerto Vallarta";
+            case 25: return "Vancouver";
+            case 26: return "Toronto";
+            case 27: return "Sydney";
+            case 28: return "Melbourne";
+            case 29: return "Las Vegas";
         }
 
         return null;
