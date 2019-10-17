@@ -21,9 +21,6 @@ import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
 import Util from "./Util";
 import ProfileStore from "./rnff/src/home/ProfileStore";
-import Intro from './Intro';
-import ChatMain from './ChatMain';
-import * as WebBrowser from 'expo-web-browser';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -638,7 +635,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         contentContainerStyle={{ flexGrow: 1 }}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
-                            <View>
+                            <View style={styles.container}>
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
                                     <TouchableOpacity
@@ -930,7 +927,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                         */}
                                     </View>
-
                                 </View>
 
                                 {/* VERSION | Your Posts */}
@@ -951,7 +947,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 }
                                 {
                                     this.state.totalFeedsSize > 0 &&
-                                    <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
+                                    <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
                                         <Text style={styles.title}>
                                             {'Your posts'}
                                             {
@@ -1473,10 +1469,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20
     },
+    container: {
+        flex: 1
+    },
     infoContainer: {
         flex: 1,
-        // width: '100%',
-        paddingBottom: Theme.spacing.tiny
+        // paddingBottom: 2
     },
     /*
     bodyInfoTitle: {

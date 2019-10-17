@@ -80,11 +80,13 @@ export default class Settings extends React.Component<InjectedProps> {
                         marginLeft: 40 + 16
                     }}>Settings</Text>
                 </View>
+
                 <FlatList
                     contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={this.renderListHeaderComponent()}
                 />
+
                 {
                     this.state.isLoadingFeeds &&
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -95,6 +97,7 @@ export default class Settings extends React.Component<InjectedProps> {
                         />
                     </View>
                 }
+
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
                     <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
@@ -265,12 +268,14 @@ export default class Settings extends React.Component<InjectedProps> {
                     }}>ROWENA</Text>
 
                     <Text style={{
+                        marginTop: 10,
                         fontSize: 12,
                         fontFamily: "Roboto-Regular",
                         color: 'grey'
                     }}>VERSION {Cons.version} ({Cons.buildNumber})</Text>
 
                     <Text style={{
+                        marginBottom: 10,
                         fontSize: 12,
                         fontFamily: "Roboto-Regular",
                         color: 'grey'
