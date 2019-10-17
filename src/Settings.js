@@ -280,6 +280,14 @@ export default class Settings extends React.Component<InjectedProps> {
                         fontFamily: "Roboto-Regular",
                         color: 'grey'
                     }}>Created with passion.</Text>
+
+                    {/*
+                    <Text style={{
+                        fontSize: 12,
+                        fontFamily: "Roboto-Regular",
+                        color: 'grey'
+                    }}>Copyright ⓒ 2019 Nubeble Inc. All rights reserved.</Text>
+                    */}
                 </View>
             </View>
         );
