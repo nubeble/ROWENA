@@ -1198,20 +1198,494 @@ export default class EditPost extends React.Component {
             opacity: this.messageBoxOpacity
         };
 
-        return (
-            /*
-            <View>
-                {
-                    this.renderSwiper(post)
-                }
+        if (Platform.OS === 'ios') {
+            return (
+                <View style={{ paddingTop: 2 }}>
+                    {/* image editor view */}
+                    <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium", paddingLeft: 18 }}>
+                        {'PICTURES'}
+                    </Text>
 
-                <View style={{ marginTop: Theme.spacing.base, paddingHorizontal: 4 }}
-                    onLayout={(e) => {
-                        const { y } = e.nativeEvent.layout;
-                        this.inputViewY = y;
-                    }}
-                >
-            */
+                    <View style={{ width: '100%', marginBottom: 20 }}>
+                        {/* row 1 view */}
+                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            {/* cell 1 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
+                                {
+                                    this.renderImage(1, this.state.uploadImage1Uri)
+                                }
+                            </View>
+                            {/* cell 2 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
+                                {
+                                    this.renderImage(2, this.state.uploadImage2Uri)
+                                }
+                            </View>
+                        </View>
+                        {/* row 2 view */}
+                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            {/* cell 1 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
+                                {
+                                    this.renderImage(3, this.state.uploadImage3Uri)
+                                }
+                            </View>
+                            {/* cell 2 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
+                                {
+                                    this.renderImage(4, this.state.uploadImage4Uri)
+                                }
+                            </View>
+                        </View>
+                    </View>
+
+                    {/* input view */}
+                    <View style={{ paddingHorizontal: 4 }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.inputViewY = y;
+                        }}
+                    >
+                        {/* 1. name */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                {'NAME'}
+                            </Text>
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    const msg = "Your name (or your friend's name). People all over the world find you on Rowena.";
+                                    this.showMessageBox(msg, -17);
+                                }}>
+                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                            </TouchableOpacity>
+                        </View>
+                        <TextInput
+                            style={{
+                                paddingLeft: 18, paddingRight: 32,
+                                width: '80%',
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                            }}
+                            // keyboardType={'email-address'}
+                            // keyboardAppearance='dark'
+                            onChangeText={(text) => this.validateName(text)}
+                            value={this.state.name}
+                            selectionColor={Theme.color.selection}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                            autoCapitalize="words"
+                            placeholder="Selena Gomez"
+                            placeholderTextColor={Theme.color.placeholder}
+                            onFocus={(e) => this.onFocusName()}
+                        />
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                            onLayout={(e) => {
+                                const { y } = e.nativeEvent.layout;
+                                this.nameY = y;
+                            }}
+                        />
+                        {
+                            this.state.showNameAlertIcon &&
+                            <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        }
+
+                        {/* 2. birthday */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{
+                                paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                            }}>
+                                {'AGE'}
+                            </Text>
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    const msg = "Rowena is for adults only. You must be at least 18 years old to use this app.";
+                                    this.showMessageBox(msg, this.nameY);
+                                }}>
+                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                            </TouchableOpacity>
+                        </View>
+                        {/* picker */}
+                        <TouchableOpacity
+                            onPress={() => {
+                                // this.onFocusBirthday();
+
+                                this.showDateTimePicker('Select your date of birth');
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    paddingHorizontal: 18,
+                                    width: '80%',
+                                    height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                    paddingTop: 7
+                                }}
+                            >{this.state.birthday ? ageText + ' (' + this.state.birthday + ')' : "When is your birthday?"}</Text>
+                        </TouchableOpacity>
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                            onLayout={(e) => {
+                                const { y } = e.nativeEvent.layout;
+                                this.birthdayY = y;
+                            }}
+                        />
+                        {
+                            this.state.showAgeAlertIcon &&
+                            <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        }
+
+                        {/* 3. gender */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{
+                                paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                            }}>
+                                {'GENDER'}
+                            </Text>
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    const msg = "Your gender is what you decide. You are a man or a woman, or maybe you don't like to decide it.";
+                                    this.showMessageBox(msg, this.birthdayY);
+                                }}
+                            >
+                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                            </TouchableOpacity>
+                        </View>
+                        <Select
+                            // onOpen={() => this.onFocusGender()} // NOT working in Android
+                            placeholder={{
+                                label: "Select your gender",
+                                value: null
+                            }}
+                            items={genderItems}
+                            onValueChange={(value) => { // only for Android
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcon();
+                                }
+
+                                this.setState({ gender: value });
+                            }}
+                            style={{
+                                iconContainer: {
+                                    top: 5,
+                                    right: 100
+                                }
+                            }}
+                            textInputProps={{
+                                style: {
+                                    paddingHorizontal: 18,
+                                    height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                    color: this.state.gender === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                }
+                            }}
+                            useNativeAndroidPickerStyle={false}
+                            value={this.state.gender}
+                            Icon={() => {
+                                // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                                return null;
+                            }}
+                        />
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                            onLayout={(e) => {
+                                const { y } = e.nativeEvent.layout;
+                                this.genderY = y;
+                            }}
+                        />
+                        {
+                            this.state.showGenderAlertIcon &&
+                            <AntDesign style={{ position: 'absolute', right: 22, top: this.genderY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        }
+
+                        {/* 4. height */}
+
+                        {/* 5. weight */}
+
+                        {/* 6. body type */}
+
+                        {/* 7. boobs */}
+                        {/* boobs / biceps */}
+
+                        {/* 8. note */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                {'NOTE'}
+                            </Text>
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    const msg = "How would you describe yourself? People want to know more about you.";
+                                    this.showMessageBox(msg, this.boobsY);
+                                }}>
+                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                            </TouchableOpacity>
+                        </View>
+                        <TextInput
+                            style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
+                            // placeholder='More information about you'
+                            placeholder="I know I can't be your only match, but at least I'm the hottest."
+                            placeholderTextColor={Theme.color.placeholder}
+                            onChangeText={(text) => {
+                                this.setState({ note: text, noteLength: text.length });
+                            }}
+                            value={this.state.note}
+                            selectionColor={Theme.color.selection}
+
+                            // keyboardType='default'
+                            // returnKeyType='done'
+                            // keyboardAppearance='dark'
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                            // autoCapitalize="none"
+                            maxLength={200}
+                            multiline={true}
+                            numberOfLines={4}
+                            onFocus={(e) => this.onFocusNote()}
+                            onBlur={(e) => this.onBlurNote()}
+                        />
+                        <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
+                            {this.state.noteLength}
+                        </Text>
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                            onLayout={(e) => {
+                                const { y } = e.nativeEvent.layout;
+                                this.noteY = y;
+                            }}
+                        />
+
+                        {/* 9. country */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                {'COUNTRY'}
+                            </Text>
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                            >
+                                <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (this.state.onUploadingImage) return;
+
+                                /*
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcon();
+                                }
+     
+                                // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+     
+                                setTimeout(() => {
+                                    !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
+                                }, Cons.buttonTimeout);
+                                */
+                                this.refs["toast"].show("Can't change country!", 500);
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    paddingHorizontal: 18,
+                                    // height: textInputHeight,
+                                    minHeight: textInputHeight,
+                                    fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                    paddingTop: 7
+                                }}
+                            >{this.state.country ? this.state.country : "Thailand"}</Text>
+                        </TouchableOpacity>
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                            onLayout={(e) => {
+                                const { y } = e.nativeEvent.layout;
+                                this.countryY = y;
+                            }}
+                        />
+                        {
+                            this.state.showCountryAlertIcon &&
+                            <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        }
+
+                        {/* 10. street */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                {'STREET'}
+                            </Text>
+                            {/*
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    const msg = "Only confirmed customers see your exact address. We show everyone else an approximate location.";
+                                    this.showMessageBox(msg, this.countryY);
+                                }}>
+                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                            </TouchableOpacity>
+                            */}
+                            <TouchableOpacity
+                                style={{
+                                    width: 24,
+                                    height: 24,
+                                    marginRight: 18,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                            >
+                                <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (this.state.onUploadingImage) return;
+
+                                /*
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcon();
+                                }
+     
+                                // check the country is filled
+                                if (!this.state.country) {
+                                    this.showNotification('Please enter your country.');
+     
+                                    this.setState({ showCountryAlertIcon: true });
+     
+                                    this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+     
+                                    return;
+                                }
+     
+                                // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY + 1, animated: true });
+     
+                                setTimeout(() => {
+                                    !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
+                                }, Cons.buttonTimeout);
+                                */
+                                this.refs["toast"].show("Can't change street!", 500);
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    paddingHorizontal: 18,
+                                    // height: textInputHeight,
+                                    minHeight: textInputHeight,
+                                    fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                    paddingTop: 7
+                                }}
+                            >{this.state.street ? this.state.street : "Thong Lo, Phra Khanong, Khlong Toei, Bangkok"}</Text>
+                        </TouchableOpacity>
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                            onLayout={(e) => {
+                                const { y } = e.nativeEvent.layout;
+                                this.streetY = y;
+                            }}
+                        />
+                        {
+                            this.state.showStreetAlertIcon &&
+                            <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        }
+                    </View>
+
+                    <TouchableOpacity
+                        style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: Cons.bottomButtonMarginBottom }]}
+                        onPress={async () => {
+                            if (this.state.showPostLoader) return;
+
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.openDialog('Delete Post', 'Are you sure you want to delete this post?', async () => {
+                                this.setState({ showPostLoader: true });
+
+                                await this.removeUploadedImages();
+
+                                const { post } = this.props.navigation.state.params;
+                                await Firebase.removeFeed(post.uid, post.placeId, post.id);
+
+                                this.setState({ showPostLoader: false });
+                                this.props.navigation.dismiss();
+                            });
+                        }}
+                    >
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Delete Post'}</Text>
+                        {
+                            this.state.showPostLoader &&
+                            <ActivityIndicator
+                                style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 10002 }}
+                                animating={true}
+                                size="small"
+                                color={Theme.color.buttonText}
+                            />
+                        }
+                    </TouchableOpacity>
+
+                    {
+                        this.state.showMessageBox &&
+                        <TouchableWithoutFeedback onPress={() => {
+                            if (this.state.showMessageBox) {
+                                this.hideMessageBox();
+                            }
+                        }}>
+                            <Animated.View style={[
+                                {
+                                    width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
+                                    position: 'absolute', right: 5, top: this.inputViewY + this.state.messageBoxY - (messageBoxH + V1 - 10),
+                                    alignItems: 'center', justifyContent: 'center',
+                                    backgroundColor: 'transparent'
+                                }, viewStyle
+                            ]}>
+                                <SvgAnimatedLinearGradient width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
+                                    <Svg.Polygon
+                                        points={points}
+                                        fill={Theme.color.text5}
+                                    />
+                                </SvgAnimatedLinearGradient>
+                                <Text style={{
+                                    width: '92%', height: '70%',
+                                    position: 'absolute', top: 7, left: 10,
+                                    // backgroundColor: '#212121',
+                                    fontSize: 13, lineHeight: 18,
+                                    fontFamily: "Roboto-Regular", color: Theme.color.highlight,
+                                    // textAlignVertical: 'center', // only for android
+                                }}>
+                                    {this.state.messageBoxText}
+                                </Text>
+                            </Animated.View>
+                        </TouchableWithoutFeedback>
+                    }
+                </View>
+            );
+        }
+
+        // android
+        return (
             <View style={{ paddingTop: 2 }}>
                 {/* image editor view */}
                 <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium", paddingLeft: 18 }}>
@@ -1424,147 +1898,251 @@ export default class EditPost extends React.Component {
                     }
 
                     {/* 4. height */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'HEIGHT'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput
+                        style={{
+                            paddingLeft: 18, paddingRight: 32,
+                            width: '80%',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                        keyboardType='phone-pad'
+                        returnKeyType='done'
+                        // keyboardAppearance='dark'
+                        onFocus={(e) => this.onFocusHeight()}
+                        onBlur={(e) => this.onBlurHeight()}
+                        onChangeText={(text) => this.validateHeight(text)}
+                        value={this.state.height}
+                        selectionColor={Theme.color.selection}
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        placeholder='164 cm'
+                        placeholderTextColor={Theme.color.placeholder}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.heightY = y;
+                        }}
+                    />
                     {
-                        // ToDo: ios review
-                        Platform.OS === 'android' &&
-                        <View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                    {'HEIGHT'}
-                                </Text>
-                                <TouchableOpacity
-                                    style={{
-                                        width: 24,
-                                        height: 24,
-                                        marginRight: 18,
-                                        justifyContent: "center", alignItems: "center"
-                                    }}
-                                >
-                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                                </TouchableOpacity>
-                            </View>
-                            <TextInput
-                                style={{
-                                    paddingLeft: 18, paddingRight: 32,
-                                    width: '80%',
-                                    height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                                }}
-                                keyboardType='phone-pad'
-                                returnKeyType='done'
-                                // keyboardAppearance='dark'
-                                onFocus={(e) => this.onFocusHeight()}
-                                onBlur={(e) => this.onBlurHeight()}
-                                onChangeText={(text) => this.validateHeight(text)}
-                                value={this.state.height}
-                                selectionColor={Theme.color.selection}
-                                underlineColorAndroid="transparent"
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                placeholder='164 cm'
-                                placeholderTextColor={Theme.color.placeholder}
-                            />
-                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                onLayout={(e) => {
-                                    const { y } = e.nativeEvent.layout;
-                                    this.heightY = y;
-                                }}
-                            />
-                            {
-                                this.state.showHeightAlertIcon &&
-                                <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                            }
-                        </View>
+                        this.state.showHeightAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 5. weight */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'WEIGHT'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput
+                        style={{
+                            paddingLeft: 18, paddingRight: 32,
+                            width: '80%',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                        keyboardType='phone-pad'
+                        returnKeyType='done'
+                        // keyboardAppearance='dark'
+                        onFocus={(e) => this.onFocusWeight()}
+                        onBlur={(e) => this.onBlurWeight()}
+                        onChangeText={(text) => this.validateWeight(text)}
+                        value={this.state.weight}
+                        selectionColor={Theme.color.selection}
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        placeholder='45 kg'
+                        placeholderTextColor={Theme.color.placeholder}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.weightY = y;
+                        }}
+                    />
                     {
-                        // ToDo: ios review
-                        Platform.OS === 'android' &&
-                        <View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                    {'WEIGHT'}
-                                </Text>
-                                <TouchableOpacity
-                                    style={{
-                                        width: 24,
-                                        height: 24,
-                                        marginRight: 18,
-                                        justifyContent: "center", alignItems: "center"
-                                    }}
-                                >
-                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                                </TouchableOpacity>
-                            </View>
-                            <TextInput
-                                style={{
-                                    paddingLeft: 18, paddingRight: 32,
-                                    width: '80%',
-                                    height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                                }}
-                                keyboardType='phone-pad'
-                                returnKeyType='done'
-                                // keyboardAppearance='dark'
-                                onFocus={(e) => this.onFocusWeight()}
-                                onBlur={(e) => this.onBlurWeight()}
-                                onChangeText={(text) => this.validateWeight(text)}
-                                value={this.state.weight}
-                                selectionColor={Theme.color.selection}
-                                underlineColorAndroid="transparent"
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                placeholder='45 kg'
-                                placeholderTextColor={Theme.color.placeholder}
-                            />
-                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                onLayout={(e) => {
-                                    const { y } = e.nativeEvent.layout;
-                                    this.weightY = y;
-                                }}
-                            />
-                            {
-                                this.state.showWeightAlertIcon &&
-                                <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                            }
-                        </View>
+                        this.state.showWeightAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 6. body type */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'BODY TYPE'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <Select
+                        // onOpen={() => this.onFocusBodyType()} // NOT working in Android
+                        placeholder={{
+                            label: "What's your body type?",
+                            value: null
+                        }}
+                        items={bodyTypeItems}
+                        onValueChange={(value) => { // only for Android
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.setState({ bodyType: value });
+                        }}
+                        style={{
+                            iconContainer: {
+                                top: 5,
+                                right: 100
+                            }
+                        }}
+                        textInputProps={{
+                            style: {
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                color: this.state.bodyType === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }}
+                        useNativeAndroidPickerStyle={false}
+                        value={this.state.bodyType}
+                        Icon={() => {
+                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            return null;
+                        }}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.bodyTypeY = y;
+                        }}
+                    />
                     {
-                        // ToDo: ios review
-                        Platform.OS === 'android' &&
-                        <View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{
-                                    paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
-                                }}>
-                                    {'BODY TYPE'}
-                                </Text>
-                                <TouchableOpacity
-                                    style={{
-                                        width: 24,
-                                        height: 24,
-                                        marginRight: 18,
-                                        justifyContent: "center", alignItems: "center"
-                                    }}
-                                >
-                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                                </TouchableOpacity>
-                            </View>
+                        this.state.showBodyTypeAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 7. boobs */}
+                    {/* boobs / biceps */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {boobsTitle}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    {
+                        boobsTitle === 'BOOBS' ?
                             <Select
-                                // onOpen={() => this.onFocusBodyType()} // NOT working in Android
+                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
                                 placeholder={{
-                                    label: "What's your body type?",
+                                    label: "What's your bra size?",
                                     value: null
                                 }}
-                                items={bodyTypeItems}
+                                // placeholderTextColor={Theme.color.placeholder}
+                                items={braSizeItems}
                                 onValueChange={(value) => { // only for Android
                                     if (this._showNotification) {
                                         this.hideNotification();
                                         this.hideAlertIcon();
                                     }
 
-                                    this.setState({ bodyType: value });
+                                    this.setState({ boobs: value, biceps: null });
+                                }}
+                                style={{
+                                    iconContainer: {
+                                        top: 5,
+                                        right: 100
+                                    },
+                                    /*
+                                    inputAndroid: {
+                                        // marginLeft: 18,
+                                        // paddingRight: 30, // to ensure the text is never behind the icon
+                                        // height: 38,
+                                        // width: '50%',
+                                        // fontSize: 22, fontFamily: "Roboto-Light",
+                                        // color: 'rgba(255, 255, 255, 0.8)',
+                                        // color: 'red',
+                                        // backgroundColor: 'red'
+                                        // backgroundColor: 'transparent'
+                                    },
+                                    inputIOS: {
+                                    }
+                                    */
+                                }}
+                                textInputProps={{
+                                    style: {
+                                        paddingHorizontal: 18,
+                                        height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                        color: this.state.boobs === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                    }
+                                }}
+                                useNativeAndroidPickerStyle={false}
+                                value={this.state.boobs}
+                                Icon={() => {
+                                    // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                                    return null;
+                                }}
+                            />
+                            :
+                            <Select
+                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                placeholder={{
+                                    label: "How big are your biceps?",
+                                    value: null
+                                }}
+                                // placeholderTextColor={Theme.color.placeholder}
+                                items={bicepsSizeItems}
+                                onValueChange={(value) => { // only for Android
+                                    if (this._showNotification) {
+                                        this.hideNotification();
+                                        this.hideAlertIcon();
+                                    }
+
+                                    this.setState({ biceps: value, boobs: null });
                                 }}
                                 style={{
                                     iconContainer: {
@@ -1576,153 +2154,25 @@ export default class EditPost extends React.Component {
                                     style: {
                                         paddingHorizontal: 18,
                                         height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                        color: this.state.bodyType === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                        color: this.state.biceps === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
                                     }
                                 }}
                                 useNativeAndroidPickerStyle={false}
-                                value={this.state.bodyType}
+                                value={this.state.biceps}
                                 Icon={() => {
-                                    // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                                     return null;
                                 }}
                             />
-                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                onLayout={(e) => {
-                                    const { y } = e.nativeEvent.layout;
-                                    this.bodyTypeY = y;
-                                }}
-                            />
-                            {
-                                this.state.showBodyTypeAlertIcon &&
-                                <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                            }
-                        </View>
                     }
-
-                    {/* 7. boobs */}
-                    {/* boobs / biceps */}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.boobsY = y;
+                        }}
+                    />
                     {
-                        // ToDo: ios review
-                        Platform.OS === 'android' &&
-                        <View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{
-                                    paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
-                                }}>
-                                    {boobsTitle}
-                                </Text>
-                                <TouchableOpacity
-                                    style={{
-                                        width: 24,
-                                        height: 24,
-                                        marginRight: 18,
-                                        justifyContent: "center", alignItems: "center"
-                                    }}
-                                >
-                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                                </TouchableOpacity>
-                            </View>
-                            {
-                                boobsTitle === 'BOOBS' ?
-                                    <Select
-                                        // onOpen={() => this.onFocusBoobs()} // NOT working in Android
-                                        placeholder={{
-                                            label: "What's your bra size?",
-                                            value: null
-                                        }}
-                                        // placeholderTextColor={Theme.color.placeholder}
-                                        items={braSizeItems}
-                                        onValueChange={(value) => { // only for Android
-                                            if (this._showNotification) {
-                                                this.hideNotification();
-                                                this.hideAlertIcon();
-                                            }
-
-                                            this.setState({ boobs: value, biceps: null });
-                                        }}
-                                        style={{
-                                            iconContainer: {
-                                                top: 5,
-                                                right: 100
-                                            },
-                                            /*
-                                            inputAndroid: {
-                                                // marginLeft: 18,
-                                                // paddingRight: 30, // to ensure the text is never behind the icon
-                                                // height: 38,
-                                                // width: '50%',
-                                                // fontSize: 22, fontFamily: "Roboto-Light",
-                                                // color: 'rgba(255, 255, 255, 0.8)',
-                                                // color: 'red',
-                                                // backgroundColor: 'red'
-                                                // backgroundColor: 'transparent'
-                                            },
-                                            inputIOS: {
-                                            }
-                                            */
-                                        }}
-                                        textInputProps={{
-                                            style: {
-                                                paddingHorizontal: 18,
-                                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                                color: this.state.boobs === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                                            }
-                                        }}
-                                        useNativeAndroidPickerStyle={false}
-                                        value={this.state.boobs}
-                                        Icon={() => {
-                                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
-                                            return null;
-                                        }}
-                                    />
-                                    :
-                                    <Select
-                                        // onOpen={() => this.onFocusBoobs()} // NOT working in Android
-                                        placeholder={{
-                                            label: "How big are your biceps?",
-                                            value: null
-                                        }}
-                                        // placeholderTextColor={Theme.color.placeholder}
-                                        items={bicepsSizeItems}
-                                        onValueChange={(value) => { // only for Android
-                                            if (this._showNotification) {
-                                                this.hideNotification();
-                                                this.hideAlertIcon();
-                                            }
-
-                                            this.setState({ biceps: value, boobs: null });
-                                        }}
-                                        style={{
-                                            iconContainer: {
-                                                top: 5,
-                                                right: 100
-                                            }
-                                        }}
-                                        textInputProps={{
-                                            style: {
-                                                paddingHorizontal: 18,
-                                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                                color: this.state.biceps === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                                            }
-                                        }}
-                                        useNativeAndroidPickerStyle={false}
-                                        value={this.state.biceps}
-                                        Icon={() => {
-                                            return null;
-                                        }}
-                                    />
-                            }
-                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                onLayout={(e) => {
-                                    const { y } = e.nativeEvent.layout;
-                                    this.boobsY = y;
-                                }}
-                            />
-                            {
-                                this.state.showBoobsAlertIcon &&
-                                <AntDesign style={{ position: 'absolute', right: 22, top: this.boobsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                            }
-                        </View>
+                        this.state.showBoobsAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.boobsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 8. note */}
