@@ -402,7 +402,7 @@ export default class AuthMain extends React.Component {
                         {"By tapping Continue with Facebook, Sign up with Mobile, Sign up with Email, I agree to Rowena's "}
                         <ReactNative.Text style={styles.underline}
                             onPress={async () => {
-                                const URL = `https://rowena-88cfd.web.app/privacy_policy.html`;
+                                const URL = `https://rowena-88cfd.web.app/terms.html`;
                                 let result = await WebBrowser.openBrowserAsync(URL);
                             }}
                         >{"Terms of Service"}
