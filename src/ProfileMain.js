@@ -949,7 +949,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     this.state.totalFeedsSize > 0 &&
                                     <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
                                         <Text style={styles.title}>
-                                            {'Your girls'}
+                                            {'Your posts'}
                                             {
                                                 this.state.totalFeedsSize > 0 &&
                                                 <Text style={{
