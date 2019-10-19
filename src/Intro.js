@@ -1123,7 +1123,6 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 textShadowRadius: 1
                                             }}>
                                                 {
-                                                    // ToDo: ios review
                                                     Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ posts'
                                                 }
                                             </Text>
@@ -1254,8 +1253,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         <View style={{ marginTop: 20, marginBottom: 8 }}>
                             <View style={styles.titleContainer}>
                                 {
-                                    // ToDo: ios review
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated girls' : 'Popular posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated girls' : 'Most-liked posts'}</Text>
                                 }
                             </View>
                             {
@@ -1263,8 +1261,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             }
                             <View style={styles.titleContainer}>
                                 {
-                                    // ToDo: ios review
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent girls' : 'Most recent posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent hosted girls' : 'Most recent posts'}</Text>
                                 }
                             </View>
                             {

@@ -192,11 +192,11 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         let reviewText = '';
         if (count === 0) {
-            reviewText = Platform.OS === 'android' ? 'No customer reviews yet' : 'No user comments yet';
+            reviewText = Platform.OS === 'android' ? 'No customer reviews yet' : "No people's comments yet";
         } else if (count === 1) {
-            reviewText = Platform.OS === 'android' ? '1 customer review' : '1 user comment';
+            reviewText = Platform.OS === 'android' ? '1 customer review' : "1 people's comment";
         } else {
-            reviewText = Platform.OS === 'android' ? Util.numberWithCommas(count) + " customer reviews" : Util.numberWithCommas(count) + " user comments";
+            reviewText = Platform.OS === 'android' ? Util.numberWithCommas(count) + " customer reviews" : Util.numberWithCommas(count) + " people's comments";
         }
 
         /*
@@ -650,7 +650,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                     fontSize: 26,
                     lineHeight: 30,
                     fontFamily: "Chewy-Regular"
-                }}>{Platform.OS === 'android' ? 'No customer reviews yet' : 'No user comments yet'}</Text>
+                }}>{Platform.OS === 'android' ? 'No customer reviews' : "No people's comments"}</Text>
 
                 <Text style={{
                     marginTop: 8,

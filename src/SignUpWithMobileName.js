@@ -349,7 +349,8 @@ export default class SignUpWithMobileName extends React.Component {
             return;
         }
 
-        Vars.signUpName = this.state.name;
+        const name = this.state.name;
+        Vars.signUpName = name.trim();
 
         const from = this.props.navigation.state.params.from;
         if (from === 'email') {

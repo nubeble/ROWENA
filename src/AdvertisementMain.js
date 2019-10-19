@@ -700,7 +700,7 @@ export default class AdvertisementMain extends React.Component {
 
         data.userUid = Firebase.user().uid;
 
-        data.name = name;
+        data.name = name.trim();
 
         let _birthday = 'DDMMYYYY';
         _birthday = Util.getBirthday(this.state.datePickerDate);
@@ -731,7 +731,7 @@ export default class AdvertisementMain extends React.Component {
 
         let _note = null;
         if (note !== '') {
-            _note = note;
+            _note = note.trim();
         }
         data.note = _note;
 

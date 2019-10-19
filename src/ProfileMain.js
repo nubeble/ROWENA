@@ -819,7 +819,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
                                                     <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
-                                                        {Platform.OS === 'android' ? "Customers You've Reviewed" : "Users You've Commented"}
+                                                        {Platform.OS === 'android' ? "Customers You've Reviewed" : "People You've Commented"}
                                                     </Text>
                                                     {
                                                         /*
@@ -929,7 +929,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     </View>
                                 </View>
 
-                                {/* VERSION | Your Posts */}
+                                {/* VERSION | Your girls */}
                                 {
                                     /*
                                     this.state.totalFeedsSize === 0 &&
@@ -949,7 +949,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     this.state.totalFeedsSize > 0 &&
                                     <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
                                         <Text style={styles.title}>
-                                            {'Your posts'}
+                                            {'Your girls'}
                                             {
                                                 this.state.totalFeedsSize > 0 &&
                                                 <Text style={{

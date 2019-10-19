@@ -745,7 +745,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     fontSize: 28,
                     lineHeight: 32,
                     fontFamily: "Chewy-Regular"
-                }}>{Platform.OS === 'android' ? 'No customer reviews yet' : 'No user comments yet'}</Text>
+                }}>{Platform.OS === 'android' ? 'No customer reviews yet' : "No people's comments yet"}</Text>
 
                 <Text style={{
                     marginTop: 10,
