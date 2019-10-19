@@ -1715,11 +1715,13 @@ export default class Intro extends React.Component<InjectedProps> {
             number = averageRating.toString();
         }
 
+        /*
         let likesCount = 0;
         if (feed.likes) {
             likesCount = feed.likes.length;
         }
-
+        */
+        const visitCount = Util.getVisitCount(feed.visits);
 
         if (feed.reviewCount > 0) {
             if (Platform.OS === 'android') {
@@ -1769,8 +1771,12 @@ export default class Intro extends React.Component<InjectedProps> {
                             </View>
                             <Text style={styles.rating}>{number}</Text>
                             */}
+                            {/*
                             <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={'red'} size={15} />
                             <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+                            */}
+                            <Ionicons style={{ marginTop: 2 }} name="md-eye" color={'#4c9a2a'} size={15} />
+                            <Text style={[styles.rating, { color: Theme.color.title }]}>{visitCount}</Text>
 
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={'#f1c40f'} size={12} />
                             <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>

@@ -1611,10 +1611,12 @@ export default class Post extends React.Component<InjectedProps> {
             number = averageRating.toString();
         }
 
+        /*
         let likesCount = 0;
         if (post.likes) {
             likesCount = post.likes.length;
         }
+        */
 
         if (post.reviewCount > 0) {
             if (Platform.OS === 'android') {

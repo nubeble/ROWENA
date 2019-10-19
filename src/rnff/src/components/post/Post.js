@@ -261,11 +261,13 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             number = averageRating.toString();
         }
 
+        /*
         let likesCount = 0;
         if (post.likes) {
             likesCount = post.likes.length;
         }
-
+        */
+        const visitCount = Util.getVisitCount(post.visits);
 
         if (post.reviewCount > 0) {
             if (Platform.OS === 'android') {
@@ -315,8 +317,12 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                             </View>
                             <Text style={styles.rating}>{number}</Text>
                             */}
+                            {/*
                             <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={'red'} size={15} />
                             <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+                            */}
+                            <Ionicons style={{ marginTop: 2 }} name="md-eye" color={'#4c9a2a'} size={15} />
+                            <Text style={[styles.rating, { color: Theme.color.title }]}>{visitCount}</Text>
 
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={'#f1c40f'} size={12} />
                             <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>

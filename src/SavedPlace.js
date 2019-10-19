@@ -778,11 +778,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             }
         }
 
+        /*
         let likesCount = 0;
         if (item.likes) {
             likesCount = item.likes.length;
         }
-
+        */
+        const visitCount = Util.getVisitCount(item.visits);
 
         if (item.reviewCount === -1) {
             return (
@@ -857,8 +859,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         </View>
                         <Text style={styles.rating}>{number}</Text>
                         */}
+                        {/*
                         <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={'red'} size={15} />
                         <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+                        */}
+                        <Ionicons style={{ marginTop: 2 }} name="md-eye" color={'#4c9a2a'} size={15} />
+                        <Text style={[styles.rating, { color: Theme.color.title }]}>{visitCount}</Text>
 
                         <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={'#f1c40f'} size={12} />
                         <Text style={styles.reviewCount}>{Util.numberWithCommas(item.reviewCount)}</Text>

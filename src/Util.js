@@ -1848,4 +1848,19 @@ export default class Util extends React.Component {
     static numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+
+    static getVisitCount(visits) { // post.visits
+        if (visits.length === 0) return 0;
+
+        let totalCount = 0;
+
+        for (let i = 0; i < visits.length; i++) {
+            const visit = visits[i];
+            const count = visit.count;
+
+            totalCount = totalCount + count;
+        }
+
+        return totalCount;
+    }
 }
