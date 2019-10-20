@@ -842,90 +842,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             comments && comments.length > 0 &&
                                             <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                         }
-
-                                        {/* Settings */}
-                                        {/*
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (!profile) return;
-
-                                                setTimeout(() => {
-                                                    if (this.closed) return;
-                                                    this.props.navigation.navigate("settings");
-                                                }, Cons.buttonTimeout);
-                                            }}
-                                        >
-                                            <View style={{
-                                                width: '100%', height: 40,
-                                                justifyContent: 'center', paddingLeft: 2
-                                            }}>
-                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Settings'}</Text>
-                                                <Feather name='settings' color={Theme.color.text2} size={23} style={{ position: 'absolute', right: 1 }} />
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
-                                        */}
-
-                                        {/* Terms of Service */}
-                                        {/*
-                                        <TouchableOpacity
-                                            onPress={async () => {
-                                                const URL = `https://rowena-88cfd.web.app/terms.html`;
-                                                let result = await WebBrowser.openBrowserAsync(URL);
-                                            }}
-                                        >
-                                            <View style={{
-                                                width: '100%', height: 40,
-                                                justifyContent: 'center', paddingLeft: 2
-                                            }}>
-                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Terms of Service'}</Text>
-                                                <Feather name='book' color={Theme.color.text3} size={22} style={{ position: 'absolute', right: 1 }} />
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
-                                        */}
-
-                                        {/* Log out */}
-                                        {/*
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (!profile) return;
-
-                                                this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', async () => {
-                                                    // show indicator
-                                                    !this.closed && this.setState({ isLoadingFeeds: true });
-
-                                                    // unsubscribe profile
-                                                    this.props.profileStore.final();
-
-                                                    // init & unsubscribe
-                                                    Intro.final();
-                                                    ChatMain.final();
-
-                                                    // remove push token
-                                                    // await unregisterExpoPushToken(profile.uid);
-                                                    await Firebase.deleteToken(uid);
-
-                                                    await Firebase.signOut(profile.uid);
-
-                                                    // hide indicator
-                                                    !this.closed && this.setState({ isLoadingFeeds: false });
-                                                });
-                                            }}
-                                        >
-                                            <View style={{
-                                                width: '100%', height: 40,
-                                                justifyContent: 'center', paddingLeft: 2
-                                            }}>
-                                                <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
-                                                <AntDesign name='logout' color={Theme.color.text3} size={22} style={{ position: 'absolute', right: 0 }} />
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
-                                        */}
                                     </View>
                                 </View>
 
@@ -947,7 +863,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 }
                                 {
                                     this.state.totalFeedsSize > 0 &&
-                                    <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
+                                    // <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
+                                    <View style={{
+                                        paddingHorizontal: Theme.spacing.small,
+                                        paddingTop: 12,
+                                        paddingBottom: 12
+                                    }}>
                                         <Text style={styles.title}>
                                             {'Your posts'}
                                             {

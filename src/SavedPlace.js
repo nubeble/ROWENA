@@ -226,7 +226,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     picture: __feed.pictures.one.uri,
                     reviewCount: __feed.reviewCount,
                     averageRating: __feed.averageRating,
-                    reporters: __feed.reporters
+                    reporters: __feed.reporters,
+                    visits: __feed.visits
                 };
 
                 newFeeds.push(newFeed);
@@ -239,7 +240,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     picture,
                     reviewCount: -1,
                     averageRating: -1,
-                    // reporters: []
+                    // reporters: [],
+                    // visits: []
                 };
 
                 newFeeds.push(newFeed);
@@ -333,7 +335,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     picture: newFeed.pictures.one.uri,
                     reviewCount: newFeed.reviewCount,
                     averageRating: newFeed.averageRating,
-                    reporters: newFeed.reporters
+                    reporters: newFeed.reporters,
+                    visits: newFeed.visits
                 };
 
                 feeds[index] = __newFeed;

@@ -1850,6 +1850,8 @@ export default class Util extends React.Component {
     }
 
     static getVisitCount(visits) { // post.visits
+        if (!visits) return 0;
+
         if (visits.length === 0) return 0;
 
         let totalCount = 0;
