@@ -127,7 +127,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         keyboardTop: Dimensions.get('window').height,
 
         notification: '',
-        
+
         flashMessageTitle: '',
         flashMessageSubtitle: '',
         flashImage: null, // uri
@@ -1322,7 +1322,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     const oldRef = this.uploadImageRef;
                     this.imageRefs.push(oldRef);
                 }
-                    
+
                 this.uploadImageRef = ref;
 
                 // this.imageRefs.push(ref);

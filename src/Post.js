@@ -1295,7 +1295,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderBodyType(post) {
-        if (post.bodyType === 'Prefer Not to Say' || post.bodyType === 'Rather not say') { // backward compatibility
+        if (post.bodyType === 'Prefer Not to Say' || post.bodyType === 'Rather not say') { // 하위호환
             // return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
             return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
         } else {

@@ -501,6 +501,7 @@ export default class Firebase {
         feed.l = new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude);
 
         feed.visits = [];
+        feed.totalVisitCount = 0;
         feed.reporters = [];
 
 
@@ -772,8 +773,7 @@ export default class Firebase {
             if (!postDoc.exists) throw 'Post document not exist!';
 
             let post = postDoc.data();
-
-            let { visits } = post;
+            let { visits, totalVisitCount } = post;
 
             let index = -1;
             for (let i = 0; i < visits.length; i++) {
@@ -801,10 +801,27 @@ export default class Firebase {
                 visits[index] = visit;
             }
 
+            if (totalVisitCount === undefined) { // 하위호환
+                // calculate
+                let totalCount = 0;
+                for (let i = 0; i < visits.length; i++) {
+                    const visit = visits[i];
+                    const count = visit.count;
+
+                    totalCount = totalCount + count;
+                }
+
+                totalVisitCount = totalCount;
+                // console.log('totalVisitCount is undefined. calcuate the total visit count: ' + totalVisitCount);
+            } else {
+                totalVisitCount += 1;
+                // console.log('totalVisitCount is defined. (0 or higher) ' + totalVisitCount);
+            }
+
             post.visits = visits;
             result = post;
 
-            transaction.update(feedRef, { visits });
+            transaction.update(feedRef, { visits, totalVisitCount });
         }).then(() => {
             // console.log('jdub', "Firebase.addVisits, success.");
         }).catch((error) => {
@@ -1010,7 +1027,7 @@ export default class Firebase {
 
             let { reporters } = postDoc.data();
 
-            // backward compatibility
+            // 하위호환
             if (!reporters) reporters = [];
 
             const idx = reporters.indexOf(uid);
@@ -1025,12 +1042,14 @@ export default class Firebase {
             // add REPORTS (post)
             const id = feedId;
             const type = 'POST'; // 'POST', 'USER'
+            const timestamp = Firebase.getTimestamp();
 
             const report = {
                 uid, // user uid
                 type,
                 placeId,
-                feedId
+                feedId,
+                timestamp
             };
 
             await Firebase.firestore.collection("REPORTS").doc(id).set(report);
@@ -1053,7 +1072,7 @@ export default class Firebase {
 
             let { reporters } = postDoc.data();
 
-            // backward compatibility
+            // 하위호환
             // if (!reporters) reporters = [];
 
             const idx = reporters.indexOf(uid);

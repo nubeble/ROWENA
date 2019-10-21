@@ -323,7 +323,8 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
-                                this.orderByRatings();
+                                if (Platform.OS === 'android') this.orderByRatings();
+                                else this.orderByViews();
 
                                 this.setState({ selectedOrderIndex: 0, scrollY: this.orderTabY });
 
@@ -573,7 +574,8 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
-                                this.orderByRatings();
+                                if (Platform.OS === 'android') this.orderByRatings();
+                                else this.orderByViews();
 
                                 this.setState({ selectedOrderIndex: 0 });
 
@@ -638,8 +640,12 @@ export default class Explore extends React.Component<InjectedProps> {
         this.order('timestamp');
     }
 
-    orderByDistance() { // Consider: distance
-        // ToDo
+    orderByViews() { // total visit count
+        this.order('totalVisitCount');
+    }
+
+    orderByDistance() {
+        // Consider: order by distance
     }
 
     order(order) {

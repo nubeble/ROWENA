@@ -982,7 +982,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         const fontSize = this.getLabelFontSize(city, state, country);
                         const lineHeight = this.getLabelLineHeight(fontSize);
 
-                        // Test
+                        // ToDo: Test
                         /*
                         const tmp = index;
                         if (tmp === 0) {
@@ -991,29 +991,29 @@ export default class Intro extends React.Component<InjectedProps> {
                             country = 'Thailand';
                             length = 126;
                         } else if (tmp === 1) {
-                            city = 'Manila';
+                            city = 'Hong Kong';
                             state = null;
-                            country = 'Philippines';
+                            country = null;
                             length = 97;
                         } else if (tmp === 2) {
-                            city = 'Hanoi';
+                            city = 'Tokyo';
                             state = null;
-                            country = 'Vietnam';
+                            country = 'Japan';
                             length = 69;
                         } else if (tmp === 3) {
-                            city = 'Vientiane';
+                            city = 'Paris';
                             state = null;
-                            country = 'Laos';
+                            country = 'France';
                             length = 41;
                         } else if (tmp === 4) {
-                            city = 'Kota Kinabalu';
-                            state = 'Sabah';
-                            country = 'Malaysia';
+                            city = 'Los Angeles';
+                            state = 'CA';
+                            country = 'USA';
                             length = 36;
                         } else if (tmp === 5) {
-                            city = 'Jakarta';
-                            state = null;
-                            country = 'Indonesia';
+                            city = 'Moscow';
+                            state = 'Moscow';
+                            country = 'Russia';
                             length = 30;
                         }
                         */
@@ -1123,6 +1123,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 textShadowRadius: 1
                                             }}>
                                                 {
+                                                    // ToDo: Test
+                                                    // Util.numberWithCommas(length) + '+ posts'
                                                     Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ posts'
                                                 }
                                             </Text>

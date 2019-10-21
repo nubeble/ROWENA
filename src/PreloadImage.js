@@ -59,8 +59,8 @@ const wanted3 = require('../assets/ads/wanted/3.png');
 const wanted4 = require('../assets/ads/wanted/4.png');
 
 // tutorial
-const tutorial1 = require('../assets/tutorial/1.png');
-const tutorial2 = Platform.OS === 'android' ? require('../assets/tutorial/2.png') : require('../assets/tutorial/2-1.png');
+const tutorial1 = Platform.OS === 'android' ? require('../assets/tutorial/1.png') : require('../assets/tutorial/1-1.png');
+const tutorial2 = Platform.OS === 'android' ? require('../assets/tutorial/2.png') : require('../assets/tutorial/2-2.png');
 const tutorial3 = require('../assets/tutorial/3.png');
 const tutorial4 = require('../assets/tutorial/4.png');
 
