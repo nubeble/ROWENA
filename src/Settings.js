@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, BackHandler, FlatList, ActivityIndicator, Image } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
-import { Ionicons, AntDesign, Feather, MaterialIcons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, Feather, MaterialIcons, Entypo } from "react-native-vector-icons";
 import { Cons, Vars } from './Globals';
 import SmartImage from './rnff/src/components/SmartImage';
 import * as Permissions from 'expo-permissions';
@@ -124,6 +124,44 @@ export default class Settings extends React.Component<InjectedProps> {
 
         return (
             <View style={styles.container}>
+                {/* Post Filter */}
+                <View style={{
+                    width: '100%', height: 44,
+                    justifyContent: 'center', paddingLeft: 2
+                }}>
+                    <Text style={{ fontSize: 18, color: Theme.color.text5, fontFamily: "Roboto-Medium" }}>{'Post Filter'}</Text>
+                </View>
+
+                {/* Show Me */}
+                <View style={{
+                    width: '100%', height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                    paddingLeft: 2,
+                }}>
+                    <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Show Me'}</Text>
+
+                    <TouchableOpacity
+                        onPress={async () => {
+                            // ToDo
+                        }}
+                    >
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                            <Text style={{ fontSize: 18, color: Theme.color.splash, fontFamily: "Roboto-Regular" }}>{'Woman'}</Text>
+                            <Entypo name='chevron-right' color={Theme.color.text5} size={24} style={{ marginLeft: 4 }} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Legal */}
+                <View style={{
+                    width: '100%', height: 44,
+                    justifyContent: 'center', paddingLeft: 2
+                }}>
+                    <Text style={{ fontSize: 18, color: Theme.color.text5, fontFamily: "Roboto-Medium" }}>{'Legal'}</Text>
+                </View>
+
                 {/* Privacy Policy */}
                 <TouchableOpacity
                     onPress={async () => {
@@ -155,6 +193,14 @@ export default class Settings extends React.Component<InjectedProps> {
                         <Feather name='book' color={Theme.color.text3} size={20} style={{ position: 'absolute', right: 1 }} />
                     </View>
                 </TouchableOpacity>
+
+                {/* Logins */}
+                <View style={{
+                    width: '100%', height: 44,
+                    justifyContent: 'center', paddingLeft: 2
+                }}>
+                    <Text style={{ fontSize: 18, color: Theme.color.text5, fontFamily: "Roboto-Medium" }}>{'Logins'}</Text>
+                </View>
 
                 {/* Log out */}
                 <TouchableOpacity
@@ -191,7 +237,6 @@ export default class Settings extends React.Component<InjectedProps> {
                         <AntDesign name='logout' color={Theme.color.text3} size={20} style={{ position: 'absolute', right: 0 }} />
                     </View>
                 </TouchableOpacity>
-
 
                 {/* Delete Account */}
                 <TouchableOpacity
@@ -358,14 +403,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     logo: {
-        // flex: 1,
-        // marginTop: 80,
-        // marginBottom: 20,
+        flex: 1,
+        marginTop: 20,
+        paddingVertical: 10,
+        // width: '100%',
+        // height: '100%',
         // backgroundColor: 'green',
-        width: '100%',
-        height: '100%',
         alignItems: 'center',
-        // justifyContent: 'center'
         justifyContent: 'flex-end'
     }
 });
