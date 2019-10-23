@@ -314,8 +314,11 @@ export default class Intro extends React.Component<InjectedProps> {
             reload: async () => {
                 await this.getPlaces();
 
+                /*
                 await this.getPopularFeeds();
                 await this.getRecentFeeds();
+                */
+                await this.getPosts();
             }
         });
 
@@ -329,8 +332,11 @@ export default class Intro extends React.Component<InjectedProps> {
 
         if (Intro.places.length === 0) await this.getPlaces();
 
+        /*
         await this.getPopularFeeds();
         await this.getRecentFeeds();
+        */
+        await this.getPosts();
     }
 
     componentWillUnmount() {
@@ -776,6 +782,175 @@ export default class Intro extends React.Component<InjectedProps> {
         Intro.recentFeeds = recentFeeds;
     }
 
+    async getPosts() {
+        let popularFeeds = [];
+        let recentFeeds = [];
+
+        if (Intro.popularFeeds.length === 0) {
+            let placeList = [];
+            placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
+            placeList = Util.shuffle(placeList);
+            // console.log('getPopularFeeds size', placeList.length);
+
+            let gender = null;
+            const showMe = Vars.showMe;
+            if (showMe === 'Men') gender = 'Man';
+            else if (showMe === 'Women') gender = 'Woman';
+
+            // let popularFeeds = [];
+            for (let i = 0; i < placeList.length; i++) {
+                const placeId = placeList[i];
+                const feed = await Firebase.getFeedByAverageRating(placeId, gender);
+                if (feed) {
+                    popularFeeds.push(feed);
+                } else {
+                    console.log('feed not exists', placeId);
+                }
+            }
+            // console.log('jdub', 'popularFeeds', popularFeeds.length);
+
+            !this.closed && this.setState({ popularFeeds });
+            Intro.popularFeeds = popularFeeds;
+        }
+
+        if (Intro.recentFeeds.length === 0) {
+            let placeList = [];
+            placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
+            placeList = Util.shuffle(placeList);
+            // console.log('getRecentFeeds size', placeList.length);
+
+            let gender = null;
+            const showMe = Vars.showMe;
+            if (showMe === 'Men') gender = 'Man';
+            else if (showMe === 'Women') gender = 'Woman';
+
+            // let recentFeeds = [];
+            for (let i = 0; i < placeList.length; i++) {
+                const placeId = placeList[i];
+                const feed = await Firebase.getFeedByTimestamp(placeId, gender);
+                if (feed) {
+                    recentFeeds.push(feed);
+                } else {
+                    console.log('feed not exists', placeId);
+                }
+            }
+            // console.log('jdub', 'recentFeeds', recentFeeds.length);
+
+            !this.closed && this.setState({ recentFeeds });
+            Intro.recentFeeds = recentFeeds;
+        }
+
+        //// subscribe ////
+
+        for (let i = 0; i < popularFeeds.length; i++) {
+            const feed = popularFeeds[i];
+
+            // subscribe post
+            // --
+            if (!Intro.feedList.has(feed.id)) {
+                // this will be updated in subscribe
+                Intro.feedList.set(feed.id, null);
+
+                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                    if (newFeed === null) return; // error
+
+                    if (newFeed === undefined) {
+                        // update Intro.feedList
+                        Intro.feedList.delete(feed.id);
+                        return;
+                    }
+
+                    // update Intro.feedList
+                    Intro.feedList.set(feed.id, newFeed);
+
+                    this.updateFeed(newFeed);
+                });
+
+                Intro.popularFeedsUnsubscribes.push(fi);
+            }
+            // --
+
+            // subscribe feed count
+            // --
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                // this will be updated in subscribe
+                Intro.feedCountList.set(feed.placeId, -1);
+
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
+                    if (newPlace === undefined) {
+                        // update Intro.feedCountList
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+
+                    this.updatePlace(feed.placeId, newPlace);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        }
+
+        for (let i = 0; i < recentFeeds.length; i++) {
+            const feed = recentFeeds[i];
+
+            // subscribe post
+            // --
+            if (!Intro.feedList.has(feed.id)) {
+                // this will be updated in subscribe
+                Intro.feedList.set(feed.id, null);
+
+                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                    if (newFeed === null) return; // error
+
+                    if (newFeed === undefined) {
+                        // update Intro.feedList
+                        Intro.feedList.delete(feed.id);
+                        return;
+                    }
+
+                    // update Intro.feedList
+                    Intro.feedList.set(feed.id, newFeed);
+
+                    this.updateFeed(newFeed);
+                });
+
+                Intro.recentFeedsUnsubscribes.push(fi);
+            }
+            // --
+
+            // subscribe feed count
+            // --
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                // this will be updated in subscribe
+                Intro.feedCountList.set(feed.placeId, -1);
+
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
+                    if (newPlace === undefined) {
+                        // update Intro.feedCountList
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+
+                    this.updatePlace(feed.placeId, newPlace);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        }
+    }
+
     updateFeed(newFeed) {
         // update popularFeeds
         let _popularFeeds = [...this.state.popularFeeds];
@@ -1020,7 +1195,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         const fontSize = this.getLabelFontSize(city, state, country);
                         const lineHeight = this.getLabelLineHeight(fontSize);
 
-                        // ToDo: Test
+                        // Test
                         /*
                         const tmp = index;
                         if (tmp === 0) {
@@ -1161,9 +1336,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 textShadowRadius: 1
                                             }}>
                                                 {
-                                                    // ToDo: Test
-                                                    // Util.numberWithCommas(length) + '+ posts'
-                                                    Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ people'
+                                                    // Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ guys'
+                                                    Util.numberWithCommas(length) + '+ ' + Util.getPostName(false)
                                                 }
                                             </Text>
                                         }
@@ -1293,7 +1467,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         <View style={{ marginTop: 20, marginBottom: 8 }}>
                             <View style={styles.titleContainer}>
                                 {
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated girls' : 'Most-liked posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated ' + Util.getPostName(false) : 'Most-liked posts'}</Text>
                                 }
                             </View>
                             {
@@ -1301,7 +1475,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             }
                             <View style={styles.titleContainer}>
                                 {
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent hosted girls' : 'Most recent posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent hosted ' + Util.getPostName(false) : 'Most recent posts'}</Text>
                                 }
                             </View>
                             {

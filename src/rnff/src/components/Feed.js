@@ -7,6 +7,7 @@ import { type AnimatedEvent } from "react-native/Libraries/Animated/src/Animated
 import FeedStore from "./FeedStore";
 import { RefreshIndicator, Post, Text, Theme, FirstPost } from "../components";
 import PreloadImage from '../../../PreloadImage';
+import Util from '../../../Util';
 import type { FeedEntry } from "../components/Model";
 import type { NavigationProps } from "../components/Types";
 import { Cons, Vars } from "../../../Globals";
@@ -237,7 +238,7 @@ export default class Feed extends React.Component<FeedProps> {
                 }}>
                     {
                         // ToDo: ios review
-                        Platform.OS === 'android' ? "No registered girls yet" : "No registered posts yet"
+                        Platform.OS === 'android' ? "No registered " + Util.getPostName(false) + " yet" : "No registered posts yet"
                     }
                 </Text>
 

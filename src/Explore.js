@@ -454,19 +454,10 @@ export default class Explore extends React.Component<InjectedProps> {
     renderListHeaderComponent() {
         let titleText = null;
 
-        if (Platform.OS === "android") {
-            if (this.state.feedSize > 0) {
-                titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ girls in ' + this.state.titleText;
-            } else {
-                titleText = 'Meet girls in ' + this.state.titleText;
-            }
+        if (this.state.feedSize > 0) {
+            titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ ' + Util.getPostName(false) + ' in ' + this.state.titleText;
         } else {
-            // ToDo: ios review
-            if (this.state.feedSize > 0) {
-                titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ people in ' + this.state.titleText;
-            } else {
-                titleText = 'Meet people in ' + this.state.titleText;
-            }
+            titleText = 'Meet ' + Util.getPostName(false) + ' in ' + this.state.titleText;
         }
 
         return (

@@ -757,7 +757,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
-                                                    {Platform.OS === 'android' ? "Girls You've Reviewed" : "Posts You've Commented"}
+                                                    {Platform.OS === 'android' ? Util.getPostName(true) + " You've Reviewed" : "Posts You've Commented"}
                                                 </Text>
                                                 {
                                                     replyAdded &&
@@ -800,7 +800,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
-                                        {/* Customers You've Reviewed / Users You've Commented */}
+                                        {/* Customers You've Reviewed / Guys You've Commented */}
                                         {
                                             comments && comments.length > 0 &&
                                             <TouchableOpacity
@@ -819,7 +819,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
                                                     <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
-                                                        {Platform.OS === 'android' ? "Customers You've Reviewed" : "People You've Commented"}
+                                                        {Platform.OS === 'android' ? "Customers You've Reviewed" : "Guys You've Commented"}
                                                     </Text>
                                                     {
                                                         /*
@@ -845,7 +845,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     </View>
                                 </View>
 
-                                {/* VERSION | Your girls */}
+                                {/* VERSION | Your posts */}
                                 {
                                     /*
                                     this.state.totalFeedsSize === 0 &&

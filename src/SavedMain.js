@@ -541,8 +541,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                 fontFamily: "Chewy-Regular"
                             }}>
                                 {
-                                    // ToDo: ios review
-                                    Platform.OS === 'android' ? "No saved girls" : "No saved posts"
+                                    Platform.OS === 'android' ? "No saved " + Util.getPostName(false) : "No saved posts"
                                 }
                             </Text>
 
@@ -554,8 +553,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                 fontFamily: "Chewy-Regular"
                             }}>
                                 {
-                                    // ToDo: ios review
-                                    Platform.OS === 'android' ? "Let's find some hot chicks for your next trip" : "Let's find some new people"
+                                    Platform.OS === 'android' ? "Let's find some hot " + Util.getPostSubtitle(false) + " for your next trip" : "Let's find some new guys"
                                 }
                             </Text>
 

@@ -1142,9 +1142,6 @@ export default class AdvertisementMain extends React.Component {
                             onLayout={(e) => {
                                 const { y } = e.nativeEvent.layout;
                                 this.nameY = y;
-
-                                // ToDo: test
-                                console.log('this.nameY', this.nameY);
                             }}
                         />
                         {
@@ -1631,9 +1628,6 @@ export default class AdvertisementMain extends React.Component {
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.nameY = y;
-
-                            // ToDo: test
-                            console.log('this.nameY', this.nameY);
                         }}
                     />
                     {
@@ -1798,9 +1792,6 @@ export default class AdvertisementMain extends React.Component {
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.heightY = y;
-
-                            // ToDo: test
-                            console.log('this.heightY', this.heightY);
                         }}
                     />
                     {
@@ -2040,9 +2031,6 @@ export default class AdvertisementMain extends React.Component {
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.boobsY = y;
-
-                            // ToDo: test
-                            console.log('this.boobsY', this.boobsY);
                         }}
                     />
                     {

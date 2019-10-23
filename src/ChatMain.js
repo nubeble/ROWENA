@@ -499,8 +499,7 @@ export default class ChatMain extends React.Component {
                                 fontFamily: "Chewy-Regular"
                             }}>
                                 {
-                                    // ToDo: ios review
-                                    Platform.OS === 'android' ? "How about saying hello to new chicks first?" : "How about saying hello to new friends first?"
+                                    Platform.OS === 'android' ? "How about saying hello to new " + Util.getPostSubtitle(false) + " first?" : "How about saying hello to new guys first?"
                                 }
                             </Text>
 

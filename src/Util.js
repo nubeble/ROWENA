@@ -1865,4 +1865,28 @@ export default class Util extends React.Component {
 
         return totalCount;
     }
+
+    static getPostName(capital) {
+        if (capital === true) {
+            if (Vars.showMe === 'Men') return 'Guys';
+            if (Vars.showMe === 'Women') return 'Girls';
+            if (Vars.showMe === 'Everyone') return 'Guys';
+        }
+
+        if (Vars.showMe === 'Men') return 'guys';
+        if (Vars.showMe === 'Women') return 'girls';
+        if (Vars.showMe === 'Everyone') return 'guys';
+    }
+
+    static getPostSubtitle(capital) {
+        if (capital === true) {
+            if (Vars.showMe === 'Men') return 'Guys';
+            if (Vars.showMe === 'Women') return 'Chicks';
+            if (Vars.showMe === 'Everyone') return 'Guys';
+        }
+
+        if (Vars.showMe === 'Men') return 'guys';
+        if (Vars.showMe === 'Women') return 'chicks';
+        if (Vars.showMe === 'Everyone') return 'guys';
+    }
 }

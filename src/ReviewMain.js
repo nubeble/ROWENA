@@ -185,7 +185,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         marginLeft: 40 + 16
                     }}>
                         {
-                            Platform.OS === 'android' ? 'Reviewed Girls' : 'Commented Posts'
+                            Platform.OS === 'android' ? 'Reviewed ' + Util.getPostName(true) : 'Commented Posts'
                         }
                         {
                             this.state.totalFeedsSize > 0 &&
@@ -343,8 +343,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        // ToDo: ios review
-                                        Platform.OS === 'android' ? 'No reviewed girls' : 'No commented posts'
+                                        Platform.OS === 'android' ? 'No reviewed ' + Util.getPostName(false) : 'No commented posts'
                                     }
                                 </Text>
 
@@ -356,8 +355,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        // ToDo: ios review
-                                        Platform.OS === 'android' ? "Let's go check chicks out" : "Let's go meet new people"
+                                        Platform.OS === 'android' ? "Let's go check " + Util.getPostSubtitle(false) + " out" : "Let's go meet new guys"
                                     }
                                 </Text>
 

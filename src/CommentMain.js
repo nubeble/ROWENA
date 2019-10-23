@@ -261,8 +261,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        // ToDo: ios review
-                                        Platform.OS === 'android' ? 'No reviewed customers' : 'No commented users'
+                                        Platform.OS === 'android' ? 'No reviewed customers' : 'No commented guys'
                                     }
                                 </Text>
 
@@ -274,8 +273,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        // ToDo: ios review
-                                        Platform.OS === 'android' ? "Let's find some hot guys" : "Let's find new people"
+                                        Platform.OS === 'android' ? "Let's find some hot " + Util.getPostSubtitle(false) : "Let's find new guys"
                                     }
                                 </Text>
 
