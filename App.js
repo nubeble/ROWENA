@@ -14,6 +14,7 @@ import Constants from 'expo-constants';
 import Firebase from './src/Firebase';
 import { Cons, Vars } from './src/Globals';
 import Toast from 'react-native-easy-toast';
+import NavigationService from './src/NavigationService';
 // import _ from 'lodash';
 
 // disable mobx strict mode
@@ -523,7 +524,6 @@ import StackViewStyleInterpolator from 'react-navigation-stack/src/views/StackVi
 import { BottomTabBar } from 'react-navigation-tabs';
 // import { TabBarBottom } from 'react-navigation'; // not working in S7
 import IconWithBadge from './src/IconWithBadge';
-import NavigationService from './src/NavigationService';
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
 import Tutorial from './src/Tutorial';
@@ -562,6 +562,7 @@ import CommentMain from './src/CommentMain';
 import MapExplore from './src/MapExplore';
 // import MapOverview from './src/MapOverview';
 import Settings from './src/Settings';
+import ShowMe from './src/ShowMe';
 import Admin from './src/Admin';
 
 
@@ -1194,13 +1195,46 @@ class ChatStackNavigatorWrapper extends React.Component {
     }
 }
 
+const SettingsStackNavigator = createStackNavigator(
+    {
+        settingsMain: { screen: Settings },
+        showMe: { screen: ShowMe }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class SettingsStackNavigatorWrapper extends React.Component {
+    static router = SettingsStackNavigator.router;
+
+    render() {
+        return (
+            <SettingsStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
 const ProfileStackNavigator = createStackNavigator(
     {
         profileMain: { screen: ProfileMain },
         editProfile: { screen: EditProfileStackNavigatorWrapper },
         reviewGirls: { screen: ReviewStackNavigatorWrapper },
         reviewCustomers: { screen: CommentStackNavigatorWrapper },
-        settings: { screen: Settings }
+        // settings: { screen: Settings }
+        settings: { screen: SettingsStackNavigatorWrapper }
     },
     {
         mode: 'card',

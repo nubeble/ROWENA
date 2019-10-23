@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, FlatList, ActivityIndicator, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, FlatList, ActivityIndicator, Image, AsyncStorage } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Ionicons, AntDesign, Feather, MaterialIcons, Entypo } from "react-native-vector-icons";
 import { Cons, Vars } from './Globals';
@@ -15,6 +15,7 @@ import * as WebBrowser from 'expo-web-browser';
 import Dialog from "react-native-dialog";
 import Intro from './Intro';
 import ChatMain from './ChatMain';
+import NavigationService from './NavigationService';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -138,7 +139,39 @@ export default class Settings extends React.Component<InjectedProps> {
                     paddingLeft: 2,
                 }}>
                     <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Show Me'}</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setTimeout(() => {
+                                if (this.closed) return;
 
+                                const postFilter = profile.postFilter;
+
+                                let selectedIndex = -1;
+                                if (postFilter.showMe === 'Men') selectedIndex = 0;
+                                else if (postFilter.showMe === 'Women') selectedIndex = 1;
+                                else if (postFilter.showMe === 'Everyone') selectedIndex = 2;
+
+                                this.props.navigation.navigate("showMe", { selectedIndex, initFromShowMe: async (selectedIndex) => await this.initFromShowMe(selectedIndex) });
+                            }, Cons.buttonTimeout);
+                        }}
+                    >
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                            <Text style={{ fontSize: 18, color: Theme.color.splash, fontFamily: "Roboto-Regular" }}>{profile.postFilter.showMe}</Text>
+                            <Entypo name='chevron-right' color={Theme.color.text5} size={24} style={{ marginLeft: 10 }} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Age Range */}
+                {/*
+                <View style={{
+                    width: '100%', height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                    paddingLeft: 2,
+                }}>
+                    <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Age Range'}</Text>
                     <TouchableOpacity
                         onPress={async () => {
                             // ToDo
@@ -148,11 +181,12 @@ export default class Settings extends React.Component<InjectedProps> {
                             flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'space-between',
                         }}>
-                            <Text style={{ fontSize: 18, color: Theme.color.splash, fontFamily: "Roboto-Regular" }}>{'Woman'}</Text>
-                            <Entypo name='chevron-right' color={Theme.color.text5} size={24} style={{ marginLeft: 4 }} />
+                            <Text style={{ fontSize: 18, color: Theme.color.splash, fontFamily: "Roboto-Regular" }}>{'18 - 26'}</Text>
+                            <Entypo name='chevron-right' color={'transparent'} size={24} style={{ marginLeft: 10 }} />
                         </View>
                     </TouchableOpacity>
                 </View>
+                */}
 
                 {/* Legal */}
                 <View style={{
@@ -336,6 +370,44 @@ export default class Settings extends React.Component<InjectedProps> {
                 </View>
             </View>
         );
+    }
+
+    async initFromShowMe(selectedIndex) {
+        console.log('initFromShowMe()', selectedIndex);
+
+        let showMe = null;
+        if (selectedIndex === 0) showMe = 'Men';
+        else if (selectedIndex === 1) showMe = 'Women';
+        else if (selectedIndex === 2) showMe = 'Everyone';
+
+        const { profile } = this.props.profileStore;
+        if (!profile) return null;
+
+        let postFilter = profile.postFilter;
+        postFilter.showMe = showMe;
+
+        let data = {};
+        data.postFilter = postFilter;
+
+        await Firebase.updateShowMe(profile.uid, data);
+
+        Vars.showMe = showMe;
+
+
+
+        // init & unsubscribe
+        Intro.final();
+
+        // reload
+        const root = NavigationService.getCurrentRoute();
+        // console.log('root: ', root);
+
+        const intro = root.routes[0].routes[0].routes[0].routes[0];
+        // console.log('route name: ', intro);
+        if (intro.key === 'intro') {
+            console.log('reload posts in Intro');
+            intro.routes[0].params.reload();
+        }
     }
 
     openDialog(type, title, message, callback) {

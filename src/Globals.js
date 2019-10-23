@@ -11,7 +11,10 @@ export var Vars = {
     signUpType: null, // 'FACEBOOK', 'EMAIL', 'MOBILE'
     signUpName: null,
 
-    distanceUnit: null // unit of length - 'meter', 'mile' based on user location (user profile)
+    distanceUnit: null, // unit of length - 'meter', 'mile' based on user location (user profile)
+
+    // post filter
+    showMe: null // 'Women', 'Men', 'Everyone'
 };
 
 export const Cons = {

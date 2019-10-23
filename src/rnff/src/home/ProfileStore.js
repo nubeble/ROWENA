@@ -146,12 +146,12 @@ export default class ProfileStore {
     }
 
 
-    async init(): Promise<void> {
+    init() {
         const uid = Firebase.user().uid;
         this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(
             snap => {
                 if (snap.exists) {
-                    console.log('jdub', 'ProfileStore, profile changed');
+                    console.log('jdub', 'ProfileStore, profile changed.');
 
                     const data = snap.data();
 
@@ -213,9 +213,6 @@ export default class ProfileStore {
                         if (!resultReply) {
                             this.callReplyAddedOnReviewCallback();
                         }
-
-
-
                     } else {
                         this.lastTimeFeedsUpdated = this.lastChangedTime;
                         this.lastTimeLikesUpdated = this.lastChangedTime;
@@ -223,7 +220,7 @@ export default class ProfileStore {
                         this.lastTimeCommentsUpdated = this.lastChangedTime;
                     }
                 } else {
-                    console.log('jdub', 'ProfileStore, profile removed');
+                    console.log('jdub', 'ProfileStore, profile removed.');
 
                     this.profile = undefined;
 
@@ -235,7 +232,7 @@ export default class ProfileStore {
                 }
             },
             error => {
-                console.log('jdub', 'ProfileStore, an error happened', error);
+                console.log('jdub', 'ProfileStore, an error happened.', error);
             }
         );
     }

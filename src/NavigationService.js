@@ -1,5 +1,3 @@
-// NavigationService.js
-
 import { NavigationActions } from 'react-navigation';
 
 let _navigator;
@@ -17,9 +15,18 @@ function navigate(routeName, params) {
     );
 }
 
+function getCurrentRoute() {
+    if (!_navigator || !_navigator.state.nav) {
+        return null;
+    }
+
+    return _navigator.state.nav.routes[_navigator.state.nav.index] || null;
+}
+
 // add other navigation functions that you need and export them
 
 export default {
     navigate,
-    setTopLevelNavigator
+    setTopLevelNavigator,
+    getCurrentRoute
 };

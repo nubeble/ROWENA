@@ -202,7 +202,19 @@ export default class Loading extends React.Component<InjectedProps> {
                     await Firebase.createProfile(user.uid, name, email, mobile, photoURL);
                 }
 
-                await profileStore.init();
+                profileStore.init();
+
+                //////// set up environment ////////
+
+                // 1. distance unit
+                const place = profile.place;
+                this.setDistanceUnit(place);
+
+                // 2.
+                const postFilter = profile.postFilter;
+                this.setPostFilter(postFilter);
+
+                ////////////////////////////////////
 
                 if (Loading.userAutoAuthenticated) {
                     if (Vars.signUpType === null) { // for the auto sign in
@@ -346,5 +358,30 @@ export default class Loading extends React.Component<InjectedProps> {
         if (profile.commentAdded) return true;
 
         return false;
+    }
+
+    setDistanceUnit(place) {
+        if (place) {
+            const country = Util.getCountry(place);
+            if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
+                Vars.distanceUnit = 'mile';
+                console.log('jdub', 'mile unit');
+            } else {
+                Vars.distanceUnit = 'meter';
+                console.log('jdub', 'meter unit');
+            }
+        } else {
+            Vars.distanceUnit = 'meter';
+            console.log('jdub', 'meter unit');
+        }
+    }
+
+    setPostFilter(postFilter) {
+        // 1. Show Me
+        const showMe = postFilter.showMe;
+        Vars.showMe = showMe;
+        console.log('jdub', 'showMe: ', showMe);
+
+        // 2. Consider: Age Range
     }
 }

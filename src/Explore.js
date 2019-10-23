@@ -137,8 +137,22 @@ export default class Explore extends React.Component<InjectedProps> {
         // setState isLoadingFeeds true in Feed.js
         this._feed.setState({ isLoadingFeeds: true });
 
+        /*
         const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
+        */
+        let gender = null;
+        const showMe = Vars.showMe;
+        if (showMe === 'Men') gender = 'Man';
+        else if (showMe === 'Women') gender = 'Woman';
+
+        if (gender) {
+            const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").where("gender", "==", gender).orderBy("timestamp", "desc");
+            this.props.feedStore.init(query, 'timestamp');
+        } else {
+            const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
+            this.props.feedStore.init(query, 'timestamp');
+        }
 
         this._feed.disableScroll();
     }
@@ -649,11 +663,22 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     order(order) {
-        // const params = this.props.navigation.state.params;
-        // let place = params.place;
-
+        /*
         const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").orderBy(order, "desc");
         this.props.feedStore.init(query, order);
+        */
+        let gender = null;
+        const showMe = Vars.showMe;
+        if (showMe === 'Men') gender = 'Man';
+        else if (showMe === 'Women') gender = 'Woman';
+
+        if (gender) {
+            const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").where("gender", "==", gender).orderBy(order, "desc");
+            this.props.feedStore.init(query, order);
+        } else {
+            const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").orderBy(order, "desc");
+            this.props.feedStore.init(query, order);
+        }
 
         this._feed.disableScroll();
     }

@@ -124,7 +124,11 @@ export default class Firebase {
             commentAdded: false,
             timestamp: time,
             activating: false,
-            lastLogInTime: time
+            lastLogInTime: time,
+            postFilter: {
+                showMe: 'Everyone',
+                // ageRange: [18, 24]
+            }
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);
@@ -261,34 +265,62 @@ export default class Firebase {
         await Firebase.auth.signOut();
     }
 
-    static async getPlaceRandomFeedImage(placeId) {
+    static async getPlaceRandomFeedImage(placeId, gender) {
+        // console.log('jdub', 'getPlaceRandomFeedImage ', gender);
+
         let uri = null;
 
         const random = Util.getRandomNumber();
         // console.log('jdub', 'random', random);
 
         const postsRef = Firebase.firestore.collection("places").doc(placeId).collection("feed");
-        const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
-        if (snap1.docs.length === 0) {
-            const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
-            if (snap2.docs.length === 0) {
-                // this should never happen!
-                console.log('jdub', 'Firebase.getPlaceRandomFeedImage', '!!! THIS SHOULD NEVER HAPPEN !!!');
+
+        if (gender) {
+            const snap1 = await postsRef.where("gender", "==", gender).where("rn", ">", random).orderBy("rn").limit(1).get();
+            if (snap1.docs.length === 0) {
+                const snap2 = await postsRef.where("gender", "==", gender).where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
+                if (snap2.docs.length === 0) {
+                    // this should never happen!
+                    console.log('jdub', 'Firebase.getPlaceRandomFeedImage', '!!! THIS SHOULD NEVER HAPPEN !!!');
+                } else {
+                    snap2.forEach((doc) => {
+                        // console.log('jdub', doc.id, '=>', doc.data());
+                        feedId = doc.data().id;
+                        uri = doc.data().pictures.one.uri;
+                        // console.log('jdub', '< uri', uri);
+                    });
+                }
             } else {
-                snap2.forEach((doc) => {
+                snap1.forEach((doc) => {
                     // console.log('jdub', doc.id, '=>', doc.data());
                     feedId = doc.data().id;
                     uri = doc.data().pictures.one.uri;
-                    // console.log('jdub', '< uri', uri);
+                    // console.log('jdub', '> uri', uri);
                 });
             }
         } else {
-            snap1.forEach((doc) => {
-                // console.log('jdub', doc.id, '=>', doc.data());
-                feedId = doc.data().id;
-                uri = doc.data().pictures.one.uri;
-                // console.log('jdub', '> uri', uri);
-            });
+            const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
+            if (snap1.docs.length === 0) {
+                const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
+                if (snap2.docs.length === 0) {
+                    // this should never happen!
+                    console.log('jdub', 'Firebase.getPlaceRandomFeedImage', '!!! THIS SHOULD NEVER HAPPEN !!!');
+                } else {
+                    snap2.forEach((doc) => {
+                        // console.log('jdub', doc.id, '=>', doc.data());
+                        feedId = doc.data().id;
+                        uri = doc.data().pictures.one.uri;
+                        // console.log('jdub', '< uri', uri);
+                    });
+                }
+            } else {
+                snap1.forEach((doc) => {
+                    // console.log('jdub', doc.id, '=>', doc.data());
+                    feedId = doc.data().id;
+                    uri = doc.data().pictures.one.uri;
+                    // console.log('jdub', '> uri', uri);
+                });
+            }
         }
 
         return uri;
@@ -423,14 +455,20 @@ export default class Firebase {
         );
     }
 
-    static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
+    static async getFeedByAverageRating(placeId, gender) { // 평점이 가장 높은 포스트
         let feed = null;
 
-        const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(1).get();
-        snap.forEach(feedDoc => {
-            feed = feedDoc.data();
-            // console.log('jdub', 'Firebase.getFeedByAverageRating, feed', feed);
-        });
+        if (gender) {
+            const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").where("gender", "==", gender).orderBy("averageRating", "desc").limit(1).get();
+            snap.forEach(feedDoc => {
+                feed = feedDoc.data();
+            });
+        } else {
+            const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(1).get();
+            snap.forEach(feedDoc => {
+                feed = feedDoc.data();
+            });
+        }
 
         return feed;
     }
@@ -448,13 +486,20 @@ export default class Firebase {
     }
     */
 
-    static async getFeedByTimestamp(placeId) { // 가장 최근에 생성된 포스트
+    static async getFeedByTimestamp(placeId, gender) { // 가장 최근에 생성된 포스트
         let feed = null;
 
-        const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(1).get();
-        snap.forEach(feedDoc => {
-            feed = feedDoc.data();
-        });
+        if (gender) {
+            const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").where("gender", "==", gender).orderBy("timestamp", "desc").limit(1).get();
+            snap.forEach(feedDoc => {
+                feed = feedDoc.data();
+            });
+        } else {
+            const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(1).get();
+            snap.forEach(feedDoc => {
+                feed = feedDoc.data();
+            });
+        }
 
         return feed;
     }
@@ -1712,6 +1757,10 @@ export default class Firebase {
         return true;
     }
     // --
+
+    static async updateShowMe(uid, data) {
+        await Firebase.firestore.collection("users").doc(uid).update(data);
+    }
 
     //// Realtime Database ////
 

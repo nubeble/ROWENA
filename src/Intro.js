@@ -198,37 +198,11 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
+        /*
         if (!Vars.distanceUnit) {
             this._getDistanceUnit();
         }
-    }
-
-    async _getDistanceUnit() {
-        this.profileInterval = setInterval(() => {
-            const { profile } = this.props.profileStore;
-            if (profile) {
-                // stop profile timer
-                if (this.profileInterval) {
-                    clearInterval(this.profileInterval);
-                    this.profileInterval = null;
-                }
-
-                const place = profile.place;
-                if (place) {
-                    const country = Util.getCountry(place);
-                    if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
-                        Vars.distanceUnit = 'mile';
-                        console.log('jdub', 'mile unit');
-                    } else {
-                        Vars.distanceUnit = 'meter';
-                        console.log('jdub', 'meter unit');
-                    }
-                } else {
-                    Vars.distanceUnit = 'meter';
-                    console.log('jdub', 'meter unit');
-                }
-            }
-        }, 100); // 0.1 sec
+        */
     }
 
     _getLocationAsync = async () => {
@@ -255,7 +229,7 @@ export default class Intro extends React.Component<InjectedProps> {
         if (location) {
             Vars.location = location;
 
-            this.saveLocation(location);
+            await this.saveLocation(location);
         }
     };
 
@@ -300,12 +274,48 @@ export default class Intro extends React.Component<InjectedProps> {
         }
     }
 
+    /*
+    _getDistanceUnit() {
+        this.profileInterval = setInterval(() => {
+            const { profile } = this.props.profileStore;
+            if (profile) {
+                // stop profile timer
+                if (this.profileInterval) {
+                    clearInterval(this.profileInterval);
+                    this.profileInterval = null;
+                }
+
+                const place = profile.place;
+                if (place) {
+                    const country = Util.getCountry(place);
+                    if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
+                        Vars.distanceUnit = 'mile';
+                        console.log('jdub', 'mile unit');
+                    } else {
+                        Vars.distanceUnit = 'meter';
+                        console.log('jdub', 'meter unit');
+                    }
+                } else {
+                    Vars.distanceUnit = 'meter';
+                    console.log('jdub', 'meter unit');
+                }
+            }
+        }, 100); // 0.1 sec
+    }
+    */
+
     async componentDidMount() {
-        // console.log('jdub', 'Intro.componentDidMount');
+        console.log('jdub', 'Intro.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
                 this._flatList.scrollToOffset({ offset: 0, animated: true });
+            },
+            reload: async () => {
+                await this.getPlaces();
+
+                await this.getPopularFeeds();
+                await this.getRecentFeeds();
             }
         });
 
@@ -319,8 +329,8 @@ export default class Intro extends React.Component<InjectedProps> {
 
         if (Intro.places.length === 0) await this.getPlaces();
 
-        this.getPopularFeeds();
-        this.getRecentFeeds();
+        await this.getPopularFeeds();
+        await this.getRecentFeeds();
     }
 
     componentWillUnmount() {
@@ -454,7 +464,25 @@ export default class Intro extends React.Component<InjectedProps> {
             const place = doc.data();
             const count = place.count;
             if (count > 0) {
-                const uri = await Firebase.getPlaceRandomFeedImage(placeId);
+                // const uri = await Firebase.getPlaceRandomFeedImage(placeId);
+
+
+                /*
+                let gender = null;
+                const { profile } = this.props.profileStore;
+                if (profile) {
+                    const showMe = profile.postFilter.showMe;
+                    if (showMe === 'Men') gender = 'Man';
+                    else if (showMe === 'Women') gender = 'Woman';
+                }
+                */
+                let gender = null;
+                const showMe = Vars.showMe;
+                if (showMe === 'Men') gender = 'Man';
+                else if (showMe === 'Women') gender = 'Woman';
+
+                const uri = await Firebase.getPlaceRandomFeedImage(placeId, gender); // gender: Woman, Man, null
+
 
                 places[index] = {
                     // ...places[index],
@@ -570,10 +598,15 @@ export default class Intro extends React.Component<InjectedProps> {
 
         console.log('getPopularFeeds size', placeList.length);
 
+        let gender = null;
+        const showMe = Vars.showMe;
+        if (showMe === 'Men') gender = 'Man';
+        else if (showMe === 'Women') gender = 'Woman';
+
         let popularFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
             const placeId = placeList[i];
-            const feed = await Firebase.getFeedByAverageRating(placeId);
+            const feed = await Firebase.getFeedByAverageRating(placeId, gender);
             if (feed) {
                 popularFeeds.push(feed);
             } else {
@@ -666,10 +699,15 @@ export default class Intro extends React.Component<InjectedProps> {
 
         console.log('getRecentFeeds size', placeList.length);
 
+        let gender = null;
+        const showMe = Vars.showMe;
+        if (showMe === 'Men') gender = 'Man';
+        else if (showMe === 'Women') gender = 'Woman';
+
         let recentFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
             const placeId = placeList[i];
-            const feed = await Firebase.getFeedByTimestamp(placeId);
+            const feed = await Firebase.getFeedByTimestamp(placeId, gender);
             if (feed) {
                 recentFeeds.push(feed);
             } else {
@@ -1125,7 +1163,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 {
                                                     // ToDo: Test
                                                     // Util.numberWithCommas(length) + '+ posts'
-                                                    Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ posts'
+                                                    Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ people'
                                                 }
                                             </Text>
                                         }
@@ -1877,6 +1915,17 @@ export default class Intro extends React.Component<InjectedProps> {
         });
     }
 
+
+    _storeData = async (key, value) => {
+        console.log('jdub', '_storeData', key, value);
+
+        try {
+            await AsyncStorage.setItem(key, value);
+        } catch (error) {
+            // Error saving data
+        }
+    }
+
     _storeMultiData = async (data) => {
         console.log('jdub', '_storeMultiData', data);
 
@@ -1884,6 +1933,21 @@ export default class Intro extends React.Component<InjectedProps> {
             await AsyncStorage.multiSet(data);
         } catch (error) {
             // Error saving data
+        }
+    }
+
+    _retrieveData = async (key) => {
+        try {
+            const value = await AsyncStorage.getItem(key);
+            if (value !== null) {
+                console.log('jdub', '_retrieveData', key, value);
+            }
+
+            return value;
+        } catch (error) {
+            console.log('jdub', '_retrieveData error', error);
+            // Error retrieving data
+            return null;
         }
     }
 
