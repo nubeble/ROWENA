@@ -464,11 +464,14 @@ export default class ReadAllReviewsScreen extends React.Component {
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
-                            {name}</Text>
+                            {name}
+                        </Text>
                         <Text style={{
                             marginTop: 4,
                             color: placeColor, fontSize: 14, fontFamily: placeFont
-                        }}>{place}</Text>
+                        }}>
+                            {place}
+                        </Text>
                     </View>
                 </View>
                 {

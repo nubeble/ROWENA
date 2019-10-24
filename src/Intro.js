@@ -786,19 +786,26 @@ export default class Intro extends React.Component<InjectedProps> {
         let popularFeeds = [];
         let recentFeeds = [];
 
-        if (Intro.popularFeeds.length === 0) {
-            let placeList = [];
-            placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
+        // get random places
+        let placeList = [];
+        let placesSize = 0;
+        if (Intro.popularFeeds.length === 0) placesSize += DEFAULT_FEED_COUNT;
+        if (Intro.recentFeeds.length === 0) placesSize += DEFAULT_FEED_COUNT;
+        if (placesSize > 0) {
+            placeList = await Firebase.getRandomPlaces(placesSize);
             placeList = Util.shuffle(placeList);
-            // console.log('getPopularFeeds size', placeList.length);
+        }
+        placesSize = placeList.length; // actual read size
+        const length1 = placesSize / 2;
+        // const length2 = placesSize - length1;
 
+        if (Intro.popularFeeds.length === 0) {
             let gender = null;
             const showMe = Vars.showMe;
             if (showMe === 'Men') gender = 'Man';
             else if (showMe === 'Women') gender = 'Woman';
 
-            // let popularFeeds = [];
-            for (let i = 0; i < placeList.length; i++) {
+            for (let i = 0; i < length1; i++) {
                 const placeId = placeList[i];
                 const feed = await Firebase.getFeedByAverageRating(placeId, gender);
                 if (feed) {
@@ -814,18 +821,12 @@ export default class Intro extends React.Component<InjectedProps> {
         }
 
         if (Intro.recentFeeds.length === 0) {
-            let placeList = [];
-            placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
-            placeList = Util.shuffle(placeList);
-            // console.log('getRecentFeeds size', placeList.length);
-
             let gender = null;
             const showMe = Vars.showMe;
             if (showMe === 'Men') gender = 'Man';
             else if (showMe === 'Women') gender = 'Woman';
 
-            // let recentFeeds = [];
-            for (let i = 0; i < placeList.length; i++) {
+            for (let i = length1; i < placeList.length; i++) {
                 const placeId = placeList[i];
                 const feed = await Firebase.getFeedByTimestamp(placeId, gender);
                 if (feed) {

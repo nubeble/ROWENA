@@ -197,11 +197,14 @@ export default class CheckLikes extends React.Component {
                                     }
                                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 16 }}>
                                         <Text style={{ color: Theme.color.text2, fontSize: 15, fontFamily: "Roboto-Regular" }}>
-                                            {name}</Text>
+                                            {name}
+                                        </Text>
                                         <Text style={{
                                             marginTop: 6,
                                             color: placeColor, fontSize: 15, fontFamily: placeFont
-                                        }}>{place}</Text>
+                                        }}>
+                                            {place}
+                                        </Text>
                                     </View>
                                 </View>
                             </View>

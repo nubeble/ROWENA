@@ -922,7 +922,7 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
                                 <Text style={styles.name}>{post.name}</Text>
                                 {
-                                    this.renderReportButton()
+                                    this.renderPostReportButton()
                                 }
                             </View>
                             :
@@ -948,7 +948,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.name}>{post.name}</Text>
                                 <Text style={styles.age}>{age}</Text>
                                 {
-                                    this.renderReportButton()
+                                    this.renderPostReportButton()
                                 }
                             </View>
                     }
@@ -1517,7 +1517,7 @@ export default class Post extends React.Component<InjectedProps> {
         );
     }
 
-    renderReportButton() {
+    renderPostReportButton() {
         return (
             <TouchableOpacity
                 style={{
@@ -1527,76 +1527,168 @@ export default class Post extends React.Component<InjectedProps> {
                     justifyContent: "center", alignItems: "center"
                 }}
                 onPress={() => {
-                    const post = this.state.post;
-                    if (!post) return null;
-
-                    this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.name + '?', async () => {
-                        // report post
-
-                        // check the owner of the post
-                        // if (Firebase.user().uid === post.uid) {
-                        if (this.state.isOwner) {
-                            this.refs["toast"].show('Sorry, this is your post.', 500);
-                            return;
-                        }
-
-                        // check existence
-                        if (!this.feed) {
-                            this.refs["toast"].show('The post has been removed by its owner.', 500);
-                            return;
-                        }
-
-                        // 1. update database (reporters)
-                        const uid = Firebase.user().uid;
-                        const placeId = post.placeId;
-                        const feedId = post.id;
-                        // const name = post.name;
-                        // const placeName = post.placeName;
-                        // const uri = post.pictures.one.uri;
-
-                        const result = await Firebase.reportPost(uid, placeId, feedId);
-                        if (!result) {
-                            // the post is removed
-                            this.refs["toast"].show('The post has been removed by its owner.', 500);
-                            return;
-                        }
-
-                        // 2. update state post
-                        let _post = post;
-                        if (!_post.reporters) {
-                            let reporters = [];
-                            reporters.push(uid);
-                            _post.reporters = reporters;
-                        } else {
-                            _post.reporters.push(uid);
-                        }
-                        this.setState({ post: _post });
-
-                        // 3. update feedStore
-                        const { feedStore } = this.props;
-                        feedStore.updateFeed(_post);
-
-                        // 4. go back
-                        this.refs["toast"].show('Thanks for your feedback.', 500, () => {
-                            if (this.closed) return;
-
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
-
-                            const params = this.props.navigation.state.params;
-                            if (params) {
-                                const initFromPost = params.initFromPost;
-                                if (initFromPost) initFromPost(_post);
-                            }
-
-                            this.props.navigation.dispatch(NavigationActions.back());
-                        });
-                    });
-                }}>
+                    this.reportPost();
+                }}
+            >
                 <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
             </TouchableOpacity>
         );
+    }
+
+    reportPost() {
+        const post = this.state.post;
+        if (!post) return null;
+
+        this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.name + '?', async () => {
+            // report post
+
+            // check the owner of the post
+            // if (Firebase.user().uid === post.uid) {
+            if (this.state.isOwner) {
+                this.refs["toast"].show('Sorry, this is your post.', 500);
+                return;
+            }
+
+            // check existence
+            if (!this.feed) {
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
+
+            // 1. update database (reporters)
+            const uid = Firebase.user().uid;
+            const placeId = post.placeId;
+            const feedId = post.id;
+            // const name = post.name;
+            // const placeName = post.placeName;
+            // const uri = post.pictures.one.uri;
+
+            const result = await Firebase.reportPost(uid, placeId, feedId);
+            if (!result) {
+                // the post is removed
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
+
+            // 2. update state post
+            let _post = post;
+            if (!_post.reporters) {
+                let reporters = [];
+                reporters.push(uid);
+                _post.reporters = reporters;
+            } else {
+                _post.reporters.push(uid);
+            }
+            this.setState({ post: _post });
+
+            // 3. update feedStore
+            const { feedStore } = this.props;
+            feedStore.updateFeed(_post);
+
+            // 4. go back
+            this.refs["toast"].show('Thanks for your feedback.', 500, () => {
+                if (this.closed) return;
+
+                if (this._showNotification) {
+                    this.hideNotification();
+                }
+
+                const params = this.props.navigation.state.params;
+                if (params) {
+                    const initFromPost = params.initFromPost;
+                    if (initFromPost) initFromPost(_post);
+                }
+
+                this.props.navigation.dispatch(NavigationActions.back());
+            });
+        });
+    }
+
+    renderUserReportButton() {
+        return (
+            <TouchableOpacity
+                style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 6,
+                    justifyContent: "center", alignItems: "center"
+                }}
+                onPress={() => {
+                    this.reportUser();
+                }}
+            >
+                <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
+            </TouchableOpacity>
+        );
+    }
+
+    reportUser() {
+        const post = this.state.post;
+        if (!post) return null;
+
+        this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.name + '?', async () => {
+            // report post
+
+            // check the owner of the post
+            // if (Firebase.user().uid === post.uid) {
+            if (this.state.isOwner) {
+                this.refs["toast"].show('Sorry, this is your post.', 500);
+                return;
+            }
+
+            // check existence
+            if (!this.feed) {
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
+
+            // 1. update database (reporters)
+            const uid = Firebase.user().uid;
+            const placeId = post.placeId;
+            const feedId = post.id;
+            // const name = post.name;
+            // const placeName = post.placeName;
+            // const uri = post.pictures.one.uri;
+
+            const result = await Firebase.reportPost(uid, placeId, feedId);
+            if (!result) {
+                // the post is removed
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
+
+            // 2. update state post
+            let _post = post;
+            if (!_post.reporters) {
+                let reporters = [];
+                reporters.push(uid);
+                _post.reporters = reporters;
+            } else {
+                _post.reporters.push(uid);
+            }
+            this.setState({ post: _post });
+
+            // 3. update feedStore
+            const { feedStore } = this.props;
+            feedStore.updateFeed(_post);
+
+            // 4. go back
+            this.refs["toast"].show('Thanks for your feedback.', 500, () => {
+                if (this.closed) return;
+
+                if (this._showNotification) {
+                    this.hideNotification();
+                }
+
+                const params = this.props.navigation.state.params;
+                if (params) {
+                    const initFromPost = params.initFromPost;
+                    if (initFromPost) initFromPost(_post);
+                }
+
+                this.props.navigation.dispatch(NavigationActions.back());
+            });
+        });
     }
 
     renderReview(post) {
@@ -2408,12 +2500,21 @@ export default class Post extends React.Component<InjectedProps> {
                                 </View>
                         }
                         <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                            <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
-                                {name}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
+                                    {name}
+                                </Text>
+                                {
+                                    this.renderUserReportButton(_review)
+                                }
+                            </View>
+
                             <Text style={{
                                 marginTop: 4,
                                 color: placeColor, fontSize: 13, fontFamily: placeFont
-                            }}>{place}</Text>
+                            }}>
+                                {place}
+                            </Text>
                         </View>
                     </View>
                     {
