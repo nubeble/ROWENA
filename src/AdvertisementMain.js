@@ -2462,7 +2462,7 @@ export default class AdvertisementMain extends React.Component {
             this.uploadImage(path, index, (uri) => {
                 if (!uri) {
                     this.hideFlash();
-                    this.showNotification('An error happened. Please try again.');
+                    this.showNotification('An error happened. Please try again later.');
                     this.showAlertIcon(index);
                     this.setState({ onUploadingImage: false });
                     return;

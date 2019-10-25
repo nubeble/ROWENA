@@ -330,7 +330,7 @@ export default class SignUpWithEmail extends React.Component {
             } else if (error.code === 'auth/wrong-password') {
                 this.showNotification('The password is invalid for the given email.');
             } else {
-                this.showNotification('An error happened. Please try again.');
+                this.showNotification('An error happened. Please try again later.');
             }
 
             // hide indicator
@@ -376,7 +376,7 @@ export default class SignUpWithEmail extends React.Component {
             } else if (error.code === 'auth/invalid-verification-id') {
                 this.showNotification('The verification ID of the credential is not valid.');
             } else {
-                this.showNotification('An error happened. Please try again.');
+                this.showNotification('An error happened. Please try again later.');
             }
 
             // hide indicator

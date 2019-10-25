@@ -146,13 +146,6 @@ export default class Intro extends React.Component<InjectedProps> {
         dialogMessage: ''
     };
 
-    /*
-    static scrollToTop() {
-        Intro.__flatList.scrollToOffset({ offset: 0, animated: true });
-    }
-    */
-
-    // static final() {
     final() {
         console.log('jdub', 'Intro.final');
 

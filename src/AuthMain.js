@@ -142,7 +142,7 @@ export default class AuthMain extends React.Component {
                 } else if (error.code === 'auth/invalid-verification-id') {
                     this.showNotification('The verification ID of the credential is not valid.');
                 } else {
-                    this.showNotification('An error happened. Please try again.');
+                    this.showNotification('An error happened. Please try again later.');
                 }
             }
         } else if (type === 'cancel') {
@@ -151,7 +151,7 @@ export default class AuthMain extends React.Component {
             console.log('jdub', 'Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
             // const str = type + ' ' + permissions + ' ' + declinedPermissions;
             // this.showNotification(str);
-            this.showNotification('An error happened. Please try again.');
+            this.showNotification('An error happened. Please try again later.');
         }
 
         // hide indicator

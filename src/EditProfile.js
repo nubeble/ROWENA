@@ -1312,7 +1312,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             // upload image
             this.uploadImage(path, (uri) => {
                 if (!uri) {
-                    this.showNotification('An error happened. Please try again.');
+                    this.showNotification('An error happened. Please try again later.');
                     this.setState({ onUploadingImage: false });
                     return;
                 }
@@ -1386,7 +1386,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         } catch (error) {
             console.error(error);
 
-            this.showNotification('An error happened. Please try again.');
+            this.showNotification('An error happened. Please try again later.');
 
             // stop indicator
             // this.setState({refreshing: false });

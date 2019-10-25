@@ -15,7 +15,7 @@ function navigate(routeName, params) {
     );
 }
 
-function getCurrentRoute() {
+function getRootRoute() {
     if (!_navigator || !_navigator.state.nav) {
         return null;
     }
@@ -24,9 +24,8 @@ function getCurrentRoute() {
 }
 
 // add other navigation functions that you need and export them
-
 export default {
     navigate,
     setTopLevelNavigator,
-    getCurrentRoute
+    getRootRoute
 };

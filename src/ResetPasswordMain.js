@@ -335,7 +335,7 @@ export default class ResetPasswordMain extends React.Component {
             } else if (error.code === 'auth/invalid-email') {
                 this.showNotification('The email address is not valid.'); // done
             } else {
-                this.showNotification('An error happened. Please try again.');
+                this.showNotification('An error happened. Please try again later.');
             }
 
             // hide loader

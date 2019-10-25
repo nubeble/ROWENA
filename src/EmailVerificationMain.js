@@ -136,7 +136,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         !this.closed && this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
 
                         // show message box
-                        this.showNotification('An error happened. Please try again.');
+                        this.showNotification('An error happened. Please try again later.');
                     }
                 });
             }, 1000);
@@ -246,7 +246,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             !this.closed && this.setState({ emailVerificationState: 0 });
 
             // show notification
-            this.showNotification('Verification time is up. Please try again.');
+            this.showNotification('Verification time is up. Please try again later.');
 
             // show resend button
             !this.closed && this.setState({ showResend: true });

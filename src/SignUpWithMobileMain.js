@@ -498,7 +498,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     // this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
                     this.showNotification('Unusual activity. Please try again later.');
                 } else {
-                    this.showNotification('An error happened. Please try again.');
+                    this.showNotification('An error happened. Please try again later.');
                 }
             }
         } else {
@@ -549,7 +549,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     // this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
                     this.showNotification('Unusual activity. Please try again later.');
                 } else {
-                    this.showNotification('An error happened. Please try again.');
+                    this.showNotification('An error happened. Please try again later.');
                 }
 
                 // Test
@@ -593,7 +593,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 // The phone auth credential was created with an empty SMS verification code.
                 this.showNotification('Empty SMS verification code. Please resend the verification code.');
             } else {
-                this.showNotification('An error happened. Please try again.');
+                this.showNotification('An error happened. Please try again later.');
             }
 
             // reset

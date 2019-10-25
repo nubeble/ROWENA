@@ -1268,7 +1268,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         } catch (error) {
             console.error(error);
 
-            this.showNotification('An error happened. Please try again.');
+            this.showNotification('An error happened. Please try again later.');
 
             cb(null);
         }
