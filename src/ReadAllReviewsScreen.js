@@ -362,7 +362,6 @@ export default class ReadAllReviewsScreen extends React.Component {
             return (
                 this.renderReviewItemOrigin(_profile, _review, index)
             );
-
         } else {
             // show blocked image
             return (
@@ -487,7 +486,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             </Text>
                             {
                                 !isMyReview &&
-                                this.renderReviewReportButton(_review)
+                                this.renderReviewReportButton(_review, index)
                             }
                         </View>
 
@@ -597,6 +596,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             return;
                         }
 
+                        /*
                         // reload review
                         let count = this.state.reviews.length;
                         if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
@@ -605,6 +605,8 @@ export default class ReadAllReviewsScreen extends React.Component {
 
                         // move scroll top
                         this._flatList.scrollToOffset({ offset: 0, animated: false });
+                        */
+                        this.showReview(index, uid);
                     });
                 }}
             >
@@ -851,7 +853,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         );
     }
 
-    renderReviewReportButton(review) {
+    renderReviewReportButton(review, index) {
         return (
             <TouchableOpacity
                 style={{
@@ -861,7 +863,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     justifyContent: "center", alignItems: "center"
                 }}
                 onPress={() => {
-                    this.reportReview(review);
+                    this.reportReview(review, index);
                 }}
             >
                 <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
@@ -869,7 +871,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         );
     }
 
-    reportReview(review) {
+    reportReview(review, index) {
         this.openDialog('Report Review', 'Are you sure you want to report ' + review.name + '?', async () => {
             // report review
 
@@ -885,6 +887,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 return;
             }
 
+            /*
             // reload review
             let count = this.state.reviews.length;
             if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
@@ -893,9 +896,39 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             // move scroll top
             this._flatList.scrollToOffset({ offset: 0, animated: false });
+            */
+            this.hideReview(index, uid);
 
             this.refs["toast"].show('Thanks for your feedback.', 500);
         });
+    }
+
+    hideReview(index, uid) {
+        let reviews = this.state.reviews;
+        let review = reviews[index];
+
+        let _review = review.review;
+        if (!_review.reporters) {
+            let reporters = [];
+            reporters.push(uid);
+            _review.reporters = reporters;
+        } else {
+            _review.reporters.push(uid);
+        }
+
+        this.setState({ reviews });
+    }
+
+    showReview(index, uid) {
+        let reviews = this.state.reviews;
+        let review = reviews[index];
+
+        let _review = review.review;
+
+        const idx = _review.reporters.indexOf(uid);
+        if (idx !== -1) _review.reporters.splice(idx, 1);
+
+        this.setState({ reviews });
     }
 
     @autobind

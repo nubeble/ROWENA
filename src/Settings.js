@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, FlatList, ActivityIndicator, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, FlatList, ActivityIndicator, Image, AsyncStorage, Dimensions } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Ionicons, AntDesign, Feather, MaterialIcons, Entypo } from "react-native-vector-icons";
 import { Cons, Vars } from './Globals';
@@ -110,6 +110,13 @@ export default class Settings extends React.Component<InjectedProps> {
                         />
                     </View>
                 }
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
 
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>

@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import { Ionicons, Feather, MaterialCommunityIcons, MaterialIcons } from "react-native-vector-icons";
+import { Ionicons, Feather, MaterialCommunityIcons, MaterialIcons, AntDesign } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
 import * as Svg from 'react-native-svg';
 import { NavigationActions } from 'react-navigation';
@@ -20,6 +20,8 @@ import CommentStore from "./CommentStore";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
+import Toast from 'react-native-easy-toast';
+import Dialog from "react-native-dialog";
 import _ from 'lodash';
 
 type InjectedProps = {
@@ -43,7 +45,11 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
     state = {
         isLoadingFeeds: false,
         reviews: null,
-        refreshing: false
+        refreshing: false,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     componentDidMount() {
@@ -394,6 +400,20 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
                     ListEmptyComponent={this.renderListEmptyComponent}
                 />
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
+
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
             </View>
         );
     }
@@ -417,6 +437,21 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         const post = item.post;
         const _review = item.comment;
 
+        const reporters = _review.reporters;
+        if (!reporters || reporters.length === 0 || reporters.indexOf(Firebase.user().uid) === -1) {
+            // show original
+            return (
+                this.renderReviewItemOrigin(post, _review, index)
+            );
+        } else {
+            // show blocked image
+            return (
+                this.renderReviewItemBlocked(post, _review, index)
+            );
+        }
+    }
+
+    renderReviewItemOrigin(post, _review, index) {
         let picture = null;
         let placeName = 'Not specified';
         let placeColor = Theme.color.text4;
@@ -449,8 +484,6 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                 nameLineHeight = 24;
             }
         } else { // post removed
-            // console.log('jdub', 'EditProfileMain.renderItem', _review);
-
             // use original data
             picture = _review.picture;
             placeName = _review.placeName;
@@ -522,9 +555,16 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
-                            {name}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
+                                {name}
+                            </Text>
+                            {
+                                !isMyComment &&
+                                this.renderCommentReportButton(_review, index)
+                            }
+                        </View>
+
                         <Text style={{
                             marginTop: 4,
                             color: placeColor, fontSize: 14, fontFamily: placeFont
@@ -549,6 +589,89 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                 }
             </View>
         );
+    }
+
+    renderReviewItemBlocked(post, _review, index) {
+        return (
+            <TouchableOpacity activeOpacity={0.5}
+                onPress={() => {
+                    this.openDialog('Unblock Review', 'Are you sure you want to unblock ' + _review.name + '?', async () => {
+                        const uid = Firebase.user().uid;
+                        const result = await Firebase.unblockComment(uid, uid, _review.id);
+                        if (!result) {
+                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            return;
+                        }
+
+                        // reload comment
+                        /*
+                        let count = this.state.reviews.length;
+                        if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+                        else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
+                        this.loadReviewFromStart(count);
+
+                        // move scroll top
+                        this._flatList.scrollToOffset({ offset: 0, animated: false });
+                        */
+                        this.showComment(index, uid);
+                    });
+                }}
+            >
+                {
+                    this.renderReviewItemOrigin(post, _review, index)
+                }
+
+                <View style={[StyleSheet.absoluteFill, { marginVertical: 9 }, {
+                    borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                }]}>
+                    <AntDesign style={{ marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 14,
+                        fontFamily: "Roboto-Light",
+                        paddingHorizontal: 10,
+                        textAlign: 'center',
+                        marginBottom: 8
+                    }}>{'Thanks for letting us know.'}</Text>
+                    <Text style={{
+                        color: Theme.color.text3,
+                        fontSize: 14,
+                        fontFamily: "Roboto-Light",
+                        paddingHorizontal: 10,
+                        textAlign: 'center'
+                    }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    hideComment(index, uid) {
+        let reviews = this.state.reviews;
+        let review = reviews[index];
+
+        let _review = review.comment;
+        if (!_review.reporters) {
+            let reporters = [];
+            reporters.push(uid);
+            _review.reporters = reporters;
+        } else {
+            _review.reporters.push(uid);
+        }
+
+        this.setState({ reviews });
+    }
+
+    showComment(index, uid) {
+        let reviews = this.state.reviews;
+        let review = reviews[index];
+
+        let _review = review.comment;
+
+        const idx = _review.reporters.indexOf(uid);
+        if (idx !== -1) _review.reporters.splice(idx, 1);
+
+        this.setState({ reviews });
     }
 
     @autobind
@@ -678,6 +801,54 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         );
     }
 
+    renderCommentReportButton(review, index) {
+        return (
+            <TouchableOpacity
+                style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 6,
+                    justifyContent: "center", alignItems: "center"
+                }}
+                onPress={() => {
+                    this.reportComment(review, index);
+                }}
+            >
+                <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
+            </TouchableOpacity>
+        );
+    }
+
+    reportComment(review, index) {
+        this.openDialog('Report Review', 'Are you sure you want to report ' + review.name + '?', async () => {
+            // report comment
+
+            // 1. update database (reporters)
+            const { profile } = this.props.profileStore;
+            const uid = profile.uid;
+            const result = await Firebase.reportComment(uid, uid, review.id);
+            if (!result) {
+                // the comment is removed
+                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                return;
+            }
+
+            /*
+            // reload comment
+            let count = this.state.reviews.length;
+            if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+            else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
+            this.loadReviewFromStart(count);
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: false });
+            */
+            this.hideComment(index, uid);
+
+            this.refs["toast"].show('Thanks for your feedback.', 500);
+        });
+    }
+
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
@@ -733,6 +904,35 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
     disableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

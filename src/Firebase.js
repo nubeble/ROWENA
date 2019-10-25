@@ -1172,10 +1172,10 @@ export default class Firebase {
     }
     */
 
-    static async reportComment(uid, targetUserUid, commentId) {
+    static async reportComment(reporterUid, ownerUid, commentId) {
         let result;
 
-        const receiverRef = Firebase.firestore.collection("users").doc(targetUserUid);
+        const receiverRef = Firebase.firestore.collection("users").doc(ownerUid);
         const commentRef = receiverRef.collection("comments").doc(commentId);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -1187,9 +1187,9 @@ export default class Firebase {
             // 하위호환
             if (!reporters) reporters = [];
 
-            const idx = reporters.indexOf(uid);
+            const idx = reporters.indexOf(reporterUid);
             if (idx === -1) {
-                reporters.push(uid);
+                reporters.push(reporterUid);
             }
 
             transaction.update(commentRef, { reporters });
@@ -1202,10 +1202,10 @@ export default class Firebase {
             const timestamp = Firebase.getTimestamp();
 
             const report = {
-                uid, // user uid
+                uid: reporterUid, // reporter
                 type,
-                targetUserUid,
-                commentId,
+                userId: ownerUid,
+                commentId, // owner
                 timestamp
             };
 
@@ -1288,8 +1288,41 @@ export default class Firebase {
         return result;
     }
 
-    // ToDo
-    // static async unblockReply()
+    static async unblockComment(reporterUid, ownerUid, commentId) {
+        let result;
+
+        const receiverRef = Firebase.firestore.collection("users").doc(ownerUid);
+        const commentRef = receiverRef.collection("comments").doc(commentId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const commentDoc = await transaction.get(commentRef);
+            if (!commentDoc.exists) throw 'Comment document not exist!';
+
+            let { reporters } = commentDoc.data();
+
+            // 하위호환
+            // if (!reporters) reporters = [];
+
+            const idx = reporters.indexOf(reporterUid);
+            if (idx !== -1) {
+                reporters.splice(idx, 1);
+            }
+
+            transaction.update(commentRef, { reporters });
+        }).then(async () => {
+            result = true;
+
+            // remove REPORTS (comment)
+            const id = commentId;
+            const reportRef = Firebase.firestore.collection("REPORTS").doc(id);
+            await reportRef.delete();
+        }).catch((error) => {
+            console.log('jdub', 'Firebase.unblockComment', error);
+            result = false;
+        });
+
+        return result;
+    }
 
     static async updateReviewChecked(uid, placeId, feedId, checked) {
         let result;

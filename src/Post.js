@@ -1491,7 +1491,7 @@ export default class Post extends React.Component<InjectedProps> {
         });
     }
 
-    renderReviewReportButton(review) {
+    renderReviewReportButton(review, index) {
         return (
             <TouchableOpacity
                 style={{
@@ -1501,7 +1501,7 @@ export default class Post extends React.Component<InjectedProps> {
                     justifyContent: "center", alignItems: "center"
                 }}
                 onPress={() => {
-                    this.reportReview(review);
+                    this.reportReview(review, index);
                 }}
             >
                 <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
@@ -1509,7 +1509,7 @@ export default class Post extends React.Component<InjectedProps> {
         );
     }
 
-    reportReview(review) {
+    reportReview(review, index) {
         const post = this.state.post;
         if (!post) return null;
 
@@ -1529,29 +1529,40 @@ export default class Post extends React.Component<InjectedProps> {
                 return;
             }
 
-            // 2. update state post
-            /*
-            let _post = post;
-            if (!_post.reporters) {
-                let reporters = [];
-                reporters.push(uid);
-                _post.reporters = reporters;
-            } else {
-                _post.reporters.push(uid);
-            }
-            this.setState({ post: _post });
-
-            // 3. update feedStore
-            const { feedStore } = this.props;
-            feedStore.updateFeed(_post);
-            */
-
             // reload review
-            this.reloadReviews();
+            // this.reloadReviews();
+            this.hideReview(index, uid);
 
-            // 4. go back
             this.refs["toast"].show('Thanks for your feedback.', 500);
         });
+    }
+
+    hideReview(index, uid) {
+        let reviews = this.state.reviews;
+        let review = reviews[index];
+
+        let _review = review.review;
+        if (!_review.reporters) {
+            let reporters = [];
+            reporters.push(uid);
+            _review.reporters = reporters;
+        } else {
+            _review.reporters.push(uid);
+        }
+
+        this.setState({ reviews });
+    }
+
+    showReview(index, uid) {
+        let reviews = this.state.reviews;
+        let review = reviews[index];
+
+        let _review = review.review;
+
+        const idx = _review.reporters.indexOf(uid);
+        if (idx !== -1) _review.reporters.splice(idx, 1);
+
+        this.setState({ reviews });
     }
 
     /*
@@ -2472,7 +2483,7 @@ export default class Post extends React.Component<InjectedProps> {
                             </Text>
                             {
                                 !isMyReview &&
-                                this.renderReviewReportButton(_review)
+                                this.renderReviewReportButton(_review, index)
                             }
                         </View>
 
@@ -2570,11 +2581,10 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReviewItemBlocked(review, i) {
-        const _review = review.review;
-
         return (
             <TouchableOpacity activeOpacity={0.5}
                 onPress={() => {
+                    const _review = review.review;
                     this.openDialog('Unblock Review', 'Are you sure you want to unblock ' + _review.name + '?', async () => {
                         const uid = Firebase.user().uid;
                         const post = this.state.post;
@@ -2588,7 +2598,8 @@ export default class Post extends React.Component<InjectedProps> {
                             return;
                         }
 
-                        this.reloadReviews();
+                        // this.reloadReviews();
+                        this.showReview(i, uid);
                     });
                 }}
             >
