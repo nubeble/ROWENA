@@ -690,7 +690,6 @@ export default class MapExplore extends React.Component {
                         borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
                     }]}>
-                        {/* // add text */}
                         <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
                         <Text style={{
                             color: Theme.color.text1,

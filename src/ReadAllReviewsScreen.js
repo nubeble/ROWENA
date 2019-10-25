@@ -14,7 +14,7 @@ import Firebase from './Firebase';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 // import ReadMore from "./ReadMore";
-import { Ionicons, MaterialIcons } from "react-native-vector-icons";
+import { Ionicons, MaterialIcons, AntDesign } from "react-native-vector-icons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
 import { Cons, Vars } from "./Globals";
@@ -354,6 +354,23 @@ export default class ReadAllReviewsScreen extends React.Component {
     renderItem({ item, index }): React.Node {
         const _profile = item.profile;
         const _review = item.review;
+
+        const reporters = _review.reporters;
+        if (!reporters || reporters.length === 0 || reporters.indexOf(Firebase.user().uid) === -1) {
+            // show original
+            return (
+                this.renderReviewItemOrigin(_profile, _review, index)
+            );
+
+        } else {
+            // show blocked image
+            return (
+                this.renderReviewItemBlocked(_profile, _review, index)
+            );
+        }
+    }
+
+    renderReviewItemOrigin(_profile, _review, index) {
         const ref = _review.id;
         const reply = _review.reply;
 
@@ -463,9 +480,16 @@ export default class ReadAllReviewsScreen extends React.Component {
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
-                            {name}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
+                                {name}
+                            </Text>
+                            {
+                                !isMyReview &&
+                                this.renderReviewReportButton(_review)
+                            }
+                        </View>
+
                         <Text style={{
                             marginTop: 4,
                             color: placeColor, fontSize: 14, fontFamily: placeFont
@@ -554,6 +578,60 @@ export default class ReadAllReviewsScreen extends React.Component {
                     </View>
                 }
             </View>
+        );
+    }
+
+    renderReviewItemBlocked(_profile, _review, index) {
+        return (
+            <TouchableOpacity activeOpacity={0.5}
+                onPress={() => {
+                    this.openDialog('Unblock Review', 'Are you sure you want to unblock ' + _review.name + '?', async () => {
+                        const uid = Firebase.user().uid;
+                        const { placeId, feedId } = this.props.navigation.state.params;
+                        const reviewId = _review.id;
+
+                        const result = await Firebase.unblockReview(uid, placeId, feedId, reviewId);
+                        if (!result) {
+                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            return;
+                        }
+
+                        // reload review
+                        let count = this.state.reviews.length;
+                        if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                        this.reload(count);
+
+                        // move scroll top
+                        this._flatList.scrollToOffset({ offset: 0, animated: false });
+                    });
+                }}
+            >
+                {
+                    this.renderReviewItemOrigin(_profile, _review, index)
+                }
+
+                <View style={[StyleSheet.absoluteFill, { marginVertical: 9 }, {
+                    borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                }]}>
+                    <AntDesign style={{ marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 14,
+                        fontFamily: "Roboto-Light",
+                        paddingHorizontal: 10,
+                        textAlign: 'center',
+                        marginBottom: 8
+                    }}>{'Thanks for letting us know.'}</Text>
+                    <Text style={{
+                        color: Theme.color.text3,
+                        fontSize: 14,
+                        fontFamily: "Roboto-Light",
+                        paddingHorizontal: 10,
+                        textAlign: 'center'
+                    }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
+                </View>
+            </TouchableOpacity>
         );
     }
 
@@ -771,6 +849,52 @@ export default class ReadAllReviewsScreen extends React.Component {
         );
     }
 
+    renderReviewReportButton(review) {
+        return (
+            <TouchableOpacity
+                style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 6,
+                    justifyContent: "center", alignItems: "center"
+                }}
+                onPress={() => {
+                    this.reportReview(review);
+                }}
+            >
+                <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
+            </TouchableOpacity>
+        );
+    }
+
+    reportReview(review) {
+        this.openDialog('Report Review', 'Are you sure you want to report ' + review.name + '?', async () => {
+            // report review
+
+            // 1. update database (reporters)
+            const uid = Firebase.user().uid;
+            const { placeId, feedId } = this.props.navigation.state.params;
+            const reviewId = review.id;
+
+            const result = await Firebase.reportReview(uid, placeId, feedId, reviewId);
+            if (!result) {
+                // the review is removed
+                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                return;
+            }
+
+            // reload review
+            let count = this.state.reviews.length;
+            if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+            this.reload(count);
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: false });
+
+            this.refs["toast"].show('Thanks for your feedback.', 500);
+        });
+    }
+
     @autobind
     _keyboardDidShow(e) {
         this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
@@ -897,7 +1021,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 this.setState({ showKeyboard: false });
 
                 // reload
-                let count = this.this.state.reviews.length;
+                let count = this.state.reviews.length;
                 if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                 this.reload(count);
 
@@ -947,7 +1071,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    let count = this.this.state.reviews.length;
+                    let count = this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                     this.reload(count);
 
@@ -973,7 +1097,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    let count = this.this.state.reviews.length;
+                    let count = this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                     this.reload(count);
 

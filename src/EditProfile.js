@@ -87,10 +87,12 @@ const genderItems = [
         label: 'Woman',
         value: 'Woman'
     },
+    /*
     {
         label: 'Other',
         value: 'Other'
     }
+    */
 ];
 
 

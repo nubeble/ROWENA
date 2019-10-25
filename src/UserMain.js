@@ -916,9 +916,16 @@ export default class UserMain extends React.Component<InjectedProps> {
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
-                            {name}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
+                                {name}
+                            </Text>
+                            {
+                                !isMyComment &&
+                                this.renderCommentReportButton(_review)
+                            }
+                        </View>
+
                         <Text style={{
                             marginTop: 4,
                             color: placeColor, fontSize: 14, fontFamily: placeFont
@@ -1069,6 +1076,49 @@ export default class UserMain extends React.Component<InjectedProps> {
                 />
             </View>
         );
+    }
+
+    renderCommentReportButton(review) {
+        return (
+            <TouchableOpacity
+                style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 6,
+                    justifyContent: "center", alignItems: "center"
+                }}
+                onPress={() => {
+                    this.reportComment(review);
+                }}
+            >
+                <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
+            </TouchableOpacity>
+        );
+    }
+
+    reportComment(review) {
+        this.openDialog('Report Review', 'Are you sure you want to report ' + review.name + '?', async () => {
+            // report comment
+
+            // 1. update database (reporters)
+            const uid = Firebase.user().uid;
+            const result = await Firebase.reportComment(uid, review.uid, review.id);
+            if (!result) {
+                // the comment is removed
+                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                return;
+            }
+
+            // reload comment
+            let count = this.state.reviews.length;
+            if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+            this.loadReviewFromStart(count);
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: false });
+
+            this.refs["toast"].show('Thanks for your feedback.', 500);
+        });
     }
 
     handleRefresh = () => {

@@ -49,13 +49,6 @@ export default class ChatMain extends React.Component {
         this.customersUnsubscribes = [];
     }
 
-    static final() {
-        console.log('jdub', 'ChatMain.final');
-
-        const uid = Firebase.user().uid;
-        Firebase.stopChatRoom(uid);
-    }
-
     componentDidMount() {
         console.log('jdub', 'ChatMain.componentDidMount');
 

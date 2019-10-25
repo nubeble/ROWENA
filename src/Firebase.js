@@ -1106,6 +1106,118 @@ export default class Firebase {
         return result;
     }
 
+    static async reportReview(uid, placeId, feedId, reviewId) {
+        let result;
+
+        const reviewRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const reviewDoc = await transaction.get(reviewRef);
+            if (!reviewDoc.exists) throw 'Review document not exist!';
+
+            let { reporters } = reviewDoc.data();
+
+            // 하위호환
+            if (!reporters) reporters = [];
+
+            const idx = reporters.indexOf(uid);
+            if (idx === -1) {
+                reporters.push(uid);
+            }
+
+            transaction.update(reviewRef, { reporters });
+        }).then(async () => {
+            result = true;
+
+            // add REPORTS (review)
+            const id = reviewId;
+            const type = 'REVIEW'; // 'POST', 'USER', 'REVIEW'
+            const timestamp = Firebase.getTimestamp();
+
+            const report = {
+                uid, // user uid
+                type,
+                placeId,
+                feedId,
+                reviewId,
+                timestamp
+            };
+
+            await Firebase.firestore.collection("REPORTS").doc(id).set(report);
+        }).catch((error) => {
+            console.log('jdub', 'Firebase.reportReview', error);
+            result = false;
+        });
+
+        return result;
+    }
+
+    /*
+    static async reportReply(uid, placeId, feedId, reviewId, replyId) {
+        const id = replyId;
+        const type = 'REPLY'; // 'POST', 'USER', 'REVIEW', 'REPLY'
+        const timestamp = Firebase.getTimestamp();
+
+        const report = {
+            uid, // user uid
+            type,
+            placeId,
+            feedId,
+            reviewId,
+            replyId,
+            timestamp
+        };
+
+        await Firebase.firestore.collection("REPORTS").doc(id).set(report);
+    }
+    */
+
+    static async reportComment(uid, targetUserUid, commentId) {
+        let result;
+
+        const receiverRef = Firebase.firestore.collection("users").doc(targetUserUid);
+        const commentRef = receiverRef.collection("comments").doc(commentId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const commentDoc = await transaction.get(commentRef);
+            if (!commentDoc.exists) throw 'Comment document not exist!';
+
+            let { reporters } = commentDoc.data();
+
+            // 하위호환
+            if (!reporters) reporters = [];
+
+            const idx = reporters.indexOf(uid);
+            if (idx === -1) {
+                reporters.push(uid);
+            }
+
+            transaction.update(commentRef, { reporters });
+        }).then(async () => {
+            result = true;
+
+            // add REPORTS (comment)
+            const id = commentId;
+            const type = 'COMMENT'; // 'POST', 'USER', 'REVIEW', 'COMMENT'
+            const timestamp = Firebase.getTimestamp();
+
+            const report = {
+                uid, // user uid
+                type,
+                targetUserUid,
+                commentId,
+                timestamp
+            };
+
+            await Firebase.firestore.collection("REPORTS").doc(id).set(report);
+        }).catch((error) => {
+            console.log('jdub', 'Firebase.reportComment', error);
+            result = false;
+        });
+
+        return result;
+    }
+
     static async unblockPost(uid, placeId, feedId) {
         let result;
 
@@ -1140,6 +1252,44 @@ export default class Firebase {
 
         return result;
     }
+
+    static async unblockReview(uid, placeId, feedId, reviewId) {
+        let result;
+
+        const reviewRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const reviewDoc = await transaction.get(reviewRef);
+            if (!reviewDoc.exists) throw 'Review document not exist!';
+
+            let { reporters } = reviewDoc.data();
+
+            // 하위호환
+            // if (!reporters) reporters = [];
+
+            const idx = reporters.indexOf(uid);
+            if (idx !== -1) {
+                reporters.splice(idx, 1);
+            }
+
+            transaction.update(reviewRef, { reporters });
+        }).then(async () => {
+            result = true;
+
+            // remove REPORTS (review)
+            const id = reviewId;
+            const reportRef = Firebase.firestore.collection("REPORTS").doc(id);
+            await reportRef.delete();
+        }).catch((error) => {
+            console.log('jdub', 'Firebase.unblockPost', error);
+            result = false;
+        });
+
+        return result;
+    }
+
+    // ToDo
+    // static async unblockReply()
 
     static async updateReviewChecked(uid, placeId, feedId, checked) {
         let result;
@@ -1190,7 +1340,8 @@ export default class Firebase {
             name,
             place,
             picture,
-            // reply: null
+            // reply: null,
+            reporters: []
         };
 
         // update - averageRating, reviewCount, reviews, stats

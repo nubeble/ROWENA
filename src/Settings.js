@@ -13,8 +13,6 @@ import Firebase from "./Firebase";
 import PreloadImage from './PreloadImage';
 import * as WebBrowser from 'expo-web-browser';
 import Dialog from "react-native-dialog";
-import Intro from './Intro';
-import ChatMain from './ChatMain';
 import NavigationService from './NavigationService';
 
 type InjectedProps = {
@@ -37,6 +35,19 @@ export default class Settings extends React.Component<InjectedProps> {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        // get Intro instance
+        const mainStackNavigator = NavigationService.getCurrentRoute();
+        const root = mainStackNavigator.routes.find(item => item.routeName === 'root');
+        // console.log('root', root);
+        const main = root.routes.find(item => item.routeName === 'main');
+        console.log('main', main);
+        const home = main.routes.find(item => item.routeName === 'home');
+        const chat = main.routes.find(item => item.routeName === 'chat');
+        const intro = home.routes.find(item => item.routeName === 'intro');
+        const introHome = intro.routes.find(item => item.routeName === 'introHome');
+
+        this.Intro = introHome;
     }
 
     @autobind
@@ -249,8 +260,9 @@ export default class Settings extends React.Component<InjectedProps> {
                             this.props.profileStore.final();
 
                             // init & unsubscribe
-                            Intro.final();
-                            ChatMain.final();
+                            this.Intro.params.final();
+                            // this.ChatMain.final();
+                            Firebase.stopChatRoom(profile.uid);
 
                             // remove push token
                             // await unregisterExpoPushToken(profile.uid);
@@ -396,9 +408,10 @@ export default class Settings extends React.Component<InjectedProps> {
 
 
         // init & unsubscribe
-        Intro.final();
+        this.Intro.params.final();
 
         // reload
+        /*
         const root = NavigationService.getCurrentRoute();
         // console.log('root: ', root);
 
@@ -408,6 +421,8 @@ export default class Settings extends React.Component<InjectedProps> {
             console.log('reload posts in Intro');
             intro.routes[0].params.reload();
         }
+        */
+        this.Intro.params.reload();
     }
 
     openDialog(type, title, message, callback) {

@@ -882,6 +882,10 @@ export default class Post extends React.Component<InjectedProps> {
             case 5: markerImage = PreloadImage.emoji5; break;
         }
 
+        let color = '#FFFFFF';
+        if (post.gender === 'Woman') color = 'rgba(212, 112, 174, 0.3)';
+        else if (post.gender === 'Man') color = 'rgba(76, 169, 174, 0.3)';
+
         return (
             <View>
                 {/* profile pictures */}
@@ -917,195 +921,76 @@ export default class Post extends React.Component<InjectedProps> {
                     </View>
 
                     {/* name */}
-                    {
-                        Platform.OS === 'android' ?
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-                                <Text style={styles.name}>{post.name}</Text>
-                                {
-                                    this.renderPostReportButton()
-                                }
-                            </View>
-                            :
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-                                {/*
-                                <Text style={styles.name}>{post.name}</Text>
-                                <Text style={styles.age}>{age}</Text>
-                                <View style={{ width: 28, height: 28, alignItems: "center", justifyContent: "center" }}>
-                                    {
-                                        post.gender === 'Woman' &&
-                                        <MaterialCommunityIcons name='gender-female' color="rgb(240, 98, 146)" size={23} />
-                                    }
-                                    {
-                                        post.gender === 'Man' &&
-                                        <MaterialCommunityIcons name='gender-male' color="rgb(100, 181, 246)" size={20} style={{ marginTop: 4 }} />
-                                    }
-                                    {
-                                        post.gender === 'Other' &&
-                                        <MaterialCommunityIcons name='gender-male-female' color={Theme.color.subtitle} size={22} />
-                                    }
-                                </View>
-                                */}
-                                <Text style={styles.name}>{post.name}</Text>
-                                <Text style={styles.age}>{age}</Text>
-                                {
-                                    this.renderPostReportButton()
-                                }
-                            </View>
-                    }
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+                        <Text style={styles.name}>{post.name}</Text>
+                        <Text style={styles.age}>{age}</Text>
+                        {
+                            this.renderPostReportButton()
+                        }
+                    </View>
 
                     {/* profile */}
                     {
-                        // ToDo: ios review
                         Platform.OS === 'android' &&
-                        <View style={{ marginVertical: 4, paddingVertical: 4 }}>
-                            {/* 1 row */}
-                            <View style={{
-                                width: '100%',
-                                height: bodyInfoItemHeight,
-                                flexDirection: 'row',
-                                alignItems: 'center', justifyContent: 'center'
-                            }}>
-                                <View style={{
-                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                }}>
-                                    <Image
-                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                        source={PreloadImage.birth}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                                }}>
-                                    <Text style={styles.bodyInfoTitle}>{ageText}</Text>
-                                </View>
-                                <View style={{
-                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                }}>
-                                    {
-                                        post.gender === 'Woman' &&
-                                        <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
-                                    }
-                                    {
-                                        post.gender === 'Man' &&
-                                        <MaterialCommunityIcons name='gender-male' style={{ marginTop: 1, marginRight: -1 }} color={Theme.color.subtitle} size={19} />
-                                    }
-                                    {
-                                        post.gender === 'Other' &&
-                                        <MaterialCommunityIcons name='gender-male-female' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={21} />
-                                    }
-                                </View>
-                                <View style={{
-                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                                }}>
-                                    <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
-                                </View>
-                            </View>
-
-                            {/* 2 row */}
-                            <View style={{
-                                width: '100%',
-                                height: bodyInfoItemHeight,
-                                flexDirection: 'row',
-                                alignItems: 'center', justifyContent: 'center'
-                            }}>
-                                <View style={{
-                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                }}>
-                                    <Image
-                                        style={{ width: 16, height: 16, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                        source={PreloadImage.ruler}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                                }}>
-                                    {
-                                        post.height === 0 ?
-                                            <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>
-                                            :
-                                            <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
-                                    }
-                                </View>
-                                <View style={{
-                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                }}>
-                                    <MaterialCommunityIcons name='scale' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={16} />
-                                </View>
-                                <View style={{
-                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                                }}>
-                                    {
-                                        post.weight === 0 ?
-                                            <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>
-                                            :
-                                            <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
-                                    }
-                                </View>
-                            </View>
-
-                            {/* 3 row */}
+                        <View style={{ marginTop: 8, marginBottom: 4, flexDirection: 'row' }}>
                             {
-                                <View style={{
-                                    width: '100%',
-                                    height: bodyInfoItemHeight,
-                                    flexDirection: 'row',
-                                    alignItems: 'center', justifyContent: 'center'
-                                }}>
-                                    <View style={{
-                                        width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                    }}>
-                                        <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
+                                post.height !== 0 &&
+                                <View style={[styles.profileItem, { backgroundColor: color }]}>
+                                    <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+                                        <Image
+                                            style={{ width: 16, height: 16, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.ruler}
+                                        />
                                     </View>
-                                    <View style={{
-                                        width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                                    }}>
-                                        {
-                                            this.renderBodyType(post)
-                                        }
-                                    </View>
-                                    <View style={{
-                                        width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                    }}>
-                                        {
-                                            post.gender === 'Woman' &&
-                                            <Image
-                                                style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                                source={PreloadImage.bra}
-                                            />
-                                        }
-                                        {
-                                            post.gender === 'Man' &&
-                                            <Image
-                                                style={{ marginRight: 1.5, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                                source={PreloadImage.muscle}
-                                            />
-                                        }
-                                        {
-                                            post.gender === 'Other' && post.bust &&
-                                            <Image
-                                                style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                                source={PreloadImage.bra}
-                                            />
-                                        }
-                                        {
-                                            /*
-                                            post.gender === 'Other' && post.muscle &&
-                                            <Image
-                                                style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                                source={PreloadImage.muscle}
-                                            />
-                                            */
-                                        }
-                                    </View>
-                                    <View style={{
-                                        width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                                    }}>
-                                        {
-                                            this.renderBoobs(post)
-                                        }
-                                    </View>
+                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
                                 </View>
                             }
+                            {
+                                post.weight !== 0 &&
+                                <View style={[styles.profileItem, { backgroundColor: color }]}>
+                                    <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+                                        <MaterialCommunityIcons name='scale' color={Theme.color.subtitle} size={16} />
+                                    </View>
+                                    <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
+                                </View>
+                            }
+                            <View style={[styles.profileItem, { backgroundColor: color }]}>
+                                <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+                                    <Ionicons name='ios-body' color={Theme.color.subtitle} size={18} />
+                                </View>
+                                {
+                                    this.renderBodyType(post)
+                                }
+                            </View>
+                            <View style={[styles.profileItem, { backgroundColor: color }]}>
+                                {
+                                    post.gender === 'Woman' &&
+                                    <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+                                        <Image
+                                            style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.bra}
+                                        />
+                                    </View>
+                                }
+                                {
+                                    post.gender === 'Man' &&
+                                    <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+                                        <Image
+                                            style={{ width: 13, height: 13, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.muscle}
+                                        />
+                                    </View>
+                                }
+                                {
+                                    post.gender === 'Other' &&
+                                    <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+                                        <FontAwesome name='transgender' color={Theme.color.subtitle} size={18} />
+                                    </View>
+                                }
+                                {
+                                    this.renderBoobs(post)
+                                }
+                            </View>
                         </View>
                     }
 
@@ -1114,7 +999,7 @@ export default class Post extends React.Component<InjectedProps> {
                         <Text style={styles.distance}>{distance}</Text>
                         {
                             showSettingsButton &&
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
+                            <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 6 }}>
                                 <TouchableOpacity
                                     style={{
                                         width: 20, height: 20, justifyContent: 'center', alignItems: 'center'
@@ -1311,17 +1196,18 @@ export default class Post extends React.Component<InjectedProps> {
             } else {
                 return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
             }
-        }
-
-        if (post.gender === 'Man') {
+        } else if (post.gender === 'Man') {
             if (post.muscle === 'Prefer Not to Say' || post.muscle === 'Rather not say') {
                 // return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
                 return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
                 return <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>;
             }
+        } else if (post.gender === 'Other') {
+            return <Text style={styles.ratherNotSay}>{'Transgender'}</Text>;
         }
 
+        /*
         if (post.gender === 'Other' && post.bust) {
             if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') {
                 // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
@@ -1330,6 +1216,7 @@ export default class Post extends React.Component<InjectedProps> {
                 return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
             }
         }
+        */
 
         return null;
 
@@ -1604,7 +1491,7 @@ export default class Post extends React.Component<InjectedProps> {
         });
     }
 
-    renderUserReportButton() {
+    renderReviewReportButton(review) {
         return (
             <TouchableOpacity
                 style={{
@@ -1614,7 +1501,7 @@ export default class Post extends React.Component<InjectedProps> {
                     justifyContent: "center", alignItems: "center"
                 }}
                 onPress={() => {
-                    this.reportUser();
+                    this.reportReview(review);
                 }}
             >
                 <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
@@ -1622,42 +1509,28 @@ export default class Post extends React.Component<InjectedProps> {
         );
     }
 
-    reportUser() {
+    reportReview(review) {
         const post = this.state.post;
         if (!post) return null;
 
-        this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.name + '?', async () => {
-            // report post
-
-            // check the owner of the post
-            // if (Firebase.user().uid === post.uid) {
-            if (this.state.isOwner) {
-                this.refs["toast"].show('Sorry, this is your post.', 500);
-                return;
-            }
-
-            // check existence
-            if (!this.feed) {
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
-                return;
-            }
+        this.openDialog('Report Review', 'Are you sure you want to report ' + review.name + '?', async () => {
+            // report review
 
             // 1. update database (reporters)
             const uid = Firebase.user().uid;
             const placeId = post.placeId;
             const feedId = post.id;
-            // const name = post.name;
-            // const placeName = post.placeName;
-            // const uri = post.pictures.one.uri;
+            const reviewId = review.id;
 
-            const result = await Firebase.reportPost(uid, placeId, feedId);
+            const result = await Firebase.reportReview(uid, placeId, feedId, reviewId);
             if (!result) {
-                // the post is removed
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                // the review is removed
+                this.refs["toast"].show('The review has been removed by its owner.', 500);
                 return;
             }
 
             // 2. update state post
+            /*
             let _post = post;
             if (!_post.reporters) {
                 let reporters = [];
@@ -1671,25 +1544,56 @@ export default class Post extends React.Component<InjectedProps> {
             // 3. update feedStore
             const { feedStore } = this.props;
             feedStore.updateFeed(_post);
+            */
+
+            // reload review
+            this.reloadReviews();
 
             // 4. go back
-            this.refs["toast"].show('Thanks for your feedback.', 500, () => {
-                if (this.closed) return;
-
-                if (this._showNotification) {
-                    this.hideNotification();
-                }
-
-                const params = this.props.navigation.state.params;
-                if (params) {
-                    const initFromPost = params.initFromPost;
-                    if (initFromPost) initFromPost(_post);
-                }
-
-                this.props.navigation.dispatch(NavigationActions.back());
-            });
+            this.refs["toast"].show('Thanks for your feedback.', 500);
         });
     }
+
+    /*
+    renderReplyReportButton(review) {
+        return (
+            <TouchableOpacity
+                style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 6,
+                    justifyContent: "center", alignItems: "center"
+                }}
+                onPress={() => {
+                    this.reportReply(review);
+                }}
+            >
+                <Ionicons name='md-alert' color={Theme.color.text5} size={14} />
+            </TouchableOpacity>
+        );
+    }
+
+    reportReply(review) { // report Owner
+        const post = this.state.post;
+        if (!post) return null;
+
+        this.openDialog('Report Reply', 'Are you sure you want to report ' + post.name + '?', async () => {
+            // report reply
+
+            // 1. update database (reporters)
+            const uid = Firebase.user().uid;
+            const placeId = post.placeId;
+            const feedId = post.id;
+
+            const reviewId = review.id;
+            const replyId = review.reply.id;
+
+            await Firebase.reportReply(uid, placeId, feedId, reviewId, replyId);
+
+            this.refs["toast"].show('Thanks for your feedback.', 500);
+        });
+    }
+    */
 
     renderReview(post) {
         const averageRating = post.averageRating;
@@ -2123,7 +2027,6 @@ export default class Post extends React.Component<InjectedProps> {
         const ranking = this.getRanking(chart); // total post >= 10 & average rating >= 4.0 & 1 <= ranking <= 10
         if (ranking !== 0) {
             const type = 100;
-            // ToDo: ios review
             const text = null;
             if (Platform.OS === "android") {
                 text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
@@ -2144,9 +2047,7 @@ export default class Post extends React.Component<InjectedProps> {
             if (rn === 0) {
                 // pick like
                 const type = 200;
-                // const text = likeCount + " people called dibs on this girl";
-                // ToDo: ios review
-                const text = Platform.OS === 'android' ? likeCount + " people likes this girl" : likeCount + " people likes this post";
+                const text = Platform.OS === 'android' ? likeCount + " people like this girl" : likeCount + " people like this post";
                 const result = {
                     type, text
                 };
@@ -2155,8 +2056,6 @@ export default class Post extends React.Component<InjectedProps> {
             } else {
                 // pick visit
                 const type = 300;
-                // const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
-                // ToDo: ios review
                 const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this girl within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
                 const result = {
                     type, text
@@ -2168,9 +2067,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (likeCount >= 10) {
             const type = 200;
-            // const text = likeCount + " people called dibs on this girl";
-            // ToDo: ios review
-            const text = Platform.OS === 'android' ? likeCount + " people likes this girl" : likeCount + " people likes this post";
+            const text = Platform.OS === 'android' ? likeCount + " people like this girl" : likeCount + " people like this post";
             const result = {
                 type, text
             };
@@ -2180,8 +2077,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (visitCountPerDay >= 10) {
             const type = 300;
-            // const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
-            // ToDo: ios review
             const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this girl within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
             const result = {
                 type, text
@@ -2191,8 +2086,6 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         const type = 400;
-        // const text = visitCount + " people viewed this girl " + totalVisitCount + " times";
-        // ToDo: ios review
         const text = Platform.OS === 'android' ? visitCount + " people viewed this girl " + totalVisitCount + " times" : visitCount + " people viewed this post " + totalVisitCount + " times";
         const result = {
             type, text
@@ -2322,7 +2215,7 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     );
                 }
-            } else {
+            } else { // ios
                 for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                     reviewArray.push(
                         <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
@@ -2386,221 +2279,19 @@ export default class Post extends React.Component<InjectedProps> {
 
             const review = reviews[i];
 
-            const _profile = review.profile;
-            const _review = review.review;
-            const ref = _review.id;
-            const index = i;
-            const reply = _review.reply;
-
-            const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
-            let isMyReply = false;
-            if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
-
-            let uid, picture, name, place, placeColor, placeFont;
-
-            if (_profile) {
-                uid = _profile.uid;
-                picture = _profile.picture.uri;
-                name = _profile.name;
-
-                place = _profile.place ? _profile.place : 'Not specified';
-                placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
-                placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
-            } else { // user removed
-                uid = _review.uid;
-                picture = _review.picture;
-                name = _review.name;
-
-                place = _review.place ? _review.place : 'Not specified';
-                placeColor = _review.place ? Theme.color.text2 : Theme.color.text4;
-                placeFont = _review.place ? "Roboto-Regular" : "Roboto-Italic";
+            const reporters = review.review.reporters;
+            if (!reporters || reporters.length === 0 || reporters.indexOf(Firebase.user().uid) === -1) {
+                // show original
+                reviewArray.push(
+                    this.renderReviewItemOrigin(review, i)
+                );
+            } else {
+                // show blocked image
+                reviewArray.push(
+                    this.renderReviewItemBlocked(review, i)
+                );
             }
-
-            const avatarName = Util.getAvatarName(name);
-            const avatarColor = Util.getAvatarColor(uid);
-            let nameFontSize = 20;
-            let nameLineHeight = 24;
-
-            if (avatarName.length === 1) {
-                nameFontSize = 22;
-                nameLineHeight = 26;
-            } else if (avatarName.length === 2) {
-                nameFontSize = 20;
-                nameLineHeight = 24;
-            } else if (avatarName.length === 3) {
-                nameFontSize = 18;
-                nameLineHeight = 22;
-            }
-
-
-            reviewArray.push(
-                <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
-                    {
-                        Platform.OS === 'android' ?
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: Theme.spacing.xSmall }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                        <AirbnbRating
-                                            count={5}
-                                            readOnly={true}
-                                            showRating={false}
-                                            defaultRating={_review.rating}
-                                            size={12}
-                                            margin={1}
-                                        />
-                                    </View>
-                                    <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
-                                </View>
-
-                                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                            </View>
-                            :
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: Theme.spacing.xSmall }}>
-                                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                            </View>
-                    }
-
-                    <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                        <ReadMore
-                            numberOfLines={2}
-                            onPress={() => {
-                                // console.log('jdub', 'onPress');
-                                if (!this.originReviewList) this.originReviewList = [];
-
-                                if (this.originReviewList[index]) { // means translated
-                                    this.setOriginReview(index);
-                                } else {
-                                    this.translateReview(index);
-                                }
-                            }}
-                        >
-                            <Text style={styles.reviewText}>{_review.comment}</Text>
-                        </ReadMore>
-                    </View>
-
-                    <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny, flexDirection: 'row', alignItems: 'center' }}>
-                        {
-                            picture ?
-                                <SmartImage
-                                    style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
-                                    showSpinner={false}
-                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                    uri={picture}
-                                />
-                                :
-                                <View
-                                    style={{
-                                        width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
-                                        backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
-                                    }}
-                                >
-                                    <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
-                                        {avatarName}
-                                    </Text>
-                                </View>
-                        }
-                        <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
-                                    {name}
-                                </Text>
-                                {
-                                    this.renderUserReportButton(_review)
-                                }
-                            </View>
-
-                            <Text style={{
-                                marginTop: 4,
-                                color: placeColor, fontSize: 13, fontFamily: placeFont
-                            }}>
-                                {place}
-                            </Text>
-                        </View>
-                    </View>
-                    {
-                        isMyReview && !reply &&
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity
-                                style={{
-                                    // alignSelf: 'baseline'
-                                    width: 24, height: 24, justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => this.removeReview(index)}
-                            >
-                                <MaterialIcons name='close' color={'silver'} size={20} />
-                            </TouchableOpacity>
-                        </View>
-                    }
-
-                    {
-                        // comment, id, timestamp, uid
-                        reply &&
-                        <View style={{
-                            marginTop: Theme.spacing.xSmall,
-                            paddingTop: Theme.spacing.tiny,
-                            paddingBottom: Theme.spacing.tiny,
-                            paddingLeft: Theme.spacing.tiny,
-                            paddingRight: Theme.spacing.tiny,
-                            backgroundColor: Theme.color.highlight, borderRadius: 2
-                        }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.xSmall }}>
-                                <Text style={styles.replyOwner}>Owner Response</Text>
-                                <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
-                            </View>
-
-                            <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                                <ReadMore
-                                    numberOfLines={2}
-                                    onPress={() => {
-                                        if (!this.originReplyList) this.originReplyList = [];
-
-                                        if (this.originReplyList[index]) { // means translated
-                                            this.setOriginReply(index);
-                                        } else {
-                                            this.translateReply(index);
-                                        }
-                                    }}
-                                >
-                                    <Text style={styles.replyComment}>{reply.comment}</Text>
-                                </ReadMore>
-                            </View>
-
-                            {
-                                isMyReply &&
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <TouchableOpacity
-                                        style={{
-                                            // alignSelf: 'baseline'
-                                            width: 24, height: 24, justifyContent: "center", alignItems: "center"
-                                        }}
-                                        onPress={() => this.removeReply(index)}
-                                    >
-                                        <MaterialIcons name='close' color={'silver'} size={20} />
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                        </View>
-                    }
-
-                    {
-                        this.state.isOwner && !reply &&
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity
-                                style={{
-                                    // alignSelf: 'baseline'
-                                    width: 24, height: 24, justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => this.openKeyboard(ref, index)}
-                            >
-                                <MaterialIcons name='reply' color={'silver'} size={20} />
-                            </TouchableOpacity>
-                        </View>
-                    }
-
-                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: 10, marginBottom: Theme.spacing.tiny }} />
-                </View>
-            );
-        } // end of for
+        }
 
         const reviewCount = this.state.post.reviewCount;
 
@@ -2658,6 +2349,275 @@ export default class Post extends React.Component<InjectedProps> {
 
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
             </View>
+        );
+    }
+
+    renderReviewItemOrigin(review, i) {
+        const _profile = review.profile;
+        const _review = review.review;
+        const ref = _review.id;
+        const index = i;
+        const reply = _review.reply;
+
+        const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
+        let isMyReply = false;
+        if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
+
+        let uid, picture, name, place, placeColor, placeFont;
+
+        if (_profile) {
+            uid = _profile.uid;
+            picture = _profile.picture.uri;
+            name = _profile.name;
+
+            place = _profile.place ? _profile.place : 'Not specified';
+            placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
+            placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
+        } else { // user removed
+            uid = _review.uid;
+            picture = _review.picture;
+            name = _review.name;
+
+            place = _review.place ? _review.place : 'Not specified';
+            placeColor = _review.place ? Theme.color.text2 : Theme.color.text4;
+            placeFont = _review.place ? "Roboto-Regular" : "Roboto-Italic";
+        }
+
+        const avatarName = Util.getAvatarName(name);
+        const avatarColor = Util.getAvatarColor(uid);
+        let nameFontSize = 20;
+        let nameLineHeight = 24;
+
+        if (avatarName.length === 1) {
+            nameFontSize = 22;
+            nameLineHeight = 26;
+        } else if (avatarName.length === 2) {
+            nameFontSize = 20;
+            nameLineHeight = 24;
+        } else if (avatarName.length === 3) {
+            nameFontSize = 18;
+            nameLineHeight = 22;
+        }
+
+        return (
+            <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
+                {
+                    Platform.OS === 'android' ?
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: Theme.spacing.xSmall }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                    <AirbnbRating
+                                        count={5}
+                                        readOnly={true}
+                                        showRating={false}
+                                        defaultRating={_review.rating}
+                                        size={12}
+                                        margin={1}
+                                    />
+                                </View>
+                                <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+                            </View>
+
+                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                        </View>
+                        : // ios
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: Theme.spacing.xSmall }}>
+                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                        </View>
+                }
+
+                <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                    <ReadMore
+                        numberOfLines={2}
+                        onPress={() => {
+                            // console.log('jdub', 'onPress');
+                            if (!this.originReviewList) this.originReviewList = [];
+
+                            if (this.originReviewList[index]) { // means translated
+                                this.setOriginReview(index);
+                            } else {
+                                this.translateReview(index);
+                            }
+                        }}
+                    >
+                        <Text style={styles.reviewText}>{_review.comment}</Text>
+                    </ReadMore>
+                </View>
+
+                <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny, flexDirection: 'row', alignItems: 'center' }}>
+                    {
+                        picture ?
+                            <SmartImage
+                                style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                                showSpinner={false}
+                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={picture}
+                            />
+                            :
+                            <View
+                                style={{
+                                    width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
+                                    backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                }}
+                            >
+                                <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
+                                    {avatarName}
+                                </Text>
+                            </View>
+                    }
+                    <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
+                                {name}
+                            </Text>
+                            {
+                                !isMyReview &&
+                                this.renderReviewReportButton(_review)
+                            }
+                        </View>
+
+                        <Text style={{
+                            marginTop: 4,
+                            color: placeColor, fontSize: 13, fontFamily: placeFont
+                        }}>
+                            {place}
+                        </Text>
+                    </View>
+                </View>
+                {
+                    isMyReview && !reply &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity
+                            style={{
+                                // alignSelf: 'baseline'
+                                width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => this.removeReview(index)}
+                        >
+                            <MaterialIcons name='close' color={'silver'} size={20} />
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                {
+                    // comment, id, timestamp, uid
+                    reply &&
+                    <View style={{
+                        marginTop: Theme.spacing.xSmall,
+                        paddingTop: Theme.spacing.tiny,
+                        paddingBottom: Theme.spacing.tiny,
+                        paddingLeft: Theme.spacing.tiny,
+                        paddingRight: Theme.spacing.tiny,
+                        backgroundColor: Theme.color.highlight, borderRadius: 2
+                    }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.xSmall }}>
+                            <Text style={styles.replyOwner}>Owner Response</Text>
+                            <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
+                        </View>
+
+                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                            <ReadMore
+                                numberOfLines={2}
+                                onPress={() => {
+                                    if (!this.originReplyList) this.originReplyList = [];
+
+                                    if (this.originReplyList[index]) { // means translated
+                                        this.setOriginReply(index);
+                                    } else {
+                                        this.translateReply(index);
+                                    }
+                                }}
+                            >
+                                <Text style={styles.replyComment}>{reply.comment}</Text>
+                            </ReadMore>
+                        </View>
+
+                        {
+                            isMyReply &&
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <TouchableOpacity
+                                    style={{
+                                        // alignSelf: 'baseline'
+                                        width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                                    }}
+                                    onPress={() => this.removeReply(index)}
+                                >
+                                    <MaterialIcons name='close' color={'silver'} size={20} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    </View>
+                }
+
+                {
+                    this.state.isOwner && !reply &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity
+                            style={{
+                                // alignSelf: 'baseline'
+                                width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => this.openKeyboard(ref, index)}
+                        >
+                            <MaterialIcons name='reply' color={'silver'} size={20} />
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: 10, marginBottom: Theme.spacing.tiny }} />
+            </View>
+        );
+    }
+
+    renderReviewItemBlocked(review, i) {
+        const _review = review.review;
+
+        return (
+            <TouchableOpacity activeOpacity={0.5}
+                onPress={() => {
+                    this.openDialog('Unblock Review', 'Are you sure you want to unblock ' + _review.name + '?', async () => {
+                        const uid = Firebase.user().uid;
+                        const post = this.state.post;
+                        const placeId = post.placeId;
+                        const feedId = post.id;
+                        const reviewId = _review.id;
+
+                        const result = await Firebase.unblockReview(uid, placeId, feedId, reviewId);
+                        if (!result) {
+                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            return;
+                        }
+
+                        this.reloadReviews();
+                    });
+                }}
+            >
+                {
+                    this.renderReviewItemOrigin(review, i)
+                }
+
+                <View style={[StyleSheet.absoluteFill, { marginBottom: Theme.spacing.tiny + 9 }, {
+                    borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                }]}>
+                    <AntDesign style={{ marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 14,
+                        fontFamily: "Roboto-Light",
+                        paddingHorizontal: 10,
+                        textAlign: 'center',
+                        marginBottom: 8
+                    }}>{'Thanks for letting us know.'}</Text>
+                    <Text style={{
+                        color: Theme.color.text3,
+                        fontSize: 14,
+                        fontFamily: "Roboto-Light",
+                        paddingHorizontal: 10,
+                        textAlign: 'center'
+                    }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
+                </View>
+            </TouchableOpacity>
         );
     }
 
@@ -3326,15 +3286,22 @@ const styles = StyleSheet.create({
         // paddingBottom: Theme.spacing.small
     },
     slide: {
-        // flex: 1,
+        /*
         width: imageWidth,
         height: imageHeight,
+        */
+        width: imageWidth,
+        height: imageWidth,
         justifyContent: 'center',
         alignItems: 'center'
     },
     item: {
+        /*
         width: imageWidth,
         height: imageHeight
+        */
+        width: imageWidth,
+        height: imageWidth
     },
     infoContainer: {
         flex: 1,
@@ -3371,6 +3338,17 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         marginRight: 2
     },
+    profileItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 24,
+        borderRadius: 12,
+        // paddingHorizontal: 10,
+        paddingLeft: 5,
+        paddingRight: 7,
+        marginHorizontal: 4,
+        // backgroundColor: 'rgba(0, 51, 102, 0.8)'
+    },
     /*
     size: {
         color: "white",
@@ -3380,6 +3358,7 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.xSmall
     },
     */
+    /*
     bodyInfoTitle: {
         color: Theme.color.title,
         fontSize: 16,
@@ -3387,6 +3366,15 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Regular",
         paddingTop: 3,
         paddingLeft: Theme.spacing.xSmall,
+    },
+    */
+    bodyInfoTitle: {
+        color: Theme.color.title,
+        fontSize: 16,
+        lineHeight: 20,
+        fontFamily: "Roboto-Regular",
+        // paddingTop: 3,
+        // paddingLeft: Theme.spacing.xSmall,
     },
     /*
     preferNotToSay: {

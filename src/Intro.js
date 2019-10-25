@@ -152,7 +152,8 @@ export default class Intro extends React.Component<InjectedProps> {
     }
     */
 
-    static final() {
+    // static final() {
+    final() {
         console.log('jdub', 'Intro.final');
 
         Intro.places = [];
@@ -319,6 +320,9 @@ export default class Intro extends React.Component<InjectedProps> {
                 await this.getRecentFeeds();
                 */
                 await this.getPosts();
+            },
+            final: () => {
+                this.final();
             }
         });
 
@@ -818,6 +822,9 @@ export default class Intro extends React.Component<InjectedProps> {
 
             !this.closed && this.setState({ popularFeeds });
             Intro.popularFeeds = popularFeeds;
+
+            // subscribe
+            this.subscribeToPopularFeeds(popularFeeds);
         }
 
         if (Intro.recentFeeds.length === 0) {
@@ -839,10 +846,13 @@ export default class Intro extends React.Component<InjectedProps> {
 
             !this.closed && this.setState({ recentFeeds });
             Intro.recentFeeds = recentFeeds;
+
+            // subscribe
+            this.subscribeToRecentFeeds(recentFeeds);
         }
 
         //// subscribe ////
-
+        /*
         for (let i = 0; i < popularFeeds.length; i++) {
             const feed = popularFeeds[i];
 
@@ -897,6 +907,119 @@ export default class Intro extends React.Component<InjectedProps> {
             // --
         }
 
+        for (let i = 0; i < recentFeeds.length; i++) {
+            const feed = recentFeeds[i];
+
+            // subscribe post
+            // --
+            if (!Intro.feedList.has(feed.id)) {
+                // this will be updated in subscribe
+                Intro.feedList.set(feed.id, null);
+
+                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                    if (newFeed === null) return; // error
+
+                    if (newFeed === undefined) {
+                        // update Intro.feedList
+                        Intro.feedList.delete(feed.id);
+                        return;
+                    }
+
+                    // update Intro.feedList
+                    Intro.feedList.set(feed.id, newFeed);
+
+                    this.updateFeed(newFeed);
+                });
+
+                Intro.recentFeedsUnsubscribes.push(fi);
+            }
+            // --
+
+            // subscribe feed count
+            // --
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                // this will be updated in subscribe
+                Intro.feedCountList.set(feed.placeId, -1);
+
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
+                    if (newPlace === undefined) {
+                        // update Intro.feedCountList
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+
+                    this.updatePlace(feed.placeId, newPlace);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        }
+        */
+    }
+
+    subscribeToPopularFeeds(popularFeeds) {
+        for (let i = 0; i < popularFeeds.length; i++) {
+            const feed = popularFeeds[i];
+
+            // subscribe post
+            // --
+            if (!Intro.feedList.has(feed.id)) {
+                // this will be updated in subscribe
+                Intro.feedList.set(feed.id, null);
+
+                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                    if (newFeed === null) return; // error
+
+                    if (newFeed === undefined) {
+                        // update Intro.feedList
+                        Intro.feedList.delete(feed.id);
+                        return;
+                    }
+
+                    // update Intro.feedList
+                    Intro.feedList.set(feed.id, newFeed);
+
+                    this.updateFeed(newFeed);
+                });
+
+                Intro.popularFeedsUnsubscribes.push(fi);
+            }
+            // --
+
+            // subscribe feed count
+            // --
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                // this will be updated in subscribe
+                Intro.feedCountList.set(feed.placeId, -1);
+
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
+                    if (newPlace === undefined) {
+                        // update Intro.feedCountList
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+
+                    this.updatePlace(feed.placeId, newPlace);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        }
+    }
+
+    subscribeToRecentFeeds(recentFeeds) {
         for (let i = 0; i < recentFeeds.length; i++) {
             const feed = recentFeeds[i];
 
@@ -1894,7 +2017,6 @@ export default class Intro extends React.Component<InjectedProps> {
                         borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
                     }]}>
-                        {/* // add text */}
                         <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
                         <Text style={{
                             color: Theme.color.text1,

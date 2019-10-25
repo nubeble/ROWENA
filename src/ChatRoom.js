@@ -474,7 +474,7 @@ export default class Post extends React.Component<InjectedProps> {
                     {/* report button */}
                     {
                         item.users[1].uid === item.owner &&
-                        this.renderReportButton()
+                        this.renderPostReportButton()
                     }
 
                     {/* leave button */}
@@ -938,7 +938,7 @@ export default class Post extends React.Component<InjectedProps> {
         });
     }
 
-    renderReportButton() {
+    renderPostReportButton() {
         return (
             <View style={{ height: avatarHeight, justifyContent: 'center', alignItems: 'center' }}>
 

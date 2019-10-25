@@ -84,10 +84,12 @@ const genderItems = [
         label: 'Woman',
         value: 'Woman'
     },
+    /*
     {
         label: 'Other',
         value: 'Other'
     }
+    */
 ];
 
 const bodyTypeItems = [
@@ -2440,7 +2442,8 @@ export default class AdvertisementMain extends React.Component {
 
         const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: Platform.OS === 'android' ? [4, 3] : [1, 1], // ToDo: android only! (square image in IOS)
+            // aspect: Platform.OS === 'android' ? [4, 3] : [1, 1], // ToDo: android only! (square image in IOS)
+            aspect: [1, 1],
             quality: 1.0,
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
