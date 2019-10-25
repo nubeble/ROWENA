@@ -621,11 +621,11 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                     this.renderReviewItemOrigin(post, _review, index)
                 }
 
-                <View style={[StyleSheet.absoluteFill, { marginVertical: 9 }, {
+                <View style={[StyleSheet.absoluteFill, { marginHorizontal: 16, marginVertical: 9 }, {
                     borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
                 }]}>
-                    <AntDesign style={{ marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                    <AntDesign style={{ marginBottom: 4 }} name='checkcircleo' color="#228B22" size={28} />
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 14,
