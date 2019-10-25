@@ -25,6 +25,7 @@ import PreloadImage from './PreloadImage';
 import _ from 'lodash';
 
 const DEFAULT_REVIEW_COUNT = 6;
+const MAX_REVIEW_COUNT = 12;
 
 const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
@@ -599,6 +600,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                         // reload review
                         let count = this.state.reviews.length;
                         if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                        else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
                         this.reload(count);
 
                         // move scroll top
@@ -886,6 +888,7 @@ export default class ReadAllReviewsScreen extends React.Component {
             // reload review
             let count = this.state.reviews.length;
             if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+            else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
             this.reload(count);
 
             // move scroll top
@@ -1023,6 +1026,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 // reload
                 let count = this.state.reviews.length;
                 if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
                 this.reload(count);
 
                 // move scroll top
@@ -1073,6 +1077,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     let count = this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                    else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
                     this.reload(count);
 
                     // move scroll top
@@ -1099,6 +1104,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     let count = this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                    else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
                     this.reload(count);
 
                     // move scroll top

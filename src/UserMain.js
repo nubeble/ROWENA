@@ -32,6 +32,7 @@ type InjectedProps = {
 };
 
 const DEFAULT_COMMENT_COUNT = 6;
+const MAX_COMMENT_COUNT = 12;
 
 const avatarWidth = Dimensions.get('window').height / 11;
 const profilePictureWidth = 56;
@@ -260,6 +261,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                 let count = this.state.reviews.length;
                 if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+                else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
                 this.loadReviewFromStart(count);
 
                 // move scroll top
@@ -296,6 +298,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             let count = this.state.reviews.length;
             if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+            else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
             this.loadReviewFromStart(count);
 
             // move scroll top
@@ -593,6 +596,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                     onPress={() => {
                                                         let count = this.state.reviews.length;
                                                         if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+                                                        else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
                                                         this.loadReviewFromStart(count);
 
                                                         // this.setState({ showReloadCommentsButton: false });
@@ -1112,6 +1116,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             // reload comment
             let count = this.state.reviews.length;
             if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+            else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
             this.loadReviewFromStart(count);
 
             // move scroll top

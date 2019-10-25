@@ -3346,7 +3346,7 @@ const styles = StyleSheet.create({
         // paddingHorizontal: 10,
         paddingLeft: 5,
         paddingRight: 7,
-        marginHorizontal: 4,
+        marginHorizontal: 3,
         // backgroundColor: 'rgba(0, 51, 102, 0.8)'
     },
     /*
