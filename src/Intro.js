@@ -461,7 +461,16 @@ export default class Intro extends React.Component<InjectedProps> {
     async getPlaces() {
         const size = DEFAULT_PLACE_COUNT;
 
-        const snap = await Firebase.firestore.collection("places").orderBy("count", "desc").limit(size).get();
+        // const snap = await Firebase.firestore.collection("places").orderBy("count", "desc").limit(size).get();
+        let snap = null;
+        if (Vars.showMe === 'Men') {
+            snap = await Firebase.firestore.collection("places").orderBy("men", "desc").limit(size).get();
+        } else if (Vars.showMe === 'Women') {
+            snap = await Firebase.firestore.collection("places").orderBy("women", "desc").limit(size).get();
+        } else { // Everyone
+            snap = await Firebase.firestore.collection("places").orderBy("count", "desc").limit(size).get();
+        }
+
         let places = [...this.state.places];
         let index = 0;
 
