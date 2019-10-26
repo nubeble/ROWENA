@@ -219,7 +219,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const extra = {
             // cityName: this.state.searchText,
-            feedSize: this.state.feedSize
+            placeCounts: this.props.navigation.state.params.place.placeCounts
         };
 
         /*
@@ -684,10 +684,9 @@ export default class Explore extends React.Component<InjectedProps> {
             // const placeName = this.state.searchText;
             const placeName = this.state.titleText;
             const placeId = this.state.placeId;
-            const feedSize = this.state.feedSize;
+            const placeCounts = this.props.navigation.state.params.place.placeCounts;
 
-            // !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, feedSize });
-            !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, feedSize, initFromMap: (posts) => this.initFromMap(posts) });
+            !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, placeCounts, initFromMap: (posts) => this.initFromMap(posts) });
         }, Cons.buttonTimeout);
     }
 }

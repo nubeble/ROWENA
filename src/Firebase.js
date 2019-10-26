@@ -560,23 +560,30 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             // 2-1. place
             const placeDoc = await transaction.get(placeRef);
-            if (!placeDoc.exists) {
-                // new
-                transaction.set(placeRef, {
-                    count: 1, timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn,
-                    lat: extra.lat, lng: extra.lng
-                });
-            } else {
-                // update
-                let count = 0;
-                let field = placeDoc.data().count;
-                if (field) count = field; // this will never happen
+            if (!placeDoc.exists) { // new
+                if (feed.gender === 'Man') {
+                    transaction.set(placeRef, { count: 1, men: 1, women: 0, timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn, lat: extra.lat, lng: extra.lng });
+                } else if (feed.gender === 'Woman') {
+                    transaction.set(placeRef, { count: 1, men: 0, women: 1, timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn, lat: extra.lat, lng: extra.lng });
+                } else {
+                    transaction.set(placeRef, { count: 1, men: 0, women: 0, timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn, lat: extra.lat, lng: extra.lng });
+                }
+            } else { // update
+                let count = placeDoc.data().count;
                 count++;
 
-                transaction.update(placeRef, {
-                    count, timestamp: feed.timestamp,
-                    // name: feed.placeName, rn: feed.rn, lat: extra.lat, lng: extra.lng
-                });
+                let men = placeDoc.data().men;
+                let women = placeDoc.data().women;
+
+                if (feed.gender === 'Man') {
+                    men++;
+                    transaction.update(placeRef, { count, men, timestamp: feed.timestamp });
+                } else if (feed.gender === 'Woman') {
+                    women++;
+                    transaction.update(placeRef, { count, women, timestamp: feed.timestamp });
+                } else {
+                    transaction.update(placeRef, { count, timestamp: feed.timestamp });
+                }
             }
 
             // 2-2. user profile (add fields to feeds in user profile)
@@ -593,16 +600,25 @@ export default class Firebase {
         });
     }
 
-    static async updateFeed(uid, placeId, feedId, feed) {
+    static async updateFeed(uid, placeId, feedId, feed, genderChanged, prevGender) {
         await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).update(feed);
 
         // update feeds in user profile
         const picture = feed.pictures.one.uri;
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
+        // update men, women in place
+        const placeRef = Firebase.firestore.collection("places").doc(placeId);
+
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
             if (!userDoc.exists) throw 'User document not exist!';
+
+            let placeDoc = null;
+            if (genderChanged) {
+                placeDoc = await transaction.get(placeRef);
+                if (!placeDoc.exists) throw 'Place document not exist!';
+            }
 
             let { feeds } = userDoc.data();
 
@@ -617,6 +633,18 @@ export default class Firebase {
             }
 
             transaction.update(userRef, { feeds });
+
+            if (placeDoc) {
+                let { men, women } = placeDoc.data();
+
+                if (prevGender === 'Man') men--;
+                else if (prevGender === 'Woman') women--;
+
+                if (feed.gender === 'Man') men++;
+                else if (feed.gender === 'Woman') women++;
+
+                transaction.update(placeRef, { men, women });
+            }
         }).then(() => {
             // console.log('jdub', "Firebase.updateFeed, success.");
         }).catch((error) => {
@@ -631,9 +659,18 @@ export default class Firebase {
         return null;
     }
 
-    static async getFeedSize(placeId) {
+    static async getPlaceCounts(placeId) {
         const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
-        if (placeDoc.exists) return placeDoc.data().count;
+        if (placeDoc.exists) {
+            const place = placeDoc.data();
+            const value = {
+                count: place.count,
+                men: place.men,
+                women: place.women
+            }
+
+            return value;
+        }
 
         return 0;
     }
@@ -682,8 +719,13 @@ export default class Firebase {
 
             // 2. update the count first!
             let count = placeDoc.data().count;
-            // console.log('jdub', 'Firebase.removeFeed', 'current count', count);
-            transaction.update(placeRef, { count: Number(count - 1) });
+            let men = placeDoc.data().men;
+            let women = placeDoc.data().women;
+
+            if (feedDoc.data().gender === 'Man') men--;
+            else if (feedDoc.data().gender === 'Woman') women--;
+
+            transaction.update(placeRef, { count: Number(count - 1), men, women });
 
             // 3. remove feed
             transaction.delete(feedRef);

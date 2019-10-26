@@ -237,7 +237,6 @@ export default class Feed extends React.Component<FeedProps> {
                     fontFamily: "Chewy-Regular"
                 }}>
                     {
-                        // ToDo: ios review
                         Platform.OS === 'android' ? "No registered " + Util.getPostName(false) + " yet" : "No registered posts yet"
                     }
                 </Text>

@@ -357,9 +357,7 @@ export default class Post extends React.Component<InjectedProps> {
         if (!result) { // post removed
             this.refs["toast"].show('The post no longer exists.', 500);
         } else {
-            const extra = {
-                feedSize: item.feedSize
-            };
+            const extra = { placeCounts: item.placeCounts };
 
             this.props.navigation.navigate("post", { post: result, extra, from: 'ChatRoom' });
         }

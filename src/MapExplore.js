@@ -603,10 +603,8 @@ export default class MapExplore extends React.Component {
                         if (!result) {
                             this.refs["toast"].show('The post no longer exists.', 500);
                         } else {
-                            const { feedSize } = this.props.navigation.state.params;
-                            const extra = {
-                                feedSize
-                            };
+                            const { placeCounts } = this.props.navigation.state.params;
+                            const extra = { placeCounts };
 
                             this.props.navigation.navigate("post", { post: result, extra: extra, initFromPost: (result) => this.initFromPost(result) });
                         }

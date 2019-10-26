@@ -523,7 +523,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             // --
             if (!this.feedCountList.has(placeId)) {
                 // this will be updated in subscribe
-                this.feedCountList.set(placeId, -1);
+                this.feedCountList.set(placeId, null);
 
                 const ci = Firebase.subscribeToPlace(placeId, newPlace => {
                     if (newPlace === null) return; // error
@@ -533,8 +533,13 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         return;
                     }
 
-                    // update this.feedCountList
-                    this.feedCountList.set(placeId, newPlace.count);
+                    // this.feedCountList.set(placeId, newPlace.count);
+                    const value = {
+                        count: newPlace.count,
+                        men: newPlace.men,
+                        women: newPlace.women
+                    };
+                    this.feedCountList.set(placeId, value);
                 });
 
                 this.countsUnsubscribes.push(ci);
@@ -612,8 +617,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             return;
         }
 
-        const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === -1) {
+        const feedSize = this.getPlaceCounts(item.placeId);
+        if (feedSize === null) {
             this.refs["toast"].show('Please try again.', 500);
             return;
         }
@@ -624,9 +629,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             return;
         }
 
-        const extra = {
-            feedSize: feedSize
-        };
+        const extra = { placeCounts: feedSize };
 
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("reviewPost", { from: 'ReviewMain', post: post, extra: extra });
@@ -644,10 +647,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         return post; // null: the post is not subscribed yet, undefined: the post is removed
     }
 
-    getFeedSize(placeId) {
-        const count = this.feedCountList.get(placeId);
-
-        return count; // -1: the place is not subscribed yet, undefined: the place is removed
+    getPlaceCounts(placeId) {
+        return this.feedCountList.get(placeId); // -1: the place is not subscribed yet, undefined: the place is removed
     }
 
     handleRefresh = () => {

@@ -380,8 +380,8 @@ export default class App extends React.Component {
             // feed
             const post = await Firebase.getPost(room.feedId);
 
-            // feed count
-            const feedSize = await Firebase.getFeedSize(room.placeId);
+            // place count
+            const placeCounts = await Firebase.getPlaceCounts(room.placeId);
 
             // customer profile
             let customerProfile = null;
@@ -399,7 +399,7 @@ export default class App extends React.Component {
 
                 title,
                 post,
-                feedSize,
+                placeCounts,
                 customerProfile
             };
 
@@ -419,12 +419,12 @@ export default class App extends React.Component {
         */
         const post = result;
 
+        /*
         const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
         if (!placeDoc.exists) return;
-
-        const extra = {
-            feedSize: placeDoc.data().count
-        };
+        */
+        const placeCounts = await Firebase.getPlaceCounts(placeId);
+        const extra = { placeCounts };
 
         NavigationService.navigate("postPreview", { post: post, extra, from: 'Profile' });
     }

@@ -425,11 +425,16 @@ export default class Post extends React.Component<InjectedProps> {
         const totalVisitCount = this.getVisitCount(post.visits);
         const visitCountPerDay = this.getVisitCountPerDay(post.visits);
 
+        // count
+        let count = 0;
+        if (post.gender === 'Man') count = extra.placeCounts.men;
+        else if (post.gender === 'Woman') count = extra.placeCounts.women;
+        else count = extra.placeCounts.count - extra.placeCounts.men - extra.placeCounts.women;
+
         const chart = {
             // cityName: extra.cityName,
             cityName: cityName,
-            numberOfGirls: extra.feedSize,
-
+            numberOfGirls: count,
             averageRating: post.averageRating,
             reviewCount: post.reviewCount,
             reviewStats: post.reviewStats, // 5, 4, 3, 2, 1
@@ -1174,7 +1179,8 @@ export default class Post extends React.Component<InjectedProps> {
     renderBodyType(post) {
         if (post.bodyType === 'Prefer Not to Say' || post.bodyType === 'Rather not say') { // 하위호환
             // return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
-            return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
+            // return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
+            return <Text style={styles.bodyInfoTitle}>{'Fit'}</Text>;
         } else {
             return <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>;
         }
@@ -1182,21 +1188,23 @@ export default class Post extends React.Component<InjectedProps> {
 
     renderBoobs(post) {
         if (post.gender === 'Woman') {
-            if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') {
+            if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') { // 하위호환
                 // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
-                return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
+                // return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
+                return <Text style={styles.bodyInfoTitle}>{'B cup'}</Text>;
             } else {
                 return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
             }
         } else if (post.gender === 'Man') {
             if (post.muscle === 'Prefer Not to Say' || post.muscle === 'Rather not say') {
                 // return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
-                return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
+                // return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
+                return <Text style={styles.bodyInfoTitle}>{'Medium'}</Text>;
             } else {
                 return <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>;
             }
         } else if (post.gender === 'Other') {
-            return <Text style={styles.ratherNotSay}>{'Transgender'}</Text>;
+            return <Text style={styles.bodyInfoTitle}>{'Transgender'}</Text>;
         }
 
         /*
@@ -2028,11 +2036,17 @@ export default class Post extends React.Component<InjectedProps> {
         const likeCount = chart.likeCount;
 
         const ranking = this.getRanking(chart); // total post >= 10 & average rating >= 4.0 & 1 <= ranking <= 10
+
+        let gender = null;
+        if (this.state.post.gender === 'Woman') gender = 'girl';
+        else if (this.state.post.gender === 'Man') gender = 'guy';
+        else gender = 'gay';
+
         if (ranking !== 0) {
             const type = 100;
             const text = null;
             if (Platform.OS === "android") {
-                text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
+                text = "#" + ranking + " of " + numberOfGirls + " " + gender + "s" + " in " + cityName;
             } else {
                 text = "#" + ranking + " of " + numberOfGirls + " posts in " + cityName;
             }
@@ -2050,7 +2064,7 @@ export default class Post extends React.Component<InjectedProps> {
             if (rn === 0) {
                 // pick like
                 const type = 200;
-                const text = Platform.OS === 'android' ? likeCount + " people like this girl" : likeCount + " people like this post";
+                const text = Platform.OS === 'android' ? likeCount + " people like this " + gender : likeCount + " people like this post";
                 const result = {
                     type, text
                 };
@@ -2059,7 +2073,7 @@ export default class Post extends React.Component<InjectedProps> {
             } else {
                 // pick visit
                 const type = 300;
-                const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this girl within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
+                const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this " + gender + " within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
                 const result = {
                     type, text
                 };
@@ -2070,7 +2084,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (likeCount >= 10) {
             const type = 200;
-            const text = Platform.OS === 'android' ? likeCount + " people like this girl" : likeCount + " people like this post";
+            const text = Platform.OS === 'android' ? likeCount + " people like this " + gender : likeCount + " people like this post";
             const result = {
                 type, text
             };
@@ -2080,7 +2094,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (visitCountPerDay >= 10) {
             const type = 300;
-            const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this girl within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
+            const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this " + gender + " within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
             const result = {
                 type, text
             };
@@ -2089,7 +2103,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         const type = 400;
-        const text = Platform.OS === 'android' ? visitCount + " people viewed this girl " + totalVisitCount + " times" : visitCount + " people viewed this post " + totalVisitCount + " times";
+        const text = Platform.OS === 'android' ? visitCount + " people viewed this " + gender + " " + totalVisitCount + " times" : visitCount + " people viewed this post " + totalVisitCount + " times";
         const result = {
             type, text
         };
@@ -2904,7 +2918,7 @@ export default class Post extends React.Component<InjectedProps> {
 
             // count
             const { extra } = this.props.navigation.state.params;
-            const feedSize = extra.feedSize;
+            const placeCounts = extra.placeCounts;
 
             // customer profile
             let customerProfile = null;
@@ -2922,7 +2936,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 title,
                 post,
-                feedSize,
+                placeCounts,
                 customerProfile
             };
 
@@ -2985,7 +2999,7 @@ export default class Post extends React.Component<InjectedProps> {
 
             // count
             const { extra } = this.props.navigation.state.params;
-            const feedSize = extra.feedSize;
+            const placeCounts = extra.placeCounts;
 
             // customer profile
             let customerProfile = null;
@@ -3003,7 +3017,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 title,
                 post,
-                feedSize,
+                placeCount,
                 customerProfile
             };
 

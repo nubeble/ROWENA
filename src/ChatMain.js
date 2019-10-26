@@ -262,7 +262,7 @@ export default class ChatMain extends React.Component {
         if (this.feedCountList.has(placeId)) return;
 
         // this will be updated in subscribe
-        this.feedCountList.set(placeId, -1);
+        this.feedCountList.set(placeId, null);
 
         const ci = Firebase.subscribeToPlace(placeId, newPlace => {
             if (newPlace === null) return; // error
@@ -272,7 +272,12 @@ export default class ChatMain extends React.Component {
                 return;
             }
 
-            this.feedCountList.set(placeId, newPlace.count);
+            const value = {
+                count: newPlace.count,
+                men: newPlace.men,
+                women: newPlace.women
+            };
+            this.feedCountList.set(placeId, value);
         });
 
         this.countsUnsubscribes.push(ci);
@@ -304,16 +309,7 @@ export default class ChatMain extends React.Component {
         return this.feedList.get(feedId); // null: the post is not subscribed yet, undefined: the post is removed
     }
 
-    getFeedSize(placeId) {
-        /*
-        let count = 0;
-        if (this.feedCountList.has(placeId)) {
-            count = this.feedCountList.get(placeId);
-        }
-
-        return count;
-        */
-
+    getPlaceCounts(placeId) {
         return this.feedCountList.get(placeId); // -1: the place is not subscribed yet, undefined: the place is removed
     }
 
@@ -765,8 +761,8 @@ export default class ChatMain extends React.Component {
         }
 
         // count
-        const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === -1) {
+        const feedSize = this.getPlaceCounts(item.placeId);
+        if (feedSize === null) {
             this.refs["toast"].show('Please try again.', 500);
             return;
         }
@@ -832,7 +828,7 @@ export default class ChatMain extends React.Component {
             placeName: item.placeName,
             title,
             post,
-            feedSize,
+            placeCounts: feedSize,
             customerProfile
         };
 

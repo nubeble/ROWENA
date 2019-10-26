@@ -212,7 +212,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             const placeId = feed.placeId;
             const feedId = feed.feedId;
             const name = feed.name;
-            // const birthday = null;
             const placeName = feed.placeName;
             const picture = feed.picture;
 
@@ -362,7 +361,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     subscribeToPlace(placeId) {
         if (!this.feedCountList.has(placeId)) {
             // this will be updated in subscribe
-            this.feedCountList.set(placeId, -1);
+            this.feedCountList.set(placeId, null);
 
             const ci = Firebase.subscribeToPlace(placeId, newPlace => {
                 if (newPlace === null) return; // error
@@ -372,8 +371,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     return;
                 }
 
-                // update this.feedCountList
-                this.feedCountList.set(placeId, newPlace.count);
+                // this.feedCountList.set(placeId, newPlace.count);
+                const value = {
+                    count: newPlace.count,
+                    men: newPlace.men,
+                    women: newPlace.women
+                };
+                this.feedCountList.set(placeId, value);
             });
 
             this.countsUnsubscribes.push(ci);
@@ -390,8 +394,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             return;
         }
 
-        const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === -1) {
+        const feedSize = this.getPlaceCounts(item.placeId);
+        if (feedSize === null) {
             this.refs["toast"].show('Please try again.', 500);
             return;
         }
@@ -402,23 +406,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             return;
         }
 
-        const extra = {
-            feedSize
-        };
+        const extra = { placeCounts: feedSize };
 
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("savedPost", { post, extra, from: 'SavedPlace' });
     }
 
-    getFeedSize(placeId) {
-        /*
-        let count = 0;
-        if (this.feedCountList.has(placeId)) {
-            count = this.feedCountList.get(placeId);
-        }
-
-        return count;
-        */
+    getPlaceCounts(placeId) {
         return this.feedCountList.get(placeId);
     }
 
@@ -515,6 +509,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 if (post) distance = Util.getDistance(post.location, Vars.location);
                                 else distance = placeName;
 
+                                let age = null;
+                                if (item.birthday) age = Util.getAge(item.birthday);
+
                                 return (
                                     <TouchableOpacity activeOpacity={0.5}
                                         onPress={() => {
@@ -559,7 +556,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             />
 
                                             <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                                <Text style={styles.feedItemText}>{item.name}</Text>
+                                                {
+                                                    age ? <Text style={styles.feedItemText}>{item.name} {age}</Text> : <Text style={styles.feedItemText}>{item.name}</Text>
+                                                }
                                                 <Text style={styles.feedItemText}>{distance}</Text>
                                                 {
                                                     this.renderReview(item)
@@ -576,6 +575,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 const post = this.feedList.get(item.feedId);
                                 if (post) distance = Util.getDistance(post.location, Vars.location);
                                 else distance = placeName;
+
+                                let age = null;
+                                if (item.birthday) age = Util.getAge(item.birthday);
 
                                 return (
                                     <TouchableOpacity activeOpacity={0.5}
@@ -634,7 +636,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             />
 
                                             <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                                <Text style={styles.feedItemText}>{item.name}</Text>
+                                                {
+                                                    age ? <Text style={styles.feedItemText}>{item.name} {age}</Text> : <Text style={styles.feedItemText}>{item.name}</Text>
+                                                }
                                                 <Text style={styles.feedItemText}>{distance}</Text>
                                                 {
                                                     this.renderReview(item)

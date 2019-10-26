@@ -268,7 +268,6 @@ export default class WriteReviewScreen extends React.Component {
                         <View style={{ marginBottom: 10 }}>
                             <Text style={styles.label}>
                                 {
-                                    // ToDo: ios review
                                     this.getTitle()
                                 }
                             </Text>

@@ -136,10 +136,12 @@ const bodyTypeItems = [
         label: 'Thick',
         value: 'Thick'
     },
+    /*
     {
         label: 'Rather not say',
         value: 'Rather not say'
     }
+    */
 ];
 
 const braSizeItems = [
@@ -159,10 +161,12 @@ const braSizeItems = [
         label: 'D cup',
         value: 'D'
     },
+    /*
     {
         label: 'Rather not say',
         value: 'Rather not say'
     }
+    */
 ];
 
 const bicepsSizeItems = [
@@ -182,10 +186,12 @@ const bicepsSizeItems = [
         label: 'Extra Large (14.5\" - 16\")',
         value: 'XL'
     },
+    /*
     {
         label: 'Rather not say',
         value: 'Rather not say'
     }
+    */
 ];
 
 
@@ -916,7 +922,12 @@ export default class EditPost extends React.Component {
         };
         data.pictures = pictures;
 
-        await Firebase.updateFeed(post.uid, post.placeId, post.id, data);
+        // check if gender changed
+        const prevGender = post.gender;
+        let genderChanged = false;
+        if (prevGender !== gender) genderChanged = true;
+
+        await Firebase.updateFeed(post.uid, post.placeId, post.id, data, genderChanged, prevGender);
 
         await this.removeImagesFromServer();
 
