@@ -864,14 +864,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         const integer = Math.floor(averageRating);
 
-        let ageText = '';
-        const age = Util.getAge(post.birthday);
-        if (age > 1) {
-            ageText = age.toString() + ' years old';
-        } else {
-            ageText = age.toString() + ' year old';
-        }
-
         let markerImage = null;
         switch (integer) {
             case 0: markerImage = PreloadImage.emoji0; break;
@@ -923,7 +915,7 @@ export default class Post extends React.Component<InjectedProps> {
                     {/* name */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
                         <Text style={styles.name}>{post.name}</Text>
-                        <Text style={styles.age}>{age}</Text>
+                        <Text style={styles.age}>{Util.getAge(post.birthday)}</Text>
                         {
                             this.renderPostReportButton()
                         }

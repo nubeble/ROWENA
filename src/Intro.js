@@ -1955,7 +1955,8 @@ export default class Intro extends React.Component<InjectedProps> {
                     />
 
                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={styles.feedItemText}>{feed.name}</Text>
+
+                        <Text style={styles.feedItemText}>{feed.name} {Util.getAge(feed.birthday)}</Text>
                         <Text style={styles.feedItemText}>{placeName}</Text>
                         {
                             this.renderReview(feed)

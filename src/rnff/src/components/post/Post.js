@@ -145,7 +145,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         />
 
                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                            <Text style={styles.feedItemText}>{post.name}</Text>
+                            <Text style={styles.feedItemText}>{post.name} {Util.getAge(post.birthday)}</Text>
                             <Text style={styles.feedItemText}>{distance}</Text>
                             {
                                 this.renderReview(post)

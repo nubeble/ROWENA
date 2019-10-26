@@ -212,6 +212,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             const placeId = feed.placeId;
             const feedId = feed.feedId;
             const name = feed.name;
+            // const birthday = null;
             const placeName = feed.placeName;
             const picture = feed.picture;
 
@@ -220,6 +221,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                 const newFeed = {
                     name: __feed.name,
+                    birthday: __feed.birthday,
                     placeName: __feed.placeName,
                     placeId: __feed.placeId,
                     feedId: __feed.id,
@@ -234,6 +236,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             } else {
                 const newFeed = {
                     name,
+                    // birthday,
                     placeName,
                     placeId,
                     feedId,
@@ -328,6 +331,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                 const __newFeed = {
                     name: newFeed.name,
+                    birthday: newFeed.birthday,
                     placeName: newFeed.placeName,
                     // placeName: street,
                     placeId: newFeed.placeId,

@@ -144,7 +144,10 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
                         marginLeft: 40 + 16
-                    }}>Reviewed Customers
+                    }}>
+                        {
+                            Platform.OS === 'android' ? 'Reviewed Customers' : 'Commented Guys'
+                        }
                         {
                             this.state.totalFeedsSize > 0 &&
                             <Text style={{
