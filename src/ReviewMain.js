@@ -159,6 +159,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     };
 
     render() {
+        const { profile } = this.props.profileStore;
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -185,7 +187,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         marginLeft: 40 + 16
                     }}>
                         {
-                            Platform.OS === 'android' ? 'Reviewed ' + Util.getPostName(true) : 'Commented Posts'
+                            Platform.OS === 'android' ? 'Reviewed ' + Util.getPostName(true, Vars.showMe) : 'Commented Posts'
                         }
                         {
                             this.state.totalFeedsSize > 0 &&
@@ -342,7 +344,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        Platform.OS === 'android' ? 'No reviewed ' + Util.getPostName(false) : 'No commented posts'
+                                        Platform.OS === 'android' ? 'No reviewed ' + Util.getPostName(false, Vars.showMe) : 'No commented posts'
                                     }
                                 </Text>
 
@@ -354,7 +356,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        Platform.OS === 'android' ? "Let's go check " + Util.getPostSubtitle(false) + " out" : "Let's go meet new guys"
+                                        Platform.OS === 'android' ? "Let's go check " + Util.getPostSubtitle(false, Vars.showMe) + " out" : "Let's go meet new guys"
                                     }
                                 </Text>
 

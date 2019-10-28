@@ -67,101 +67,103 @@ export default class Admin extends React.Component {
         return (
             <View style={styles.container}>
                 <TouchableOpacity onPress={() => this.initPost()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Initial Post</Text>
+                    <Text style={styles.buttonText}>Initial Post</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { for (i = 0; i < 2; i++) this.tmpBangkok(i) }}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Bangkok</Text>
+                    <Text style={styles.buttonText}>Bangkok</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { for (i = 0; i < 2; i++) this.tmpPattaya(i) }}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Pattaya</Text>
+                    <Text style={styles.buttonText}>Pattaya</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { for (i = 0; i < 2; i++) this.tmpManila(i) }}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Makati</Text>
+                    <Text style={styles.buttonText}>Makati</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { for (i = 0; i < 2; i++) this.tmpMacao(i) }}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Macao</Text>
+                    <Text style={styles.buttonText}>Macao</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { for (i = 0; i < 2; i++) this.tmpHCM(i) }}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Ho Chi Minh City</Text>
+                    <Text style={styles.buttonText}>Ho Chi Minh City</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { for (i = 0; i < 2; i++) this.tmpVientiane(i) }}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Vientiane</Text>
+                    <Text style={styles.buttonText}>Vientiane</Text>
                 </TouchableOpacity>
 
-
-
-
-
                 <TouchableOpacity onPress={() => this.makeDummyData()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 x 10 cities) 🔥</Text>
+                    <Text style={styles.buttonText}>🔥 Make Dummy Data (11 x 10 cities) 🔥</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeInit()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Init Data (12 cities) 🔥</Text>
+                    <Text style={styles.buttonText}>🔥 Make Init Data (12 cities) 🔥</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeSingapore()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Singapore)</Text>
+                    <Text style={styles.buttonText}>Create Feed (Singapore)</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeKL()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (KL)</Text>
+                    <Text style={styles.buttonText}>Create Feed (KL)</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeSeattle()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Seattle, WA)</Text>
+                    <Text style={styles.buttonText}>Create Feed (Seattle, WA)</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     onPress={async () => await this.clearStorage()}
-                    style={styles.bottomButton}
+                    style={styles.button}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Clear Storage</Text>
+                    <Text style={styles.buttonText}>Clear Storage</Text>
                 </TouchableOpacity>
 
                 {/*
                     <TouchableOpacity onPress={() => this.addComment()}
-                        style={styles.bottomButton}
+                        style={styles.button}
                     >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Add Comment</Text>
+                        <Text style={styles.buttonText}>Add Comment</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => this.removeComment()}
-                        style={styles.bottomButton}
+                        style={styles.button}
                     >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Remove Comment</Text>
+                        <Text style={styles.buttonText}>Remove Comment</Text>
                     </TouchableOpacity>
                 */}
+
+                <TouchableOpacity onPress={() => this.changePosts()}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>Change Posts</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -4036,6 +4038,118 @@ export default class Admin extends React.Component {
         Firebase.deleteCollection(db, path, 10);
         */
     }
+
+    async getPlaceDocuments() {
+        const snapshot = await Firebase.firestore.collection('places').get();
+        return snapshot.docs.map(doc => doc.id);
+    }
+
+    async getFeedDocument(placeId) {
+        const snapshot = await Firebase.firestore.collection('places').doc(placeId).collection("feed").get();
+        return snapshot.docs.map(doc => doc.data());
+    }
+
+    async updateFeed() {
+        await Firebase.firestore.runTransaction(async transaction => {
+        });
+    }
+
+    async changePosts() {
+        const placeIds = await this.getPlaceDocuments();
+
+        placeIds.forEach(async element => {
+            let feed = await this.getFeedDocument(element);
+
+            // ToDo
+
+
+
+
+        });
+        
+
+
+
+
+
+
+
+
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
+        const placeName = 'Jakarta, Indonesia';
+
+        const extra = {
+            lat: -6.180495,
+            lng: 106.8283415
+        };
+
+        const LATITUDE = -6.2087634;
+        const LONGITUDE = 106.845599;
+        const location = {
+            description: '?, Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia',
+            latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
+            longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
+        };
+
+        const note = this.getNote(Math.round(Math.random() * 10) % 3);
+
+        // --
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
+
+        const name = 'April';
+        const birthday = '02121996';
+        const height = 167;
+        const weight = 48;
+        const bust = 'B';
+
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                // preview: null,
+                uri: image1Uri
+            },
+            two: {
+                // preview: null,
+                uri: image2Uri
+            },
+            three: {
+                // preview: null,
+                uri: image3Uri
+            },
+            four: {
+                // preview: null,
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Woman';
+        feed.bodyType = 'Skinny';
+
+        await Firebase.createFeed(feed, extra);
+    }
 }
 
 const styles = StyleSheet.create({
@@ -4054,7 +4168,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white'
     },
-    bottomButton: {
+    button: {
         width: '85%',
         height: Cons.buttonHeight,
         alignSelf: 'center',
@@ -4069,5 +4183,9 @@ const styles = StyleSheet.create({
 
         marginTop: 10,
         marginBottom: 10
+    },
+    buttonText: {
+        fontSize: 16,
+        color: 'white'
     }
 });

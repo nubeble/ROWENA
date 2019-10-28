@@ -137,10 +137,6 @@ export default class Explore extends React.Component<InjectedProps> {
         // setState isLoadingFeeds true in Feed.js
         this._feed.setState({ isLoadingFeeds: true });
 
-        /*
-        const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
-        this.props.feedStore.init(query, 'timestamp');
-        */
         let gender = null;
         const showMe = Vars.showMe;
         if (showMe === 'Men') gender = 'Man';
@@ -455,9 +451,9 @@ export default class Explore extends React.Component<InjectedProps> {
         let titleText = null;
 
         if (this.state.feedSize > 0) {
-            titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ ' + Util.getPostName(false) + ' in ' + this.state.titleText;
+            titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ ' + Util.getPostName(false, Vars.showMe) + ' in ' + this.state.titleText;
         } else {
-            titleText = 'Meet ' + Util.getPostName(false) + ' in ' + this.state.titleText;
+            titleText = 'Meet ' + Util.getPostName(false, Vars.showMe) + ' in ' + this.state.titleText;
         }
 
         return (
@@ -654,10 +650,6 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     order(order) {
-        /*
-        const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").orderBy(order, "desc");
-        this.props.feedStore.init(query, order);
-        */
         let gender = null;
         const showMe = Vars.showMe;
         if (showMe === 'Men') gender = 'Man';

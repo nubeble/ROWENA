@@ -380,8 +380,9 @@ export default class Loading extends React.Component<InjectedProps> {
         // 1. Show Me
         const showMe = postFilter.showMe;
         Vars.showMe = showMe;
-        console.log('jdub', 'showMe: ', showMe);
+        // console.log('jdub', 'showMe: ', showMe);
 
-        // 2. Consider: Age Range
+        // 2. Age Range
+        // ToDo
     }
 }

@@ -15,6 +15,7 @@ export var Vars = {
 
     // post filter
     showMe: null // 'Women', 'Men', 'Everyone'
+    // ageRange: []
 };
 
 export const Cons = {

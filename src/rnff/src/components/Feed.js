@@ -25,18 +25,10 @@ type FeedProps = NavigationProps<> & {
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
-    // static __flatList = null;
-
     state = {
         isLoadingFeeds: false,
         refreshing: false
     };
-
-    /*
-    scrollToTop() {
-        Feed.__flatList.scrollToOffset({ offset: 0, animated: true });
-    }
-    */
 
     componentDidMount() {
         this.props.navigation.setParams({
@@ -237,7 +229,7 @@ export default class Feed extends React.Component<FeedProps> {
                     fontFamily: "Chewy-Regular"
                 }}>
                     {
-                        Platform.OS === 'android' ? "No registered " + Util.getPostName(false) + " yet" : "No registered posts yet"
+                        Platform.OS === 'android' ? "No hosted " + Util.getPostName(false, Vars.showMe) + " yet" : "No registered posts yet"
                     }
                 </Text>
 

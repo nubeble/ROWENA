@@ -376,8 +376,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 this.refs["toast"].show('Please try again later.', 500);
                 return;
             }
-            // count = placeDoc.data().count; // 1026
-            count = this._getPlaceCount(placeDoc.data());
+            // count = placeDoc.data().count; // 1026           
+            count = this._getPlaceCount(placeDoc.data(), Vars.showMe);
             const counts = {
                 count: newPlace.count,
                 men: newPlace.men,
@@ -461,7 +461,6 @@ export default class Intro extends React.Component<InjectedProps> {
     async getPlaces() {
         const size = DEFAULT_PLACE_COUNT;
 
-        // const snap = await Firebase.firestore.collection("places").orderBy("count", "desc").limit(size).get();
         let snap = null;
         if (Vars.showMe === 'Men') {
             snap = await Firebase.firestore.collection("places").orderBy("men", "desc").limit(size).get();
@@ -478,13 +477,12 @@ export default class Intro extends React.Component<InjectedProps> {
             const placeId = doc.id;
             const place = doc.data();
             // const count = place.count; // 1026
-            const count = this._getPlaceCount(place);
+            const count = this._getPlaceCount(place, Vars.showMe);
 
             if (count > 0) {
                 let gender = null;
-                const showMe = Vars.showMe;
-                if (showMe === 'Men') gender = 'Man';
-                else if (showMe === 'Women') gender = 'Woman';
+                if (Vars.showMe === 'Men') gender = 'Man';
+                else if (Vars.showMe === 'Women') gender = 'Woman';
 
                 const uri = await Firebase.getPlaceRandomFeedImage(placeId, gender); // gender: Woman, Man, null
 
@@ -562,7 +560,7 @@ export default class Intro extends React.Component<InjectedProps> {
         if (__index !== -1) {
             let __place = __places[__index];
             // __place.length = place.count; // 1026
-            __place.length = this._getPlaceCount(place);
+            __place.length = this._getPlaceCount(place, Vars.showMe);
 
             if (typeof __place.newPostAdded === 'undefined') {
                 __place.newPostAdded = false;
@@ -608,9 +606,8 @@ export default class Intro extends React.Component<InjectedProps> {
         console.log('getPopularFeeds size', placeList.length);
 
         let gender = null;
-        const showMe = Vars.showMe;
-        if (showMe === 'Men') gender = 'Man';
-        else if (showMe === 'Women') gender = 'Woman';
+        if (Vars.showMe === 'Men') gender = 'Man';
+        else if (Vars.showMe === 'Women') gender = 'Woman';
 
         let popularFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
@@ -714,9 +711,8 @@ export default class Intro extends React.Component<InjectedProps> {
         console.log('getRecentFeeds size', placeList.length);
 
         let gender = null;
-        const showMe = Vars.showMe;
-        if (showMe === 'Men') gender = 'Man';
-        else if (showMe === 'Women') gender = 'Woman';
+        if (Vars.showMe === 'Men') gender = 'Man';
+        else if (Vars.showMe === 'Women') gender = 'Woman';
 
         let recentFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
@@ -814,9 +810,8 @@ export default class Intro extends React.Component<InjectedProps> {
 
         if (Intro.popularFeeds.length === 0) {
             let gender = null;
-            const showMe = Vars.showMe;
-            if (showMe === 'Men') gender = 'Man';
-            else if (showMe === 'Women') gender = 'Woman';
+            if (Vars.showMe === 'Men') gender = 'Man';
+            else if (Vars.showMe === 'Women') gender = 'Woman';
 
             for (let i = 0; i < length1; i++) {
                 const placeId = placeList[i];
@@ -838,9 +833,8 @@ export default class Intro extends React.Component<InjectedProps> {
 
         if (Intro.recentFeeds.length === 0) {
             let gender = null;
-            const showMe = Vars.showMe;
-            if (showMe === 'Men') gender = 'Man';
-            else if (showMe === 'Women') gender = 'Woman';
+            if (Vars.showMe === 'Men') gender = 'Man';
+            else if (Vars.showMe === 'Women') gender = 'Woman';
 
             for (let i = length1; i < placeList.length; i++) {
                 const placeId = placeList[i];
@@ -1483,7 +1477,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                             }}>
                                                 {
                                                     // Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ guys'
-                                                    Util.numberWithCommas(length) + '+ ' + Util.getPostName(false)
+                                                    Util.numberWithCommas(length) + '+ ' + Util.getPostName(false, Vars.showMe)
                                                 }
                                             </Text>
                                         }
@@ -1613,7 +1607,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         <View style={{ marginTop: 20, marginBottom: 8 }}>
                             <View style={styles.titleContainer}>
                                 {
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated ' + Util.getPostName(false) : 'Most-liked posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated ' + Util.getPostName(false, Vars.showMe) : 'Most-liked posts'}</Text>
                                 }
                             </View>
                             {
@@ -1621,7 +1615,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             }
                             <View style={styles.titleContainer}>
                                 {
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent hosted ' + Util.getPostName(false) : 'Most recent posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent hosted ' + Util.getPostName(false, Vars.showMe) : 'Most recent posts'}</Text>
                                 }
                             </View>
                             {
@@ -2172,12 +2166,12 @@ export default class Intro extends React.Component<InjectedProps> {
         return Intro.feedList.get(id); // null: the post is not subscribed yet, undefined: the post is removed
     }
 
-    getPlaceCount(placeId, gender) {
+    getPlaceCount(placeId, showMe) {
         const value = Intro.feedCountList.get(placeId);
         if (!value) return value;
 
-        if (gender === 'Men') return value.men;
-        if (gender === 'Women') return value.women;
+        if (showMe === 'Men') return value.men;
+        if (showMe === 'Women') return value.women;
         return value.count;
     }
 
@@ -2185,11 +2179,9 @@ export default class Intro extends React.Component<InjectedProps> {
         return Intro.feedCountList.get(placeId);
     }
 
-    _getPlaceCount(place) {
-        const gender = Vars.showMe; // 'Men', 'Women', 'Everyone'
-
-        if (gender === 'Men') return place.men;
-        if (gender === 'Women') return place.women;
+    _getPlaceCount(place, showMe) {
+        if (showMe === 'Men') return place.men;
+        if (showMe === 'Women') return place.women;
         return place.count;
     }
 

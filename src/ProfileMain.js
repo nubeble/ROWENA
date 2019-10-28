@@ -758,7 +758,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 20, lineHeight: 24, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
-                                                    {Platform.OS === 'android' ? Util.getPostName(true) + " You've Reviewed" : "Posts You've Commented"}
+                                                    {Platform.OS === 'android' ? Util.getPostName(true, Vars.showMe) + " You've Reviewed" : "Posts You've Commented"}
                                                 </Text>
                                                 {
                                                     replyAdded &&

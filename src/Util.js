@@ -1866,27 +1866,27 @@ export default class Util extends React.Component {
         return totalCount;
     }
 
-    static getPostName(capital) {
+    static getPostName(capital, showMe) {
         if (capital === true) {
-            if (Vars.showMe === 'Men') return 'Guys';
-            if (Vars.showMe === 'Women') return 'Girls';
-            if (Vars.showMe === 'Everyone') return 'Guys';
+            if (showMe === 'Men') return 'Guys';
+            if (showMe === 'Women') return 'Girls';
+            if (showMe === 'Everyone') return 'Guys';
         }
 
-        if (Vars.showMe === 'Men') return 'guys';
-        if (Vars.showMe === 'Women') return 'girls';
-        if (Vars.showMe === 'Everyone') return 'guys';
+        if (showMe === 'Men') return 'guys';
+        if (showMe === 'Women') return 'girls';
+        if (showMe === 'Everyone') return 'guys';
     }
 
-    static getPostSubtitle(capital) {
+    static getPostSubtitle(capital, showMe) {
         if (capital === true) {
-            if (Vars.showMe === 'Men') return 'Guys';
-            if (Vars.showMe === 'Women') return 'Chicks';
-            if (Vars.showMe === 'Everyone') return 'Guys';
+            if (showMe === 'Men') return 'Guys';
+            if (showMe === 'Women') return 'Chicks';
+            if (showMe === 'Everyone') return 'Guys';
         }
 
-        if (Vars.showMe === 'Men') return 'guys';
-        if (Vars.showMe === 'Women') return 'chicks';
-        if (Vars.showMe === 'Everyone') return 'guys';
+        if (showMe === 'Men') return 'guys';
+        if (showMe === 'Women') return 'chicks';
+        if (showMe === 'Everyone') return 'guys';
     }
 }

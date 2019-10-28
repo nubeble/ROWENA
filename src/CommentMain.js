@@ -276,7 +276,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        Platform.OS === 'android' ? "Let's find some hot " + Util.getPostSubtitle(false) : "Let's find new guys"
+                                        Platform.OS === 'android' ? "Let's find some hot " + Util.getPostSubtitle(false, Vars.showMe) : "Let's find new guys"
                                     }
                                 </Text>
 

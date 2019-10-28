@@ -710,7 +710,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        Platform.OS === 'android' ? "No saved " + Util.getPostName(false) : "No saved posts"
+                                        Platform.OS === 'android' ? "No saved " + Util.getPostName(false, Vars.showMe) : "No saved posts"
                                     }
                                 </Text>
 
@@ -722,7 +722,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     fontFamily: "Chewy-Regular"
                                 }}>
                                     {
-                                        Platform.OS === 'android' ? "Let's find some hot " + Util.getPostSubtitle(false) + " for your next trip" : "Let's find some new guys"
+                                        Platform.OS === 'android' ? "Let's find some hot " + Util.getPostSubtitle(false, Vars.showMe) + " for your next trip" : "Let's find some new guys"
                                     }
                                 </Text>
 

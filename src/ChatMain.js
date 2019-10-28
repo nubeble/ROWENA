@@ -15,11 +15,19 @@ import { Cons, Vars } from "./Globals";
 // import _ from 'lodash';
 import moment from 'moment';
 import Dialog from "react-native-dialog";
+import { inject, observer } from "mobx-react/native";
+import ProfileStore from "./rnff/src/home/ProfileStore";
+
+type InjectedProps = {
+    profileStore: ProfileStore
+};
 
 const DEFAULT_ROOM_COUNT = 8;
 
 
-export default class ChatMain extends React.Component {
+@inject("profileStore")
+@observer
+export default class ChatMain extends React.Component<InjectedProps> {
     state = {
         ready: false,
 
@@ -488,7 +496,7 @@ export default class ChatMain extends React.Component {
                                 fontFamily: "Chewy-Regular"
                             }}>
                                 {
-                                    Platform.OS === 'android' ? "How about saying hello to new " + Util.getPostSubtitle(false) + " first?" : "How about saying hello to new guys first?"
+                                    Platform.OS === 'android' ? "How about saying hello to new " + Util.getPostSubtitle(false, Vars.showMe) + " first?" : "How about saying hello to new guys first?"
                                 }
                             </Text>
 

@@ -9,7 +9,6 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
-import { observer } from "mobx-react/native";
 import Carousel from './Carousel';
 import SmartImage from "./rnff/src/components/SmartImage";
 import { AirbnbRating } from './react-native-ratings/src';
@@ -23,6 +22,11 @@ import Util from "./Util";
 import { LinearGradient } from 'expo-linear-gradient';
 import Toast from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
+import { inject, observer } from "mobx-react/native";
+
+type InjectedProps = {
+    profileStore: ProfileStore
+};
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -46,8 +50,9 @@ const itemWidth = Dimensions.get('window').width - 40;
 const itemHeight = (Dimensions.get('window').width - 40) / 3 * 2;
 
 
-// @observer
-export default class MapExplore extends React.Component {
+@inject("profileStore")
+@observer
+export default class MapExplore extends React.Component<InjectedProps> {
     gf = new GeoFirestore(Firebase.firestore);
 
     state = {
@@ -155,7 +160,19 @@ export default class MapExplore extends React.Component {
         let feeds = [];
 
         const { placeId } = this.props.navigation.state.params;
-        const geocollection: GeoCollectionReference = this.gf.collection("places").doc(placeId).collection("feed");
+
+        // const geocollection: GeoCollectionReference = this.gf.collection("places").doc(placeId).collection("feed");
+        let geocollection: GeoCollectionReference = null;
+
+        let gender = null;
+        if (Vars.showMe === 'Men') gender = 'Man';
+        else if (Vars.showMe === 'Women') gender = 'Woman';
+
+        if (gender) {
+            geocollection = this.gf.collection("places").doc(placeId).collection("feed").where("gender", "==", gender);
+        } else {
+            geocollection = this.gf.collection("places").doc(placeId).collection("feed");
+        }
 
         // get kilometers by region
         const oneDegreeOfLatitudeInMeters = 111.32;
@@ -164,7 +181,7 @@ export default class MapExplore extends React.Component {
         const query: GeoQuery = geocollection.near({
             center: new firebase.firestore.GeoPoint(region.latitude, region.longitude),
             radius: km, // kilometers
-            // limit: 5
+            // limit: DEFAULT_FEED_COUNT
         }).limit(DEFAULT_FEED_COUNT);
 
         await query.get().then(async (value: GeoQuerySnapshot) => {
@@ -173,6 +190,7 @@ export default class MapExplore extends React.Component {
             const docs = value.docs;
             for (let i = 0; i < docs.length; i++) {
                 const data = docs[i].data();
+                // console.log('data', data);
 
                 feeds.push(data);
             }
