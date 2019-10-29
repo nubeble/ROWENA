@@ -431,33 +431,32 @@ export default class Firebase {
 
     static async createFeed(data, extra) {
         let feed = {};
-
-        let d = {};
-        d.uid = data.uid;
-        d.id = data.id;
-        d.placeId = data.placeId;
-        d.placeName = data.placeName;
-        d.location = data.location;
-        d.note = data.note;
-        d.pictures = data.pictures;
-        d.name = data.name;
-        d.birthday = data.birthday;
-        d.gender = data.gender;
-        d.height = data.height;
-        d.weight = data.weight;
-        d.bodyType = data.bodyType;
-        d.bust = data.bust;
-        d.muscle = data.muscle;
-        d.likes = [];
-        d.reviewCount = 0;
-        d.averageRating = 0;
-        d.reviewStats = [0, 0, 0, 0, 0];
-        d.timestamp = Firebase.getTimestamp();
-        d.rn = Util.getRandomNumber();
-        d.visits = [];
-        d.totalVisitCount = 0;
-        d.reporters = [];
-
+        const d = {
+            uid: data.uid,
+            id: data.id,
+            placeId: data.placeId,
+            placeName: data.placeName,
+            location: data.location,
+            note: data.note,
+            pictures: data.pictures,
+            name: data.name,
+            birthday: data.birthday,
+            gender: data.gender,
+            height: data.height,
+            weight: data.weight,
+            bodyType: data.bodyType,
+            bust: data.bust,
+            muscle: data.muscle,
+            likes: [],
+            reviewCount: 0,
+            averageRating: 0,
+            reviewStats: [0, 0, 0, 0, 0],
+            timestamp: Firebase.getTimestamp(),
+            rn: Util.getRandomNumber(),
+            visits: [],
+            totalVisitCount: 0,
+            reporters: []
+        };
         feed.d = d;
 
         const coordinates: LatLngLiteral = { lat: data.location.latitude, lng: data.location.longitude };
@@ -501,7 +500,7 @@ export default class Firebase {
                 place.count = count;
                 place.men = men;
                 place.women = women;
-                place.timestamp = data.timestamp;
+                place.timestamp = d.timestamp;
 
                 transaction.update(placeRef, place);
             }

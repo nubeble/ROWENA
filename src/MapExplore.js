@@ -161,12 +161,11 @@ export default class MapExplore extends React.Component<InjectedProps> {
 
         const { placeId } = this.props.navigation.state.params;
 
-        // const geocollection: GeoCollectionReference = this.gf.collection("places").doc(placeId).collection("feed");
-        let geocollection: GeoCollectionReference = null;
-
         let gender = null;
         if (Vars.showMe === 'Men') gender = 'Man';
         else if (Vars.showMe === 'Women') gender = 'Woman';
+
+        let geocollection: GeoCollectionReference = null;
 
         if (gender) {
             geocollection = this.gf.collection("places").doc(placeId).collection("feed").where("d.gender", "==", gender);
@@ -190,7 +189,8 @@ export default class MapExplore extends React.Component<InjectedProps> {
             const docs = value.docs;
             for (let i = 0; i < docs.length; i++) {
                 const data = docs[i].data();
-                // console.log('data', data);
+
+                console.log('feed', i, data);
 
                 feeds.push(data);
             }

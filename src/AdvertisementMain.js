@@ -931,8 +931,9 @@ export default class AdvertisementMain extends React.Component {
                     {
                         this.state.flashImage &&
                         <Image
-                            // style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
+                            style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
                             style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
+                            style={{ width: (8 + 34 + 8) * 0.84, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }
