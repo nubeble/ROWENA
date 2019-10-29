@@ -152,6 +152,7 @@ export default class Intro extends React.Component<InjectedProps> {
         Intro.places = [];
         Intro.popularFeeds = [];
         Intro.recentFeeds = [];
+
         Intro.feedList = new Map();
         Intro.feedCountList = new Map();
 

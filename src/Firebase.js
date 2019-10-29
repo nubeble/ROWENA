@@ -1930,8 +1930,8 @@ export default class Firebase {
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(async transaction => {
-            const reviewdoc = await transaction.get(reviewRef);
-            if (!reviewdoc.exists) return;
+            const reviewDoc = await transaction.get(reviewRef);
+            if (!reviewDoc.exists) return;
 
             const userDoc = await transaction.get(userRef);
             if (!userDoc.exists) return;

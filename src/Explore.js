@@ -35,6 +35,8 @@ const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 export default class Explore extends React.Component<InjectedProps> {
     // static __feed = null;
 
+    static feedCountList = new Map();
+
     state = {
         // scrollAnimation: new Animated.Value(0),
 
@@ -48,6 +50,12 @@ export default class Explore extends React.Component<InjectedProps> {
         scrollY: 0,
         selectedOrderIndex: 2 // order by time
     };
+
+    final() {
+        console.log('jdub', 'Explore.final');
+
+        Intro.feedCountList = new Map();
+    }
 
     constructor(props) {
         super(props);
@@ -156,18 +164,31 @@ export default class Explore extends React.Component<InjectedProps> {
     async initFromSearch(result) {
         console.log('jdub', 'Explore.initFromSearch', result);
 
-        // load length from database
-        const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
+        let name = result.description;
+        // name = Util.getPlaceName(name); // city + country
+
         let count = 0;
-        if (placeDoc.exists) {
-            let field = placeDoc.data().count;
-            if (field) count = field;
+        let placeCounts = null;
+
+        /*
+        const feedSize = this.getPlaceCount(result.place_id, Vars.showMe);
+        if (feedSize === null) {
+            this.refs["toast"].show('Please try again.', 500);
+            return;
         }
+        */
 
-        // console.log('jdub', 'count', count);
+        const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
+        if (!placeDoc.exists) return;
 
-        const place = {
-            name: result.description,
+        let place = placeDoc.data();
+
+        if (Vars.showMe === 'Men') count = place.men;
+        else if (Vars.showMe === 'Women') count = place.women;
+        else count = place.count;
+
+        const placeData = {
+            name: name,
             place_id: result.place_id,
             length: count,
 
@@ -176,7 +197,7 @@ export default class Explore extends React.Component<InjectedProps> {
             lng: result.location.lng
         }
 
-        this.init(place);
+        this.init(placeData);
         this.setState({ selectedOrderIndex: 2, scrollY: 0 });
 
         this._feed._scrollTo(0);
