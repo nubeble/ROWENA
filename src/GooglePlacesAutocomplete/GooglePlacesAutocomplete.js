@@ -10,6 +10,7 @@ import Qs from 'qs';
 import { debounce } from 'lodash';
 import { Text, Theme, RefreshIndicator } from '../rnff/src/components';
 import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import Toast from 'react-native-easy-toast';
 import { Cons } from '../Globals';
 import Util from '../Util';
 
@@ -306,7 +307,8 @@ export default class GooglePlacesAutocomplete extends Component {
                             if (this.closed) return;
 
                             if (!obj) { // error
-                                // ToDo: toast or something
+                                // toast
+                                this.refs["toast"].show('Please try again later.', 500);
 
                                 // hide loader
                                 !this.closed && this.setState({ isLoading: false });
@@ -1232,6 +1234,13 @@ export default class GooglePlacesAutocomplete extends Component {
                         />
                     </View>
                 }
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
             </View>
         );
     }
