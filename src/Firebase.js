@@ -1651,8 +1651,6 @@ export default class Firebase {
         // update owner profile
         /*
         result = await Firebase.updateReviewChecked(ownerUid, placeId, feedId, true);
-
-        return result;
         */
         Firebase.updateReviewChecked(ownerUid, placeId, feedId, true);
 

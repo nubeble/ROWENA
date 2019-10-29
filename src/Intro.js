@@ -377,11 +377,13 @@ export default class Intro extends React.Component<InjectedProps> {
                 return;
             }
 
-            count = this._getPlaceCount(placeDoc.data(), Vars.showMe);
+            let place = placeDoc.data();
+
+            count = this._getPlaceCount(place, Vars.showMe);
             const counts = {
-                count: newPlace.count,
-                men: newPlace.men,
-                women: newPlace.women
+                count: place.count,
+                men: place.men,
+                women: place.women
             };
             placeCounts = counts;
 

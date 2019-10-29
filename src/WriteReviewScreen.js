@@ -133,7 +133,7 @@ export default class WriteReviewScreen extends React.Component {
 
         this.setState({ showPostLoader: true });
 
-        const result = await Firebase.addReview(post.uid, post.d.placeId, post.d.id, post.d.pictures.one.uri,
+        const result = await Firebase.addReview(post.d.uid, post.d.placeId, post.d.id, post.d.pictures.one.uri,
             user.uid, user.name, user.place, user.picture,
             comment, this.state.rating);
 
