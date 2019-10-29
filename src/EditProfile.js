@@ -1399,12 +1399,15 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     async updateProfile(data) {
-        let profile = {};
+        let { profile } = this.props.profileStore;
+
         profile.uid = data.userUid;
         profile.name = data.name;
         profile.birthday = data.birthday;
         profile.gender = data.gender;
         profile.place = data.place;
+        profile.email = data.email;
+        profile.phoneNumber = data.phoneNumber;
         profile.about = data.note;
         profile.picture = {
             uri: data.image.uri,

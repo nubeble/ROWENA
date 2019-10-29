@@ -86,8 +86,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         const { reviews } = this.commentStore;
 
-        // deep copy
-        let __reviews = _.cloneDeep(reviews);
+        let __reviews = _.cloneDeep(reviews); // deep copy
 
         !this.closed && this.setState({ reviews: __reviews, isLoadingFeeds: false, refreshing: false });
 
@@ -463,15 +462,15 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         let nameLineHeight = 26;
 
         if (post) {
-            picture = post.pictures.one.uri;
-            placeName = post.placeName;
+            picture = post.d.pictures.one.uri;
+            placeName = post.d.placeName;
             if (placeName) {
                 placeColor = Theme.color.text2;
                 placeFont = "Roboto-Regular";
             }
-            name = post.name;
+            name = post.d.name;
             avatarName = Util.getAvatarName(name);
-            avatarColor = Util.getAvatarColor(post.id);
+            avatarColor = Util.getAvatarColor(post.d.id);
 
             if (avatarName.length === 1) {
                 nameFontSize = 24;

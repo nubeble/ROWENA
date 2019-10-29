@@ -328,7 +328,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 const _feed = this.feedList.get(feedId);
                 if (_feed) { // could be null or undefined
                     // update picture
-                    feed.picture = _feed.pictures.one.uri;
+                    feed.picture = _feed.d.pictures.one.uri;
                 }
 
                 newFeeds.push(feed);
@@ -353,16 +353,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     let changed = false;
 
                     let feeds = [...this.state.feeds];
-                    const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
+                    const index = feeds.findIndex(el => el.placeId === newFeed.d.placeId && el.feedId === newFeed.d.id);
                     if (index !== -1) {
-                        if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+                        if (feeds[index].picture !== newFeed.d.pictures.one.uri) changed = true;
 
-                        feeds[index].picture = newFeed.pictures.one.uri;
+                        feeds[index].picture = newFeed.d.pictures.one.uri;
                         !this.closed && this.setState({ feeds });
                     }
 
                     // update database
-                    if (changed) Firebase.updateUserFeed(Firebase.user().uid, placeId, feedId, newFeed.pictures.one.uri);
+                    if (changed) Firebase.updateUserFeed(profile.uid, placeId, feedId, newFeed.d.pictures.one.uri);
                 });
 
                 this.feedsUnsubscribes.push(fi);
@@ -444,7 +444,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.openPost(item);
     }
 
-    openPost(item) {
+    async openPost(item) {
+        const { profile } = this.props.profileStore;
+        if (!profile) return null;
+
         // show indicator
         // this.setState({ showPostIndicator: index });
 
@@ -456,9 +459,29 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         }
 
         if (post === undefined) {
-            // the post is removed
-            // this should never happen
-            // this.refs["toast"].show('The post no longer exists.', 500);
+            // the post is removed by the developer
+
+            console.log('uid', profile.uid, 'feedId', item.feedId);
+
+            this.refs["toast"].show('Your post has been deleted.', 500);
+
+            // 1. user 밑에 feeds 업데이트
+            await Firebase.cleanRemovedFeed(profile.uid, item.placeId, item.feedId);
+
+            // 2. storage 삭제
+            const formData = new FormData();
+            formData.append("uid", profile.uid);
+            formData.append("feedId", item.feedId);
+
+            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+
             return;
         }
 
@@ -476,7 +499,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         const extra = { placeCounts: feedSize };
 
-        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+        Firebase.addVisits(profile.uid, post.d.placeId, post.d.id);
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
 
         // hide indicator
@@ -1153,6 +1176,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async pickImage() {
+        const { profile } = this.props.profileStore;
+        if (!profile) return null;
+
         const { status: existingCameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
         const { status: existingCameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
 
@@ -1200,7 +1226,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                     // this.setState({ uploadImageUri: uri });
 
-                    const ref = 'images/' + Firebase.user().uid + '/profile/' + path.split('/').pop();
+                    const ref = 'images/' + profile.uid + '/profile/' + path.split('/').pop();
                     /*
                     this.uploadImageRef = ref;
 
@@ -1224,6 +1250,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async uploadImage(uri, cb) {
+        const { profile } = this.props.profileStore;
+        if (!profile) return null;
+
         const fileName = uri.split('/').pop();
         let ext = fileName.split('.').pop();
 
@@ -1245,7 +1274,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             name: fileName,
             type: type
         });
-        formData.append("userUid", Firebase.user().uid);
+        formData.append("userUid", profile.uid);
         // formData.append("pictureIndex", index);
 
         try {
@@ -1319,7 +1348,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async updateProfilePicture(uri, ref) {
-        const { profile } = this.props.profileStore;
+        let { profile } = this.props.profileStore;
         if (!profile) return;
 
         if (profile.picture.ref) {
@@ -1327,13 +1356,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             Firebase.removeProfilePictureRef(ref);
         }
 
-        let data = {};
-        data.picture = {
+        profile.picture = {
             uri,
             ref
         };
 
-        await Firebase.updateProfilePicture(profile.uid, data);
+        await Firebase.updateProfilePicture(profile.uid, profile);
     }
 }
 

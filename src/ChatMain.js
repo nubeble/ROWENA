@@ -238,8 +238,8 @@ export default class ChatMain extends React.Component<InjectedProps> {
             this.feedList.set(feedId, newFeed);
 
             // update state
-            const name = newFeed.name;
-            const picture = newFeed.pictures.one.uri;
+            const name = newFeed.d.name;
+            const picture = newFeed.d.pictures.one.uri;
 
             let list = [...this.state.chatRoomList];
             const index = list.findIndex(el => el.id === roomId);

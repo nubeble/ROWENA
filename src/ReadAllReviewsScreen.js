@@ -88,8 +88,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         const { reviewStore } = this.props.navigation.state.params;
         const { reviews } = reviewStore;
 
-        // deep copy
-        let __reviews = _.cloneDeep(reviews);
+        let __reviews = _.cloneDeep(reviews); // deep copy
 
         !this.closed && this.setState({ reviews: __reviews, isLoadingReview: false, refreshing: false });
 

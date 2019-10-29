@@ -159,6 +159,31 @@ exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
 */
 
 
+const uploadImageToStorage = (file, fileDir) => {
+    const storage = admin.storage();
+    // const destBucket = gcs.bucket('rowena-88cfd.appspot.com');
+
+    let prom = new Promise((resolve, reject) => {
+        const fileUpload = storage.bucket(BUCKET_NAME).file(fileDir);
+        // const fileUpload = destBucket.file(file.originalname);
+
+        const blobStream = fileUpload.createWriteStream({
+            metadata: {
+                contentType: file.mimetype
+            }
+        });
+
+        blobStream.on("error", error => reject(error));
+
+        blobStream.on("finish", () => {
+            fileUpload.getMetadata().then(metadata => resolve(metadata)).catch(error => reject(error));
+        });
+
+        blobStream.end(file.buffer);
+    });
+
+    return prom;
+}
 
 // app.post("/images", function (req, res, next) {
 app.post("/images", function (req, res) {
@@ -236,32 +261,6 @@ app.post("/images", function (req, res) {
         });
     });
 });
-
-const uploadImageToStorage = (file, fileDir) => {
-    const storage = admin.storage();
-    // const destBucket = gcs.bucket('rowena-88cfd.appspot.com');
-
-    let prom = new Promise((resolve, reject) => {
-        const fileUpload = storage.bucket(BUCKET_NAME).file(fileDir);
-        // const fileUpload = destBucket.file(file.originalname);
-
-        const blobStream = fileUpload.createWriteStream({
-            metadata: {
-                contentType: file.mimetype
-            }
-        });
-
-        blobStream.on("error", error => reject(error));
-
-        blobStream.on("finish", () => {
-            fileUpload.getMetadata().then(metadata => resolve(metadata)).catch(error => reject(error));
-        });
-
-        blobStream.end(file.buffer);
-    });
-
-    return prom;
-}
 
 const runtimeOpts = {
     timeoutSeconds: 30
@@ -342,7 +341,7 @@ exports.setToken = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
 
-        const fields = {};
+        let fields = {};
 
         busboy.on("field", (fieldname, val) => {
             // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
@@ -350,7 +349,7 @@ exports.setToken = functions.https.onRequest((req, res) => {
             fields[fieldname] = val;
         });
 
-        const params = {};
+        let params = {};
         params.fields = fields;
         params.res = res;
 
@@ -388,7 +387,7 @@ exports.unsetToken = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
 
-        const fields = {};
+        let fields = {};
 
         busboy.on("field", (fieldname, val) => {
             // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
@@ -396,7 +395,7 @@ exports.unsetToken = functions.https.onRequest((req, res) => {
             fields[fieldname] = val;
         });
 
-        const params = {};
+        let params = {};
         params.fields = fields;
         params.res = res;
 
@@ -443,6 +442,33 @@ const sendPushNotification = async(function (chunks) {
     }
 
     return result;
+});
+
+const getReceipts = async(function (receiptIdChunks) {
+    for (let chunk of receiptIdChunks) {
+        try {
+            let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
+            console.log('jdub', receipts);
+
+            // The receipts specify whether Apple or Google successfully received the
+            // notification and information about an error, if one occurred.
+            for (let receipt of receipts) {
+                if (receipt.status === 'ok') {
+                    continue;
+                } else if (receipt.status === 'error') {
+                    console.error(`There was an error sending a notification: ${receipt.message}`);
+                    if (receipt.details && receipt.details.error) {
+                        // The error codes are listed in the Expo documentation:
+                        // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+                        // You must handle the errors appropriately.
+                        console.error(`The error code is ${receipt.details.error}`);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 });
 
 const processPushNotification = async(function () {
@@ -619,7 +645,7 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
 
-        const fields = {};
+        let fields = {};
 
         busboy.on("field", (fieldname, val) => {
             fields[fieldname] = val;
@@ -627,7 +653,7 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
             // console.log('jdub', fieldname, val);
         });
 
-        const params = {};
+        let params = {};
         params.fields = fields;
         params.res = res;
 
@@ -642,38 +668,51 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     }
 });
 
-const getReceipts = async(function (receiptIdChunks) {
-    for (let chunk of receiptIdChunks) {
-        try {
-            let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
-            console.log('jdub', receipts);
+const deleteFiles = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
 
-            // The receipts specify whether Apple or Google successfully received the
-            // notification and information about an error, if one occurred.
-            for (let receipt of receipts) {
-                if (receipt.status === 'ok') {
-                    continue;
-                } else if (receipt.status === 'error') {
-                    console.error(`There was an error sending a notification: ${receipt.message}`);
-                    if (receipt.details && receipt.details.error) {
-                        // The error codes are listed in the Expo documentation:
-                        // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-                        // You must handle the errors appropriately.
-                        console.error(`The error code is ${receipt.details.error}`);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(error);
-        }
+    // console.log('jdub', 'Done parsing form.', fields);
+
+    const storage = admin.storage();
+
+    // let refs = [];
+
+    const length = Object.keys(fields).length;
+    for (let i = 0; i < length; i++) {
+        const number = i + 1;
+        const key = 'file' + number.toString();
+        const value = fields[key];
+
+        // console.log('jdub', key, value);
+
+        const fileRef = storage.bucket(BUCKET_NAME).file(value);
+        /*
+        fileRef.delete().then(function () {
+            // File deleted successfully
+        }).catch(function (error) {
+            // Uh-oh, an error occurred!
+            // res.status(405).end(error + fileRef);
+            res.status(405).end(error);
+        });
+        */
+        await(fileRef.delete());
+
+        // refs.push(fileRef);
     }
+
+    // console.log('jdub', 'Done deleting files in database.');
+
+    // res.status(200).send(refs);
+    res.status(200).send('Deleting files in database is done.');
 });
 
 exports.cleanPostImages = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
 
-        const fields = {};
+        let fields = {};
 
         busboy.on("field", (fieldname, val) => {
             // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
@@ -681,7 +720,7 @@ exports.cleanPostImages = functions.https.onRequest((req, res) => {
             fields[fieldname] = val;
         });
 
-        const params = {};
+        let params = {};
         params.fields = fields;
         params.res = res;
 
@@ -702,42 +741,6 @@ exports.cleanPostImages = functions.https.onRequest((req, res) => {
 
         res.status(405).end(error);
     }
-});
-
-const deleteFiles = async(function () {
-    const params = this;
-    const fields = params.fields;
-    const res = params.res;
-
-    // console.log('jdub', 'Done parsing form.', fields);
-
-    const storage = admin.storage();
-
-    let refs = [];
-
-    const length = Object.keys(fields).length;
-    for (let i = 0; i < length; i++) {
-        const number = i + 1;
-        const key = 'file' + number.toString();
-        const value = fields[key];
-
-        // console.log('jdub', key, value);
-
-        const fileRef = storage.bucket(BUCKET_NAME).file(value);
-        // await(fileRef.delete());
-        fileRef.delete().then(function () {
-            // File deleted successfully
-        }).catch(function (error) {
-            // Uh-oh, an error occurred!
-            res.status(405).end(error + fileRef);
-        });
-
-        refs.push(fileRef);
-    }
-
-    // console.log('jdub', 'Done deleting files in database.');
-
-    res.status(200).send(refs);
 });
 
 /*
@@ -796,7 +799,7 @@ exports.signOutUsers = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
 
-        const fields = {};
+        let fields = {};
 
         busboy.on("field", (fieldname, val) => {
             // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
@@ -804,11 +807,57 @@ exports.signOutUsers = functions.https.onRequest((req, res) => {
             fields[fieldname] = val;
         });
 
-        const params = {};
+        let params = {};
         params.fields = fields;
         params.res = res;
 
         busboy.on("finish", signOut.bind(params));
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});
+
+const deleteFolder = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+
+    // console.log('jdub', 'Done parsing form.', fields);
+
+    const uid = fields.uid;
+    const feedId = fields.feedId;
+
+    const storage = admin.storage();
+    storage.bucket(BUCKET_NAME).deleteFiles({
+        prefix: `images/${uid}/post/${feedId}`
+    });
+
+    const result = 'Deleting files in database is done.';
+
+    res.status(200).send(result);
+});
+
+// Deleting all files within a folder
+exports.deletePostImages = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        let fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            fields[fieldname] = val;
+        });
+
+        let params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", deleteFolder.bind(params));
 
         busboy.end(req.rawBody);
     } else {

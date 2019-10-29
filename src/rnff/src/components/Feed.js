@@ -61,7 +61,7 @@ export default class Feed extends React.Component<FeedProps> {
     @autobind
     // eslint-disable-next-line class-methods-use-this
     keyExtractor(item: FeedEntry): string {
-        return item.post.id;
+        return item.post.d.id;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -108,7 +108,7 @@ export default class Feed extends React.Component<FeedProps> {
 
     render(): React.Node {
         const { onScroll, store, navigation, bounce, ListHeaderComponent } = this.props;
-        const { feed } = store;
+        const { feed } = store; // feedStore
         // const loading = feed === undefined;
 
         return (

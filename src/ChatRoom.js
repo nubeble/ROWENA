@@ -353,7 +353,7 @@ export default class Post extends React.Component<InjectedProps> {
         const item = this.props.navigation.state.params.item;
         const post = item.post;
 
-        const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+        const result = await Firebase.addVisits(Firebase.user().uid, post.d.placeId, post.d.id);
         if (!result) { // post removed
             this.refs["toast"].show('The post no longer exists.', 500);
         } else {
@@ -951,13 +951,13 @@ export default class Post extends React.Component<InjectedProps> {
                         const item = this.props.navigation.state.params.item;
                         const post = item.post;
 
-                        this.openDialog('Report User', 'Are you sure you want to report and block ' + post.name + '?', async () => {
+                        this.openDialog('Report User', 'Are you sure you want to report and block ' + post.d.name + '?', async () => {
                             // report user
 
                             // 1. update database (reporters)
                             const uid = Firebase.user().uid;
-                            const placeId = post.placeId;
-                            const feedId = post.id;
+                            const placeId = post.d.placeId;
+                            const feedId = post.d.id;
 
                             const result = await Firebase.reportPost(uid, placeId, feedId);
                             if (!result) {
@@ -968,12 +968,12 @@ export default class Post extends React.Component<InjectedProps> {
 
                             // 2. update feedStore
                             let _post = post;
-                            if (!_post.reporters) {
+                            if (!_post.d.reporters) {
                                 let reporters = [];
                                 reporters.push(uid);
-                                _post.reporters = reporters;
+                                _post.d.reporters = reporters;
                             } else {
-                                _post.reporters.push(uid);
+                                _post.d.reporters.push(uid);
                             }
 
                             const { feedStore } = this.props;

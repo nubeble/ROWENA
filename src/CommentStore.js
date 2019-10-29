@@ -150,7 +150,7 @@ export default class CommentStore {
                 const feedDoc = await Firebase.firestore.collection("places").doc(item.placeId).collection("feed").doc(item.feedId).get();
                 if (feedDoc.exists) this.posts[item.id] = feedDoc.data();
             } catch (e) {
-                console.log('jdub', 'CommentStore.joinPost, feed not exists. (old comment');
+                console.log('jdub', 'CommentStore.joinPost, feed not exists. (old comment)');
             }
         })());
 

@@ -474,8 +474,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                 const feed = this.feedList.get(feedId);
                 if (feed) { // could be null or undefined
                     // update picture
-                    review.picture = feed.pictures.one.uri;
-                    review.reporters = feed.reporters;
+                    review.picture = feed.d.pictures.one.uri;
+                    review.reporters = feed.d.reporters;
                 }
 
                 newFeeds.push(review);
@@ -502,11 +502,11 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     let feeds = [...this.state.feeds];
                     for (let i = 0; i < feeds.length; i++) {
                         let feed = feeds[i];
-                        if (feed.placeId === newFeed.placeId && feed.feedId === newFeed.id) {
-                            if (feed.picture !== newFeed.pictures.one.uri) changed = true;
+                        if (feed.placeId === newFeed.d.placeId && feed.feedId === newFeed.d.id) {
+                            if (feed.picture !== newFeed.d.pictures.one.uri) changed = true;
 
-                            feed.picture = newFeed.pictures.one.uri;
-                            feed.reporters = newFeed.reporters;
+                            feed.picture = newFeed.d.pictures.one.uri;
+                            feed.reporters = newFeed.d.reporters;
 
                             feeds[i] = feed;
                         }
@@ -514,7 +514,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     !this.closed && this.setState({ feeds });
 
                     // update database
-                    if (changed) Firebase.updateReview(Firebase.user().uid, placeId, feedId, newFeed.pictures.one.uri);
+                    if (changed) Firebase.updateReview(Firebase.user().uid, placeId, feedId, newFeed.d.pictures.one.uri);
                 });
 
                 this.feedsUnsubscribes.push(fi);
@@ -633,7 +633,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         const extra = { placeCounts: feedSize };
 
-        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+        Firebase.addVisits(Firebase.user().uid, post.d.placeId, post.d.id);
         this.props.navigation.navigate("reviewPost", { from: 'ReviewMain', post: post, extra: extra });
 
         // hide indicator

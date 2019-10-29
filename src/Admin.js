@@ -6,6 +6,7 @@ import { Ionicons } from 'react-native-vector-icons';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
+import * as firebase from "firebase";
 import Util from './Util';
 
 const { width, height } = Dimensions.get('window');
@@ -159,11 +160,13 @@ export default class Admin extends React.Component {
                     </TouchableOpacity>
                 */}
 
+                {/*
                 <TouchableOpacity onPress={() => this.changePosts()}
                     style={styles.button}
                 >
                     <Text style={styles.buttonText}>Change Posts</Text>
                 </TouchableOpacity>
+                */}
             </View>
         );
     }
@@ -4044,9 +4047,9 @@ export default class Admin extends React.Component {
         return snapshot.docs.map(doc => doc.id);
     }
 
-    async getFeedDocument(placeId) {
+    async getFeedDocuments(placeId) {
         const snapshot = await Firebase.firestore.collection('places').doc(placeId).collection("feed").get();
-        return snapshot.docs.map(doc => doc.data());
+        return snapshot.docs.map(doc => doc.id);
     }
 
     async updateFeed() {
@@ -4057,98 +4060,146 @@ export default class Admin extends React.Component {
     async changePosts() {
         const placeIds = await this.getPlaceDocuments();
 
-        placeIds.forEach(async element => {
-            let feed = await this.getFeedDocument(element);
+        placeIds.forEach(async placeId => {
+            let feedIds = await this.getFeedDocuments(placeId);
+            feedIds.forEach(async feedId => {
 
-            // ToDo
+                const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
+                await Firebase.firestore.runTransaction(async transaction => {
+                    const feedDoc = await transaction.get(feedRef);
+                    if (!feedDoc.exists) throw 'Feed document not exist!';
+
+                    const feed = feedDoc.data();
 
 
 
 
+
+                    let note = null;
+                    if (feed.d) {
+                        note = feed.d.note;
+                    } else {
+                        note = feed.note;
+                    }
+
+                    let bust = null;
+                    if (feed.d) {
+                        bust = feed.d.bust;
+                    } else {
+                        bust = feed.bust;
+                    }
+
+                    let muscle = null;
+                    if (feed.d) {
+                        muscle = feed.d.muscle;
+                    } else {
+                        muscle = feed.muscle;
+                    }
+
+
+
+                    let reviewCount = 0;
+                    if (feed.d) {
+                        reviewCount = feed.d.reviewCount;
+                    } else {
+                        reviewCount = feed.reviewCount;
+                    }
+
+                    let averageRating = 0;
+                    if (feed.d) {
+                        averageRating = feed.d.averageRating;
+                    } else {
+                        averageRating = feed.averageRating;
+                    }
+
+                    let height = 0;
+                    if (feed.d) {
+                        height = feed.d.height;
+                    } else {
+                        height = feed.height;
+                    }
+
+                    let weight = 0;
+                    if (feed.d) {
+                        weight = feed.d.weight;
+                    } else {
+                        weight = feed.weight;
+                    }
+
+                    let totalVisitCount = 0;
+                    if (feed.d) {
+                        if (feed.d.totalVisitCount) totalVisitCount = feed.d.totalVisitCount;
+                    } else {
+                        if (feed.totalVisitCount) totalVisitCount = feed.totalVisitCount;
+                    }
+
+                    let reporters = [];
+                    if (feed.d) {
+                        if (feed.d.reporters) reporters = feed.d.reporters;
+                    } else {
+                        if (feed.reporters) reporters = feed.reporters;
+                    }
+
+
+
+                    transaction.update(feedRef, {
+                        // add
+                        d: {
+                            uid: feed.uid ? feed.uid : feed.d.uid,
+                            id: feed.id ? feed.id : feed.d.id,
+                            placeId: feed.placeId ? feed.placeId : feed.d.placeId,
+                            placeName: feed.placeName ? feed.placeName : feed.d.placeName,
+                            location: feed.location ? feed.location : feed.d.location,
+                            note: note,
+                            pictures: feed.pictures ? feed.pictures : feed.d.pictures,
+                            reviewCount: reviewCount,
+                            averageRating: averageRating,
+                            reviewStats: feed.reviewStats ? feed.reviewStats : feed.d.reviewStats,
+                            likes: feed.likes ? feed.likes : feed.d.likes,
+                            name: feed.name ? feed.name : feed.d.name,
+                            birthday: feed.birthday ? feed.birthday : feed.d.birthday,
+                            gender: feed.gender ? feed.gender : feed.d.gender,
+                            height: height,
+                            weight: weight,
+                            bodyType: feed.bodyType ? feed.bodyType : feed.d.bodyType,
+                            bust: bust,
+                            muscle: muscle,
+                            timestamp: feed.timestamp ? feed.timestamp : feed.d.timestamp,
+                            rn: feed.rn ? feed.rn : feed.d.rn,
+                            visits: feed.visits ? feed.visits : feed.d.visits,
+                            totalVisitCount: totalVisitCount,
+                            reporters: reporters
+                        },
+
+                        // delete
+                        uid: firebase.firestore.FieldValue.delete(),
+                        id: firebase.firestore.FieldValue.delete(),
+                        placeId: firebase.firestore.FieldValue.delete(),
+                        placeName: firebase.firestore.FieldValue.delete(),
+                        location: firebase.firestore.FieldValue.delete(),
+                        note: firebase.firestore.FieldValue.delete(),
+                        pictures: firebase.firestore.FieldValue.delete(),
+                        reviewCount: firebase.firestore.FieldValue.delete(),
+                        averageRating: firebase.firestore.FieldValue.delete(),
+                        reviewStats: firebase.firestore.FieldValue.delete(),
+                        likes: firebase.firestore.FieldValue.delete(),
+                        name: firebase.firestore.FieldValue.delete(),
+                        birthday: firebase.firestore.FieldValue.delete(),
+                        gender: firebase.firestore.FieldValue.delete(),
+                        height: firebase.firestore.FieldValue.delete(),
+                        weight: firebase.firestore.FieldValue.delete(),
+                        bodyType: firebase.firestore.FieldValue.delete(),
+                        bust: firebase.firestore.FieldValue.delete(),
+                        muscle: firebase.firestore.FieldValue.delete(),
+                        timestamp: firebase.firestore.FieldValue.delete(),
+                        rn: firebase.firestore.FieldValue.delete(),
+                        visits: firebase.firestore.FieldValue.delete(),
+                        totalVisitCount: firebase.firestore.FieldValue.delete(),
+                        reporters: firebase.firestore.FieldValue.delete()
+                    });
+                });
+            });
         });
-        
-
-
-
-
-
-
-
-
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-
-        const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
-        const placeName = 'Jakarta, Indonesia';
-
-        const extra = {
-            lat: -6.180495,
-            lng: 106.8283415
-        };
-
-        const LATITUDE = -6.2087634;
-        const LONGITUDE = 106.845599;
-        const location = {
-            description: '?, Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia',
-            latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
-            longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
-        };
-
-        const note = this.getNote(Math.round(Math.random() * 10) % 3);
-
-        // --
-        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'April';
-        const birthday = '02121996';
-        const height = 167;
-        const weight = 48;
-        const bust = 'B';
-
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.birthday = birthday;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-        feed.muscle = null;
-        feed.gender = 'Woman';
-        feed.bodyType = 'Skinny';
-
-        await Firebase.createFeed(feed, extra);
     }
 }
 

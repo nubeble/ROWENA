@@ -102,32 +102,35 @@ type VisitRef = {
 
 // feed: user id, place id, feed id, pictures, location, note, reviews[review id], averageRating, name, age
 export type Post = {
-    uid: string, // user uid
-    id: string,
-    placeId: string,
-    placeName: string, // country | city, country | city, state, country
-    location: Location,
-    note: string,
-    pictures: Pictures,
-    reviewCount: number,
-    averageRating: number,
-    reviewStats: Array<number>, // [0] - 5, [1] - 4, [2] - 3, [3] - 2, [4] - 1
-    likes: Array<string>, // user uid array
-    name: string,
-    birthday: string, // DDMMYYYY
-    gender: string, // 'Man', 'Woman', 'Other'
-    height: number,
-    weight: number,
-    bodyType: string, // 'Skinny', Fit', 'Thick'
-    bust: string,
-    muscle: string,
-    timestamp: number,
-    rn: number, // random number
+    d: {
+        uid: string, // user uid
+        id: string,
+        placeId: string,
+        placeName: string, // country | city, country | city, state, country
+        location: Location,
+        note: string,
+        pictures: Pictures,
+        reviewCount: number,
+        averageRating: number,
+        reviewStats: Array<number>, // [0] - 5, [1] - 4, [2] - 3, [3] - 2, [4] - 1
+        likes: Array<string>, // user uid array
+        name: string,
+        birthday: string, // DDMMYYYY
+        gender: string, // 'Man', 'Woman', 'Other'
+        height: number,
+        weight: number,
+        bodyType: string, // 'Skinny', Fit', 'Thick'
+        bust: string,
+        muscle: string,
+        timestamp: number,
+        rn: number, // random number
+        visits: VisitRef[], // visit count array
+        totalVisitCount: number,
+        // ranking: number,
+        reporters: Array<string> // user uid array
+    },
     g: string,
-    l: firebase.firestore.GeoPoint,
-    visits: VisitRef[], // visit count array
-    // ranking: number,
-    reporters: Array<string> // user uid array
+    l: firebase.firestore.GeoPoint
 };
 
 export type FeedEntry = { post: Post, profile: Profile };

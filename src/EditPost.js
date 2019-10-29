@@ -17,7 +17,6 @@ import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
-import PreloadImage from './PreloadImage';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -292,7 +291,9 @@ export default class EditPost extends React.Component {
         const { post } = this.props.navigation.state.params;
         // console.log('jdub', 'EditPost', post.uid, post.id);
 
-        const { pictures } = post;
+        const name = post.d.name;
+
+        const pictures = post.d.pictures;
 
         let uploadImage1Uri = null;
         if (pictures.one.uri) {
@@ -338,28 +339,29 @@ export default class EditPost extends React.Component {
             }
         }
 
-        const name = post.name;
+
+
         let birthday = null;
         let datePickerDate = new Date(2000, 0, 1);
-        if (post.birthday) {
-            birthday = Util.getBirthdayText(post.birthday);
-            datePickerDate = Util.getDate(post.birthday);
+        if (post.d.birthday) {
+            birthday = Util.getBirthdayText(post.d.birthday);
+            datePickerDate = Util.getDate(post.d.birthday);
         }
-        const gender = post.gender;
-        const height = post.height + ' cm';
-        const weight = post.weight + ' kg';
-        const bodyType = post.bodyType;
-        // const boobs = post.bust + ' cup';
-        const boobs = post.bust;
-        const biceps = post.muscle;
+        const gender = post.d.gender;
+        const height = post.d.height + ' cm';
+        const weight = post.d.weight + ' kg';
+        const bodyType = post.d.bodyType;
+        // const boobs = post.d.bust + ' cup';
+        const boobs = post.d.bust;
+        const biceps = post.d.muscle;
 
         const cityInfo = {
-            cityId: post.placeId,
-            description: post.placeName,
+            cityId: post.d.placeId,
+            description: post.d.placeName,
             location: null
         };
 
-        const location = post.location;
+        const location = post.d.location;
         const streetInfo = {
             description: location.description,
             longitude: location.longitude,
@@ -369,7 +371,7 @@ export default class EditPost extends React.Component {
         const country = Util.getCountry(location.description);
         const countryCode = Util.getCountyCode(country);
 
-        const note = post.note;
+        const note = post.d.note;
         let noteLength = 0;
         if (note) noteLength = note.length;
 
@@ -923,23 +925,32 @@ export default class EditPost extends React.Component {
         data.pictures = pictures;
 
         // check if gender changed
-        const prevGender = post.gender;
+        const prevGender = post.d.gender;
         let genderChanged = false;
         if (prevGender !== gender) genderChanged = true;
 
-        await Firebase.updateFeed(post.uid, post.placeId, post.id, data, genderChanged, prevGender);
+        const result = await Firebase.updateFeed(post.d.uid, post.d.placeId, post.d.id, data, genderChanged, prevGender);
 
-        await this.removeImagesFromServer();
+        if (!result) {
+            this.refs["toast"].show('An error happened. Please try again later.', 500, () => {
+                // hide loader
+                this.setState({ showPostLoader: false });
 
-        // 3. move to finish page
-        this.refs["toast"].show('Your post updated successfully.', 500, () => {
-            if (this.closed) return;
+                this.props.navigation.dismiss();
+            });
+        } else {
+            await this.removeImagesFromServer();
 
-            // hide loader
-            this.setState({ showPostLoader: false });
+            // 3. move to finish page
+            this.refs["toast"].show('Your post updated successfully.', 500, () => {
+                if (this.closed) return;
 
-            this.props.navigation.dismiss();
-        });
+                // hide loader
+                this.setState({ showPostLoader: false });
+
+                this.props.navigation.dismiss();
+            });
+        }
     }
 
     getImage(lastSavedImageNumber) {
@@ -1640,7 +1651,7 @@ export default class EditPost extends React.Component {
                                 await this.removeUploadedImages();
 
                                 const { post } = this.props.navigation.state.params;
-                                await Firebase.removeFeed(post.uid, post.placeId, post.id);
+                                await Firebase.removeFeed(post.d.uid, post.d.placeId, post.d.id, post.d.pictures, post.d.gender);
 
                                 this.setState({ showPostLoader: false });
                                 this.props.navigation.dismiss();
@@ -2395,7 +2406,7 @@ export default class EditPost extends React.Component {
                             await this.removeUploadedImages();
 
                             const { post } = this.props.navigation.state.params;
-                            await Firebase.removeFeed(post.uid, post.placeId, post.id);
+                            await Firebase.removeFeed(post.d.uid, post.d.placeId, post.d.id, post.d.pictures, post.d.gender);
 
                             this.setState({ showPostLoader: false });
                             this.props.navigation.dismiss();
@@ -2602,7 +2613,7 @@ export default class EditPost extends React.Component {
                     return;
                 }
 
-                const feedId = this.state.post.id;
+                const feedId = this.state.post.d.id;
                 const ref = 'images/' + Firebase.user().uid + '/post/' + feedId + '/' + path.split('/').pop();
 
                 switch (index) {
@@ -2660,7 +2671,7 @@ export default class EditPost extends React.Component {
         const formData = new FormData();
         formData.append("type", "post");
 
-        const feedId = this.state.post.id;
+        const feedId = this.state.post.d.id;
 
         formData.append("feedId", feedId);
 

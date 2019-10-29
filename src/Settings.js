@@ -47,7 +47,9 @@ export default class Settings extends React.Component<InjectedProps> {
             const intro = home.routes.find(item => item.routeName === 'intro');
             const introHome = intro.routes.find(item => item.routeName === 'introHome');
 
-            this.Intro = introHome;
+            this.Intro = introHome; // ToDo
+
+            console.log('Settings Intro params', introHome.params);
         }
     }
 
@@ -405,16 +407,15 @@ export default class Settings extends React.Component<InjectedProps> {
         else if (selectedIndex === 1) showMe = 'Women';
         else if (selectedIndex === 2) showMe = 'Everyone';
 
-        const { profile } = this.props.profileStore;
+        let { profile } = this.props.profileStore;
         if (!profile) return null;
 
         let postFilter = profile.postFilter;
         postFilter.showMe = showMe;
 
-        let data = {};
-        data.postFilter = postFilter;
+        profile.postFilter = postFilter;
 
-        await Firebase.updateShowMe(profile.uid, data);
+        await Firebase.updateShowMe(profile.uid, profile);
 
         Vars.showMe = showMe;
 

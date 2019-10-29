@@ -46,11 +46,11 @@ export default class WriteReviewScreen extends React.Component {
         const { post, rating } = this.props.navigation.state.params;
 
         if (Platform.OS === 'android') {
-            this.setState({ name: post.name, gender: post.gender, picture: post.pictures.one.uri, rating });
+            this.setState({ name: post.d.name, gender: post.d.gender, picture: post.d.pictures.one.uri, rating });
 
             this.refs.rating.setPosition(rating); // bug in AirbnbRating
         } else {
-            this.setState({ name: post.name, gender: post.gender, picture: post.pictures.one.uri });
+            this.setState({ name: post.d.name, gender: post.d.gender, picture: post.d.pictures.one.uri });
         }
 
         // Consider: move to onFocus
@@ -120,7 +120,7 @@ export default class WriteReviewScreen extends React.Component {
         }
 
         const { post, user } = this.props.navigation.state.params;
-        if (user.uid === post.uid) {
+        if (user.uid === post.d.uid) {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
@@ -133,7 +133,7 @@ export default class WriteReviewScreen extends React.Component {
 
         this.setState({ showPostLoader: true });
 
-        const result = await Firebase.addReview(post.uid, post.placeId, post.id, post.pictures.one.uri,
+        const result = await Firebase.addReview(post.uid, post.d.placeId, post.d.id, post.d.pictures.one.uri,
             user.uid, user.name, user.place, user.picture,
             comment, this.state.rating);
 
@@ -168,13 +168,13 @@ export default class WriteReviewScreen extends React.Component {
 
         const sender = Firebase.user().uid;
         const senderName = Firebase.user().name;
-        const receiver = post.uid; // owner
+        const receiver = post.d.uid; // owner
 
         const data = {
             // message: senderName + ' wrote a review: ' + message,
             message,
-            placeId: post.placeId,
-            feedId: post.id
+            placeId: post.d.placeId,
+            feedId: post.d.id
         };
 
         sendPushNotification(sender, senderName, receiver, Cons.pushNotification.review, data);

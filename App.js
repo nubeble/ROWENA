@@ -122,26 +122,21 @@ export default class App extends React.Component {
     @autobind
     handleAppStateChange(state) { // "active" | "background" | "inactive"
         const { profileStore } = this;
-        const profile = profileStore.profile;
-
+        let profile = profileStore.profile;
         if (!profile) return;
 
         console.log('jdub', 'AppState', state);
 
         if (state === 'active') {
-            const data = {
-                activating: true,
-                lastLogInTime: Date.now()
-            };
+            profile.activating = true;
+            profile.lastLogInTime = Date.now();
 
-            Firebase.updateProfile(profile.uid, data, false);
+            Firebase.updateProfile(profile.uid, profile, false);
         } else if (state === "background" || state === 'inactive') {
-            const data = {
-                activating: false,
-                lastLogInTime: Date.now()
-            };
+            profile.activating = false;
+            profile.lastLogInTime = Date.now();
 
-            Firebase.updateProfile(profile.uid, data, false);
+            Firebase.updateProfile(profile.uid, profile, false);
         }
     }
 

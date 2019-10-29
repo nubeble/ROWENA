@@ -15,7 +15,7 @@ const DEFAULT_PROFILE: Profile = {
     email: 'email',
     phoneNumber: 'phoneNumber',
     picture: {
-        preview: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABgElEQVQYGQ2Qu0tbcQCFv1+87xCrSb0mJMaQpPGi1QwtilmEqlPHQuna/6B/gnOhQ6aOxaWUIuLiA4eIhSrSDg4mJAqNpNhq6qPk0cTcJLd3ONP5OB8cwcalg3BY0mDckLm7vcbs3lMzI3xs2NDHrQUe1RBMeAUM6vR6bR7nPhHe+UDYrvHar5PWBQE30rwqCBka5n2D8P46oaNV5P4V7bEI9vIrfA98lP51kKZ8Ov5WjWBujdBu1lUkcUSKwb33XKoG4WcvMFxGGmveEMitE9l8i9b283XUS0dTWa4oDGxnsVUNdeE5Ay8T8ZXE5zcoVzr5QIxoapikqXBhS0TyZYxfh9RH4u5i8Tv9E8hnJhl99JCJSgVNl5CsGGfiCcmtbaLzx4gNw3RKs2msoIZ1cc75aZ1ezSa1EOSnNUX5xy2xowLi3eKiY7n3mKU8N6XfNL0ysugx1OgTylhUp6cpVFtI8W4dvnyj8Nfh2qPQNboMyx4aHYXWQZFg9Q8zT+f4D7nQgfd+SkaGAAAAAElFTkSuQmCC",
+        preview: null,
         uri: null
     },
     about: 'about',
@@ -128,12 +128,12 @@ export default class FeedStore {
     }
 
     addToFeed(entries: FeedEntry[]) {
-        const feed = _.uniqBy([...this.feed.slice(), ...entries], entry => entry.post.id);
+        const feed = _.uniqBy([...this.feed.slice(), ...entries], entry => entry.post.d.id);
 
-        if (this.order === 'timestamp') this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]);
-        else if (this.order === 'averageRating') this.feed = _.orderBy(feed, entry => entry.post.averageRating, ["desc"]);
-        else if (this.order === 'reviewCount') this.feed = _.orderBy(feed, entry => entry.post.reviewCount, ["desc"]);
-        // else if (this.order === 'age') this.feed = _.orderBy(feed, entry => entry.post.age, ["desc"]);
+        if (this.order === 'd.timestamp') this.feed = _.orderBy(feed, entry => entry.post.d.timestamp, ["desc"]);
+        else if (this.order === 'd.averageRating') this.feed = _.orderBy(feed, entry => entry.post.d.averageRating, ["desc"]);
+        else if (this.order === 'd.reviewCount') this.feed = _.orderBy(feed, entry => entry.post.d.reviewCount, ["desc"]);
+        else if (this.order === 'd.totalVisitCount') this.feed = _.orderBy(feed, entry => entry.post.d.totalVisitCount, ["desc"]);
         else this.feed = feed;
     }
 
@@ -193,7 +193,7 @@ export default class FeedStore {
 
                 if (this.feed) {
                     this.feed.forEach((entry, index) => {
-                        if (entry.post.id === id) {
+                        if (entry.post.d.id === id) {
                             this.feed[index].post = post;
                         }
                     });
@@ -205,23 +205,23 @@ export default class FeedStore {
         );
     }
 
-    subscribeToProfile(id: string, callback: Profile => void): Subscription {
+    subscribeToProfile(uid: string, callback: Profile => void): Subscription {
         console.log('jdub', 'FeedStore.subscribeToProfile');
 
         /*
-        return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
+        return Firebase.firestore.collection("users").doc(uid).onSnapshot(snap => {
             const profile = snap.exists ? snap.data() : DEFAULT_PROFILE;
             console.log('jdub', 'FeedStore, profile changed.');
             callback(profile);
 
             this.feed.forEach((entry, index) => {
-                if (entry.post.uid === id) {
+                if (entry.post.uid === uid) {
                     this.feed[index].profile = profile;
                 }
             });
         });
         */
-        return Firebase.firestore.collection("users").doc(id).onSnapshot(
+        return Firebase.firestore.collection("users").doc(uid).onSnapshot(
             snap => {
                 const profile = snap.data();
 
@@ -235,7 +235,7 @@ export default class FeedStore {
 
                 if (this.feed) {
                     this.feed.forEach((entry, index) => {
-                        if (entry.post.uid === id) {
+                        if (entry.post.d.uid === uid) {
                             this.feed[index].profile = profile;
                         }
                     });
@@ -250,7 +250,7 @@ export default class FeedStore {
     async joinProfiles(posts: Post[]): Promise<FeedEntry[]> {
         // console.log('jdub', 'FeedStore.joinProfiles');
 
-        const uids = posts.map(post => post.uid).filter(uid => this.profiles[uid] === undefined);
+        const uids = posts.map(post => post.d.uid).filter(uid => this.profiles[uid] === undefined);
 
         const profilePromises = _.uniq(uids).map(uid => (async () => {
             try {
@@ -265,7 +265,7 @@ export default class FeedStore {
         await Promise.all(profilePromises);
 
         return posts.map(post => {
-            const profile = this.profiles[post.uid];
+            const profile = this.profiles[post.d.uid];
 
             // return { profile, post };
             if (profile) return { profile, post };
@@ -275,7 +275,7 @@ export default class FeedStore {
     updateFeed(post) {
         if (this.feed) {
             this.feed.forEach((entry, index) => {
-                if (entry.post.id === post.id) {
+                if (entry.post.d.id === post.d.id) {
                     this.feed[index].post = post;
                 }
             });
@@ -285,15 +285,13 @@ export default class FeedStore {
     updateFeeds(posts) {
         if (this.feed) {
             this.feed.forEach((entry, index) => {
-
                 for (let i = 0; i < posts.length; i++) {
                     const post = posts[i];
-                    if (entry.post.id === post.id) {
+                    if (entry.post.d.id === post.d.id) {
                         this.feed[index].post = post;
                         break;
                     }
                 }
-
             });
         }
     }

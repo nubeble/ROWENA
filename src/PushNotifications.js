@@ -111,7 +111,7 @@ export async function unregisterExpoPushToken(uid) {
 }
 */
 
-export function sendPushNotification(sender, senderName, receiver, type, data) {
+export async function sendPushNotification(sender, senderName, receiver, type, data) {
     console.log('jdub', 'sendPushNotification', sender, receiver, data);
 
     const formData = new FormData();
@@ -154,7 +154,7 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
         formData.append("feedId", data.feedId);
     }
 
-    return fetch(SERVER_ENDPOINT + "sendPushNotification", {
+    return await fetch(SERVER_ENDPOINT + "sendPushNotification", {
         method: "POST",
         headers: {
             Accept: "application/json",

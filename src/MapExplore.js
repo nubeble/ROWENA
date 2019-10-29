@@ -149,7 +149,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
     initFromPost(post) {
         // update state post
         let feeds = [...this.state.feeds];
-        let index = feeds.findIndex(el => el.placeId === post.placeId && el.id === post.id);
+        let index = feeds.findIndex(el => el.placeId === post.d.placeId && el.id === post.d.id);
         if (index !== -1) {
             feeds[index] = post;
             !this.closed && this.setState({ feeds });
@@ -169,7 +169,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
         else if (Vars.showMe === 'Women') gender = 'Woman';
 
         if (gender) {
-            geocollection = this.gf.collection("places").doc(placeId).collection("feed").where("gender", "==", gender);
+            geocollection = this.gf.collection("places").doc(placeId).collection("feed").where("d.gender", "==", gender);
         } else {
             geocollection = this.gf.collection("places").doc(placeId).collection("feed");
         }
@@ -383,9 +383,9 @@ export default class MapExplore extends React.Component<InjectedProps> {
         for (let i = 0; i < feeds.length; i++) {
             const post = feeds[i];
 
-            const latitude = post.location.latitude;
-            const longitude = post.location.longitude;
-            const rating = Math.floor(post.averageRating);
+            const latitude = post.d.location.latitude;
+            const longitude = post.d.location.longitude;
+            const rating = Math.floor(post.d.averageRating);
             // const rating = i % 6; // Test
 
             let image = null;
@@ -530,7 +530,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
 
             if (i === 0) {
                 post && pictures.push(
-                    <View key={post.id} style={styles.view_front}>
+                    <View key={post.d.id} style={styles.view_front}>
                         {
                             this.renderPost(post)
                         }
@@ -538,7 +538,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                 );
             } else if (i !== 0 && i === feeds.length - 1) {
                 post && pictures.push(
-                    <View key={post.id} style={styles.view_rear}>
+                    <View key={post.d.id} style={styles.view_rear}>
                         {
                             this.renderPost(post)
                         }
@@ -546,7 +546,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                 );
             } else {
                 post && pictures.push(
-                    <View key={post.id} style={styles.view_middle}>
+                    <View key={post.d.id} style={styles.view_middle}>
                         {
                             this.renderPost(post)
                         }
@@ -594,17 +594,17 @@ export default class MapExplore extends React.Component<InjectedProps> {
         if (feeds.length === 0) return null;
 
         const post = feeds[index];
-        const latitude = post.location.latitude;
-        const longitude = post.location.longitude;
+        const latitude = post.d.location.latitude;
+        const longitude = post.d.location.longitude;
 
         return ({ latitude, longitude });
     }
 
     renderPost(post) {
-        if (!post.reporters || post.reporters.length === 0 || post.reporters.indexOf(Firebase.user().uid) === -1) {
+        if (!post.d.reporters || post.d.reporters.length === 0 || post.d.reporters.indexOf(Firebase.user().uid) === -1) {
             // placeName
             /*
-            let placeName = post.placeName;
+            let placeName = post.d.placeName;
             const words = placeName.split(', ');
             if (words.length > 2) {
                 const city = words[0];
@@ -612,12 +612,12 @@ export default class MapExplore extends React.Component<InjectedProps> {
                 placeName = city + ', ' + country;
             }
             */
-            const distance = Util.getDistance(post.location, Vars.location);
+            const distance = Util.getDistance(post.d.location, Vars.location);
 
             return (
                 <TouchableOpacity activeOpacity={1}
                     onPress={async () => {
-                        const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                        const result = await Firebase.addVisits(Firebase.user().uid, post.d.placeId, post.d.id);
                         if (!result) {
                             this.refs["toast"].show('The post no longer exists.', 500);
                         } else {
@@ -632,7 +632,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                         style={styles.item}
                         showSpinner={false}
                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={post.pictures.one.uri}
+                        uri={post.d.pictures.one.uri}
                     />
 
                     <LinearGradient
@@ -643,7 +643,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                     />
 
                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={styles.feedItemText}>{post.name} {Util.getAge(post.birthday)}</Text>
+                        <Text style={styles.feedItemText}>{post.d.name} {Util.getAge(post.d.birthday)}</Text>
                         <Text style={styles.feedItemText}>{distance}</Text>
                         {
                             this.renderReview(post)
@@ -652,18 +652,18 @@ export default class MapExplore extends React.Component<InjectedProps> {
                 </TouchableOpacity>
             );
         } else {
-            const distance = Util.getDistance(post.location, Vars.location);
+            const distance = Util.getDistance(post.d.location, Vars.location);
 
             return (
                 <TouchableOpacity activeOpacity={1}
                     onPress={() => {
-                        this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + post.name + '?', async () => {
+                        this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + post.d.name + '?', async () => {
                             // unblock
 
                             // 1. update database (reporters)
                             const uid = Firebase.user().uid;
-                            const placeId = post.placeId;
-                            const feedId = post.id;
+                            const placeId = post.d.placeId;
+                            const feedId = post.d.id;
 
                             const result = await Firebase.unblockPost(uid, placeId, feedId);
                             if (!result) {
@@ -674,8 +674,8 @@ export default class MapExplore extends React.Component<InjectedProps> {
 
                             // 2. update state post
                             let _post = post;
-                            const index = _post.reporters.indexOf(uid);
-                            _post.reporters.splice(index, 1);
+                            const index = _post.d.reporters.indexOf(uid);
+                            _post.d.reporters.splice(index, 1);
                             this.initFromPost(_post);
                         });
                     }}
@@ -684,7 +684,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                         style={styles.item}
                         showSpinner={false}
                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={post.pictures.one.uri}
+                        uri={post.d.pictures.one.uri}
                     />
 
                     <LinearGradient
@@ -695,7 +695,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                     />
 
                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={styles.feedItemText}>{post.name}</Text>
+                        <Text style={styles.feedItemText}>{post.d.name}</Text>
                         <Text style={styles.feedItemText}>{distance}</Text>
                         {
                             this.renderReview(post)
@@ -730,7 +730,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
 
     renderReview(post) {
         // defaultRating, averageRating
-        const averageRating = post.averageRating;
+        const averageRating = post.d.averageRating;
 
         const integer = Math.floor(averageRating);
 
@@ -743,13 +743,13 @@ export default class MapExplore extends React.Component<InjectedProps> {
 
         /*
         let likesCount = 0;
-        if (post.likes) {
-            likesCount = post.likes.length;
+        if (post.d.likes) {
+            likesCount = post.d.likes.length;
         }
         */
-        const visitCount = Util.getVisitCount(post.visits);
+        const visitCount = Util.getVisitCount(post.d.visits);
 
-        if (post.reviewCount > 0) {
+        if (post.d.reviewCount > 0) {
             if (Platform.OS === 'android') {
                 // ratings & reviews
                 return (
@@ -771,7 +771,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                             </View>
                             <Text style={styles.rating}>{number}</Text>
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                            <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(post.d.reviewCount)}</Text>
                         </View>
                     </View>
                 );
@@ -805,7 +805,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                             <Text style={[styles.rating, { color: Theme.color.title }]}>{visitCount}</Text>
 
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={'#f1c40f'} size={12} />
-                            <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(post.d.reviewCount)}</Text>
                         </View>
                     </View>
                 );

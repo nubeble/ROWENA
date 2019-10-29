@@ -376,7 +376,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 this.refs["toast"].show('Please try again later.', 500);
                 return;
             }
-            // count = placeDoc.data().count; // 1026           
+
             count = this._getPlaceCount(placeDoc.data(), Vars.showMe);
             const counts = {
                 count: newPlace.count,
@@ -389,7 +389,6 @@ export default class Intro extends React.Component<InjectedProps> {
             // --
             if (!Intro.feedCountList.has(result.place_id)) {
                 // this will be updated in subscribe
-                // Intro.feedCountList.set(result.place_id, -1); // 1026
                 Intro.feedCountList.set(result.place_id, null);
 
                 const ci = Firebase.subscribeToPlace(result.place_id, newPlace => {
@@ -400,7 +399,6 @@ export default class Intro extends React.Component<InjectedProps> {
                         return;
                     }
 
-                    // Intro.feedCountList.set(result.place_id, newPlace.count); // 1026
                     const value = {
                         count: newPlace.count,
                         men: newPlace.men,
@@ -476,7 +474,7 @@ export default class Intro extends React.Component<InjectedProps> {
         snap.forEach(async (doc) => {
             const placeId = doc.id;
             const place = doc.data();
-            // const count = place.count; // 1026
+
             const count = this._getPlaceCount(place, Vars.showMe);
 
             if (count > 0) {
@@ -485,6 +483,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 else if (Vars.showMe === 'Women') gender = 'Woman';
 
                 const uri = await Firebase.getPlaceRandomFeedImage(placeId, gender); // gender: Woman, Man, null
+                console.log('!!!!', index, uri);
 
                 places[index] = {
                     // ...places[index],
@@ -511,7 +510,6 @@ export default class Intro extends React.Component<InjectedProps> {
                         // --
                         if (!Intro.feedCountList.has(__placeId)) {
                             // this will be updated in subscribe
-                            // Intro.feedCountList.set(__placeId, -1); // 1026
                             Intro.feedCountList.set(__placeId, null);
 
                             const ci = Firebase.subscribeToPlace(__placeId, newPlace => {
@@ -522,7 +520,6 @@ export default class Intro extends React.Component<InjectedProps> {
                                     return;
                                 }
 
-                                // Intro.feedCountList.set(__placeId, newPlace.count); // 1026
                                 const value = {
                                     count: newPlace.count,
                                     men: newPlace.men,
@@ -559,7 +556,6 @@ export default class Intro extends React.Component<InjectedProps> {
         console.log('jdub', 'Intro.updatePlace, index', __index);
         if (__index !== -1) {
             let __place = __places[__index];
-            // __place.length = place.count; // 1026
             __place.length = this._getPlaceCount(place, Vars.showMe);
 
             if (typeof __place.newPostAdded === 'undefined') {
@@ -629,21 +625,21 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe post
             // --
-            if (!Intro.feedList.has(feed.id)) {
+            if (!Intro.feedList.has(feed.d.id)) {
                 // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
+                Intro.feedList.set(feed.d.id, null);
 
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                const fi = Firebase.subscribeToFeed(feed.d.placeId, feed.d.id, newFeed => {
                     if (newFeed === null) return; // error
 
                     if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
+                        Intro.feedList.delete(feed.d.id);
                         return;
                     }
 
                     // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
+                    Intro.feedList.set(feed.d.id, newFeed);
 
                     this.updateFeed(newFeed);
                 });
@@ -654,28 +650,26 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe feed count
             // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
+            if (!Intro.feedCountList.has(feed.d.placeId)) {
                 // this will be updated in subscribe
-                // Intro.feedCountList.set(feed.placeId, -1); // 1026
-                Intro.feedCountList.set(feed.placeId, null);
+                Intro.feedCountList.set(feed.d.placeId, null);
 
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                const ci = Firebase.subscribeToPlace(feed.d.placeId, newPlace => {
                     if (newPlace === null) return; // error
 
                     if (newPlace === undefined) {
-                        Intro.feedCountList.delete(feed.placeId);
+                        Intro.feedCountList.delete(feed.d.placeId);
                         return;
                     }
 
-                    // Intro.feedCountList.set(feed.placeId, newPlace.count); // 1026
                     const value = {
                         count: newPlace.count,
                         men: newPlace.men,
                         women: newPlace.women
                     };
-                    Intro.feedCountList.set(feed.placeId, value);
+                    Intro.feedCountList.set(feed.d.placeId, value);
 
-                    this.updatePlace(feed.placeId, newPlace);
+                    this.updatePlace(feed.d.placeId, newPlace);
                 });
 
                 Intro.countsUnsubscribes.push(ci);
@@ -734,21 +728,21 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe post
             // --
-            if (!Intro.feedList.has(feed.id)) {
+            if (!Intro.feedList.has(feed.d.id)) {
                 // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
+                Intro.feedList.set(feed.d.id, null);
 
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                const fi = Firebase.subscribeToFeed(feed.d.placeId, feed.d.id, newFeed => {
                     if (newFeed === null) return; // error
 
                     if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
+                        Intro.feedList.delete(feed.d.id);
                         return;
                     }
 
                     // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
+                    Intro.feedList.set(feed.d.id, newFeed);
 
                     this.updateFeed(newFeed);
                 });
@@ -759,28 +753,26 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe feed count
             // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
+            if (!Intro.feedCountList.has(feed.d.placeId)) {
                 // this will be updated in subscribe
-                // Intro.feedCountList.set(feed.placeId, -1); // 1026
-                Intro.feedCountList.set(feed.placeId, null);
+                Intro.feedCountList.set(feed.d.placeId, null);
 
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                const ci = Firebase.subscribeToPlace(feed.d.placeId, newPlace => {
                     if (newPlace === null) return; // error
 
                     if (newPlace === undefined) {
-                        Intro.feedCountList.delete(feed.placeId);
+                        Intro.feedCountList.delete(feed.d.placeId);
                         return;
                     }
 
-                    // Intro.feedCountList.set(feed.placeId, newPlace.count); // 1026
                     const value = {
                         count: newPlace.count,
                         men: newPlace.men,
                         women: newPlace.women
                     };
-                    Intro.feedCountList.set(feed.placeId, value);
+                    Intro.feedCountList.set(feed.d.placeId, value);
 
-                    this.updatePlace(feed.placeId, newPlace);
+                    this.updatePlace(feed.d.placeId, newPlace);
                 });
 
                 Intro.countsUnsubscribes.push(ci);
@@ -804,6 +796,9 @@ export default class Intro extends React.Component<InjectedProps> {
             placeList = await Firebase.getRandomPlaces(placesSize);
             placeList = Util.shuffle(placeList);
         }
+
+        console.log('getPosts() placeList.length', placeList.length);
+
         placesSize = placeList.length; // actual read size
         const length1 = placesSize / 2;
         // const length2 = placesSize - length1;
@@ -972,21 +967,21 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe post
             // --
-            if (!Intro.feedList.has(feed.id)) {
+            if (!Intro.feedList.has(feed.d.id)) {
                 // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
+                Intro.feedList.set(feed.d.id, null);
 
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                const fi = Firebase.subscribeToFeed(feed.d.placeId, feed.d.id, newFeed => {
                     if (newFeed === null) return; // error
 
                     if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
+                        Intro.feedList.delete(feed.d.id);
                         return;
                     }
 
                     // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
+                    Intro.feedList.set(feed.d.id, newFeed);
 
                     this.updateFeed(newFeed);
                 });
@@ -997,28 +992,26 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe feed count
             // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
+            if (!Intro.feedCountList.has(feed.d.placeId)) {
                 // this will be updated in subscribe
-                // Intro.feedCountList.set(feed.placeId, -1); // 1026
-                Intro.feedCountList.set(feed.placeId, null);
+                Intro.feedCountList.set(feed.d.placeId, null);
 
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                const ci = Firebase.subscribeToPlace(feed.d.placeId, newPlace => {
                     if (newPlace === null) return; // error
 
                     if (newPlace === undefined) {
-                        Intro.feedCountList.delete(feed.placeId);
+                        Intro.feedCountList.delete(feed.d.placeId);
                         return;
                     }
 
-                    // Intro.feedCountList.set(feed.placeId, newPlace.count); // 1026
                     const value = {
                         count: newPlace.count,
                         men: newPlace.men,
                         women: newPlace.women
                     };
-                    Intro.feedCountList.set(feed.placeId, value);
+                    Intro.feedCountList.set(feed.d.placeId, value);
 
-                    this.updatePlace(feed.placeId, newPlace);
+                    this.updatePlace(feed.d.placeId, newPlace);
                 });
 
                 Intro.countsUnsubscribes.push(ci);
@@ -1033,21 +1026,21 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe post
             // --
-            if (!Intro.feedList.has(feed.id)) {
+            if (!Intro.feedList.has(feed.d.id)) {
                 // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
+                Intro.feedList.set(feed.d.id, null);
 
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                const fi = Firebase.subscribeToFeed(feed.d.placeId, feed.d.id, newFeed => {
                     if (newFeed === null) return; // error
 
                     if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
+                        Intro.feedList.delete(feed.d.id);
                         return;
                     }
 
                     // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
+                    Intro.feedList.set(feed.d.id, newFeed);
 
                     this.updateFeed(newFeed);
                 });
@@ -1058,28 +1051,26 @@ export default class Intro extends React.Component<InjectedProps> {
 
             // subscribe feed count
             // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
+            if (!Intro.feedCountList.has(feed.d.placeId)) {
                 // this will be updated in subscribe
-                // Intro.feedCountList.set(feed.placeId, -1); // 1026
-                Intro.feedCountList.set(feed.placeId, null);
+                Intro.feedCountList.set(feed.d.placeId, null);
 
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                const ci = Firebase.subscribeToPlace(feed.d.placeId, newPlace => {
                     if (newPlace === null) return; // error
 
                     if (newPlace === undefined) {
-                        Intro.feedCountList.delete(feed.placeId);
+                        Intro.feedCountList.delete(feed.d.placeId);
                         return;
                     }
 
-                    // Intro.feedCountList.set(feed.placeId, newPlace.count); // 1026
                     const value = {
                         count: newPlace.count,
                         men: newPlace.men,
                         women: newPlace.women
                     };
-                    Intro.feedCountList.set(feed.placeId, value);
+                    Intro.feedCountList.set(feed.d.placeId, value);
 
-                    this.updatePlace(feed.placeId, newPlace);
+                    this.updatePlace(feed.d.placeId, newPlace);
                 });
 
                 Intro.countsUnsubscribes.push(ci);
@@ -1091,9 +1082,9 @@ export default class Intro extends React.Component<InjectedProps> {
     updateFeed(newFeed) {
         // update popularFeeds
         let _popularFeeds = [...this.state.popularFeeds];
-        const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+        const index = _popularFeeds.findIndex(item => item.d.placeId === newFeed.d.placeId && item.d.id === newFeed.d.id); // snap.id
         if (index !== -1) {
-            console.log('jdub', 'popularFeeds[', index, '] changed.');
+            // console.log('jdub', 'popularFeeds[', index, '] changed.');
             _popularFeeds[index] = newFeed;
             !this.closed && this.setState({ popularFeeds: _popularFeeds });
 
@@ -1102,7 +1093,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
         // update recentFeeds
         let _recentFeeds = [...this.state.recentFeeds];
-        const index2 = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+        const index2 = _recentFeeds.findIndex(item => item.d.placeId === newFeed.d.placeId && item.d.id === newFeed.d.id); // snap.id
         if (index2 !== -1) {
             console.log('jdub', 'recentFeeds[', index2, '] changed.');
             _recentFeeds[index2] = newFeed;
@@ -1750,7 +1741,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
             if (i === 0) {
                 feed && pictures.push(
-                    <View key={feed.id} style={styles.view_front}>
+                    <View key={feed.d.id} style={styles.view_front}>
                         {
                             this.renderFeedItem(feed)
                         }
@@ -1758,7 +1749,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 );
             } else if (i !== 0 && i === feeds.length - 1) {
                 feed && pictures.push(
-                    <View key={feed.id} style={styles.view_rear}>
+                    <View key={feed.d.id} style={styles.view_rear}>
                         {
                             this.renderFeedItem(feed)
                         }
@@ -1766,7 +1757,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 );
             } else {
                 feed && pictures.push(
-                    <View key={feed.id} style={styles.view_middle}>
+                    <View key={feed.d.id} style={styles.view_middle}>
                         {
                             this.renderFeedItem(feed)
                         }
@@ -1864,7 +1855,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
             if (i === 0) {
                 feed && pictures.push(
-                    <View key={feed.id} style={styles.view_front}>
+                    <View key={feed.d.id} style={styles.view_front}>
                         {
                             this.renderFeedItem(feed)
                         }
@@ -1872,7 +1863,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 );
             } else if (i !== 0 && i === feeds.length - 1) {
                 feed && pictures.push(
-                    <View key={feed.id} style={styles.view_rear}>
+                    <View key={feed.d.id} style={styles.view_rear}>
                         {
                             this.renderFeedItem(feed)
                         }
@@ -1880,7 +1871,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 );
             } else {
                 feed && pictures.push(
-                    <View key={feed.id} style={styles.view_middle}>
+                    <View key={feed.d.id} style={styles.view_middle}>
                         {
                             this.renderFeedItem(feed)
                         }
@@ -1914,14 +1905,14 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     renderFeedItem(feed) {
-        if (!feed.reporters || feed.reporters.length === 0 || feed.reporters.indexOf(Firebase.user().uid) === -1) {
-            let placeName = feed.placeName;
+        if (!feed.d.reporters || feed.d.reporters.length === 0 || feed.d.reporters.indexOf(Firebase.user().uid) === -1) {
+            let placeName = feed.d.placeName;
             // placeName = Util.getPlaceName(placeName);
 
             return (
                 <TouchableOpacity activeOpacity={1}
                     onPress={async () => {
-                        const post = this.getPost(feed.id);
+                        const post = this.getPost(feed.d.id);
                         if (post === null) {
                             // the post is not subscribed yet
                             this.refs["toast"].show('Please try again.', 500);
@@ -1933,7 +1924,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             return;
                         }
 
-                        const feedSize = this.getPlaceCounts(feed.placeId);
+                        const feedSize = this.getPlaceCounts(feed.d.placeId);
                         if (feedSize === null) {
                             this.refs["toast"].show('Please try again.', 500);
                             return;
@@ -1951,21 +1942,13 @@ export default class Intro extends React.Component<InjectedProps> {
                         const result = await Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
                         this.props.navigation.navigate("introPost", { post: result, extra });
                         */
-                        Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
+                        Firebase.addVisits(Firebase.user().uid, feed.d.placeId, feed.d.id);
                         this.props.navigation.navigate("introPost", { post, extra });
                     }}
                 >
-                    {/*
-                    <SmartImage
-                        style={styles.item}
-                        showSpinner={false}
-                        // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={feed.pictures.one.uri}
-                    />
-                    */}
                     <Image
                         style={styles.item}
-                        source={{ uri: feed.pictures.one.uri }}
+                        source={{ uri: feed.d.pictures.one.uri }}
                     />
 
                     <LinearGradient
@@ -1977,7 +1960,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
 
-                        <Text style={styles.feedItemText}>{feed.name} {Util.getAge(feed.birthday)}</Text>
+                        <Text style={styles.feedItemText}>{feed.d.name} {Util.getAge(feed.d.birthday)}</Text>
                         <Text style={styles.feedItemText}>{placeName}</Text>
                         {
                             this.renderReview(feed)
@@ -1986,18 +1969,18 @@ export default class Intro extends React.Component<InjectedProps> {
                 </TouchableOpacity>
             );
         } else {
-            let placeName = feed.placeName;
+            let placeName = feed.d.placeName;
 
             return (
                 <TouchableOpacity activeOpacity={1}
                     onPress={() => {
-                        this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + feed.name + '?', async () => {
+                        this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + feed.d.name + '?', async () => {
                             // unblock
 
                             // 1. update database (reporters)
                             const uid = Firebase.user().uid;
-                            const placeId = feed.placeId;
-                            const feedId = feed.id;
+                            const placeId = feed.d.placeId;
+                            const feedId = feed.d.id;
 
                             const result = await Firebase.unblockPost(uid, placeId, feedId);
                             if (!result) {
@@ -2010,7 +1993,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 >
                     <Image
                         style={styles.item}
-                        source={{ uri: feed.pictures.one.uri }}
+                        source={{ uri: feed.d.pictures.one.uri }}
                     />
 
                     <LinearGradient
@@ -2021,7 +2004,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     />
 
                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={styles.feedItemText}>{feed.name}</Text>
+                        <Text style={styles.feedItemText}>{feed.d.name}</Text>
                         <Text style={styles.feedItemText}>{placeName}</Text>
                         {
                             this.renderReview(feed)
@@ -2056,7 +2039,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
     renderReview(feed) {
         // defaultRating, averageRating
-        const averageRating = feed.averageRating;
+        const averageRating = feed.d.averageRating;
 
         const integer = Math.floor(averageRating);
 
@@ -2073,9 +2056,9 @@ export default class Intro extends React.Component<InjectedProps> {
             likesCount = feed.likes.length;
         }
         */
-        const visitCount = Util.getVisitCount(feed.visits);
+        const visitCount = Util.getVisitCount(feed.d.visits);
 
-        if (feed.reviewCount > 0) {
+        if (feed.d.reviewCount > 0) {
             if (Platform.OS === 'android') {
                 // ratings & reviews
                 return (
@@ -2097,7 +2080,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             </View>
                             <Text style={styles.rating}>{number}</Text>
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                            <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.d.reviewCount)}</Text>
                         </View>
                     </View>
                 );
@@ -2131,7 +2114,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             <Text style={[styles.rating, { color: Theme.color.title }]}>{visitCount}</Text>
 
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={'#f1c40f'} size={12} />
-                            <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.d.reviewCount)}</Text>
                         </View>
                     </View>
                 );

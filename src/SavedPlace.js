@@ -219,16 +219,16 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 const __feed = this.feedList.get(feedId);
 
                 const newFeed = {
-                    name: __feed.name,
-                    birthday: __feed.birthday,
-                    placeName: __feed.placeName,
-                    placeId: __feed.placeId,
-                    feedId: __feed.id,
-                    picture: __feed.pictures.one.uri,
-                    reviewCount: __feed.reviewCount,
-                    averageRating: __feed.averageRating,
-                    reporters: __feed.reporters,
-                    visits: __feed.visits
+                    name: __feed.d.name,
+                    birthday: __feed.d.birthday,
+                    placeName: __feed.d.placeName,
+                    placeId: __feed.d.placeId,
+                    feedId: __feed.d.id,
+                    picture: __feed.d.pictures.one.uri,
+                    reviewCount: __feed.d.reviewCount,
+                    averageRating: __feed.d.averageRating,
+                    reporters: __feed.d.reporters,
+                    visits: __feed.d.visits
                 };
 
                 newFeeds.push(newFeed);
@@ -324,22 +324,22 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             if (index !== -1) {
                 const item = feeds[index];
 
-                if (item.name !== newFeed.name || item.placeName !== newFeed.placeName || item.picture !== newFeed.pictures.one.uri) changed = true;
+                if (item.name !== newFeed.d.name || item.placeName !== newFeed.d.placeName || item.picture !== newFeed.d.pictures.one.uri) changed = true;
 
                 // const street = Util.getStreet(newFeed.location.description);
 
                 const __newFeed = {
-                    name: newFeed.name,
-                    birthday: newFeed.birthday,
-                    placeName: newFeed.placeName,
+                    name: newFeed.d.name,
+                    birthday: newFeed.d.birthday,
+                    placeName: newFeed.d.placeName,
                     // placeName: street,
-                    placeId: newFeed.placeId,
-                    feedId: newFeed.id,
-                    picture: newFeed.pictures.one.uri,
-                    reviewCount: newFeed.reviewCount,
-                    averageRating: newFeed.averageRating,
-                    reporters: newFeed.reporters,
-                    visits: newFeed.visits
+                    placeId: newFeed.d.placeId,
+                    feedId: newFeed.d.id,
+                    picture: newFeed.d.pictures.one.uri,
+                    reviewCount: newFeed.d.reviewCount,
+                    averageRating: newFeed.d.averageRating,
+                    reporters: newFeed.d.reporters,
+                    visits: newFeed.d.visits
                 };
 
                 feeds[index] = __newFeed;
@@ -348,9 +348,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
             // update database
             if (changed) {
-                const name = newFeed.name;
-                const placeName = newFeed.placeName;
-                const picture = newFeed.pictures.one.uri;
+                const name = newFeed.d.name;
+                const placeName = newFeed.d.placeName;
+                const picture = newFeed.d.pictures.one.uri;
                 Firebase.updateLikesFromProfile(Firebase.user().uid, placeId, feedId, name, placeName, picture);
             }
         });
@@ -408,7 +408,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         const extra = { placeCounts: feedSize };
 
-        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+        Firebase.addVisits(Firebase.user().uid, post.d.placeId, post.d.id);
         this.props.navigation.navigate("savedPost", { post, extra, from: 'SavedPlace' });
     }
 
@@ -506,7 +506,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 let distance = null;
 
                                 const post = this.feedList.get(item.feedId);
-                                if (post) distance = Util.getDistance(post.location, Vars.location);
+                                if (post) distance = Util.getDistance(post.d.location, Vars.location);
                                 else distance = placeName;
 
                                 let age = null;
@@ -573,7 +573,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 let distance = null;
 
                                 const post = this.feedList.get(item.feedId);
-                                if (post) distance = Util.getDistance(post.location, Vars.location);
+                                if (post) distance = Util.getDistance(post.d.location, Vars.location);
                                 else distance = placeName;
 
                                 let age = null;

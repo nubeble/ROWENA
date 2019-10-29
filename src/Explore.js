@@ -143,11 +143,11 @@ export default class Explore extends React.Component<InjectedProps> {
         else if (showMe === 'Women') gender = 'Woman';
 
         if (gender) {
-            const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").where("gender", "==", gender).orderBy("timestamp", "desc");
-            this.props.feedStore.init(query, 'timestamp');
+            const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").where("d.gender", "==", gender).orderBy("d.timestamp", "desc");
+            this.props.feedStore.init(query, 'd.timestamp');
         } else {
-            const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
-            this.props.feedStore.init(query, 'timestamp');
+            const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("d.timestamp", "desc");
+            this.props.feedStore.init(query, 'd.timestamp');
         }
 
         this._feed.disableScroll();
@@ -630,19 +630,19 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     orderByRatings() { // review score
-        this.order('averageRating');
+        this.order('d.averageRating');
     }
 
     orderByReviews() { // review count
-        this.order('reviewCount');
+        this.order('d.reviewCount');
     }
 
     orderByTime() { // recently posted
-        this.order('timestamp');
+        this.order('d.timestamp');
     }
 
     orderByViews() { // total visit count
-        this.order('totalVisitCount');
+        this.order('d.totalVisitCount');
     }
 
     orderByDistance() {
@@ -656,7 +656,7 @@ export default class Explore extends React.Component<InjectedProps> {
         else if (showMe === 'Women') gender = 'Woman';
 
         if (gender) {
-            const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").where("gender", "==", gender).orderBy(order, "desc");
+            const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").where("d.gender", "==", gender).orderBy(order, "desc");
             this.props.feedStore.init(query, order);
         } else {
             const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").orderBy(order, "desc");

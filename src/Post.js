@@ -201,7 +201,7 @@ export default class Post extends React.Component<InjectedProps> {
         // this will be updated in subscribe
         this.feed = post;
 
-        const fi = Firebase.subscribeToFeed(post.placeId, post.id, newFeed => {
+        const fi = Firebase.subscribeToFeed(post.d.placeId, post.d.id, newFeed => {
             if (newFeed === null) return; // error
 
             if (newFeed === undefined) {
@@ -209,14 +209,16 @@ export default class Post extends React.Component<InjectedProps> {
                 return;
             }
 
+            // console.log('subscribeToFeed, newFeed: ', newFeed);
+
             this.feed = newFeed;
 
             // update views & likes
-            const { visits, likes } = newFeed;
+            const { visits, likes } = newFeed.d;
 
             let newPost = this.state.post;
-            newPost.visits = visits;
-            newPost.likes = likes;
+            newPost.d.visits = visits;
+            newPost.d.likes = likes;
             !this.closed && this.setState({ post: newPost });
 
             // update liked
@@ -239,33 +241,6 @@ export default class Post extends React.Component<InjectedProps> {
         this.feedUnsubscribe = fi;
     }
 
-    /*
-    subscribeToProfile(uid) {
-        // this will be updated in subscribe
-        // this.user = null;
-
-        const instance = Firebase.subscribeToProfile(uid, user => {
-            if (user === null) return; // error
-
-            if (user === undefined) {
-                this.user = null;
-
-                this.setState({ lastLogInTime: null });
-
-                return;
-            }
-
-            this.user = user;
-
-            if (user.lastLogInTime) {
-                this.setState({ lastLogInTime: user.lastLogInTime });
-            }
-        });
-
-        this.userUnsubscribe = instance;
-    }
-    */
-
     edit() {
         if (!this.feed) {
             // this should never happen
@@ -275,7 +250,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         let { post } = this.state;
         if (this.originNote) {
-            post.note = this.originNote;
+            post.d.note = this.originNote;
         }
 
         this.props.navigation.navigate("editPostMain", { post });
@@ -334,22 +309,22 @@ export default class Post extends React.Component<InjectedProps> {
         const chart = this.state.chartInfo;
         if (!chart) return null;
 
-        const visitCount = post.visits.length;
-        const totalVisitCount = this.getVisitCount(post.visits);
-        const visitCountPerDay = this.getVisitCountPerDay(post.visits);
+        const visitCount = post.d.visits.length;
+        const totalVisitCount = this.getVisitCount(post.d.visits);
+        const visitCountPerDay = this.getVisitCountPerDay(post.d.visits);
 
         const newChart = {
             cityName: chart.cityName,
             numberOfGirls: chart.numberOfGirls,
 
-            averageRating: post.averageRating,
-            reviewCount: post.reviewCount,
-            reviewStats: post.reviewStats,
+            averageRating: post.d.averageRating,
+            reviewCount: post.d.reviewCount,
+            reviewStats: post.d.reviewStats,
             // ranking: ranking
             visitCount,
             totalVisitCount,
             visitCountPerDay,
-            likeCount: post.likes.length
+            likeCount: post.d.likes.length
         };
 
         return newChart;
@@ -403,46 +378,46 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
-        const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("places").doc(post.d.placeId).collection("feed").doc(post.d.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
-        const isOwner = this.isOwner(post.uid, Firebase.user().uid);
+        const isOwner = this.isOwner(post.d.uid, Firebase.user().uid);
         this.setState({ isOwner });
 
         // check liked
-        const liked = this.checkLiked(post.likes);
+        const liked = this.checkLiked(post.d.likes);
         this.setState({ liked });
 
         // chart info
 
         // 1) city name
-        const placeName = post.placeName;
+        const placeName = post.d.placeName;
         const words = placeName.split(', ');
         const cityName = words[0];
 
         // 2) statement
-        const visitCount = post.visits.length;
-        const totalVisitCount = this.getVisitCount(post.visits);
-        const visitCountPerDay = this.getVisitCountPerDay(post.visits);
+        const visitCount = post.d.visits.length;
+        const totalVisitCount = this.getVisitCount(post.d.visits);
+        const visitCountPerDay = this.getVisitCountPerDay(post.d.visits);
 
         // count
         let count = 0;
-        if (post.gender === 'Man') count = extra.placeCounts.men;
-        else if (post.gender === 'Woman') count = extra.placeCounts.women;
+        if (post.d.gender === 'Man') count = extra.placeCounts.men;
+        else if (post.d.gender === 'Woman') count = extra.placeCounts.women;
         else count = extra.placeCounts.count - extra.placeCounts.men - extra.placeCounts.women;
 
         const chart = {
             // cityName: extra.cityName,
             cityName: cityName,
             numberOfGirls: count,
-            averageRating: post.averageRating,
-            reviewCount: post.reviewCount,
-            reviewStats: post.reviewStats, // 5, 4, 3, 2, 1
+            averageRating: post.d.averageRating,
+            reviewCount: post.d.reviewCount,
+            reviewStats: post.d.reviewStats, // 5, 4, 3, 2, 1
             // ranking: ranking
             visitCount,
             totalVisitCount,
             visitCountPerDay,
-            likeCount: post.likes.length
+            likeCount: post.d.likes.length
         };
 
         this.setState({ chartInfo: chart });
@@ -454,8 +429,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         const { reviews } = this.reviewStore;
 
-        // deep copy
-        let __reviews = _.cloneDeep(reviews);
+        let __reviews = _.cloneDeep(reviews); // deep copy
 
         !this.closed && this.setState({ reviews: __reviews });
     }
@@ -477,7 +451,7 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
 
         // check the owner of the post
-        if (Firebase.user().uid === post.uid) {
+        if (Firebase.user().uid === post.d.uid) {
             this.refs["toast"].show('Sorry, this is your post.', 500);
             this.toggling = false;
             return;
@@ -519,13 +493,13 @@ export default class Post extends React.Component<InjectedProps> {
 
         // update database
         const uid = Firebase.user().uid;
-        const placeId = post.placeId;
-        const feedId = post.id;
-        const name = post.name;
-        const placeName = post.placeName;
-        // const averageRating = post.averageRating;
-        // const reviewCount = post.reviewCount;
-        const uri = post.pictures.one.uri;
+        const placeId = post.d.placeId;
+        const feedId = post.d.id;
+        const name = post.d.name;
+        const placeName = post.d.placeName;
+        // const averageRating = post.d.averageRating;
+        // const reviewCount = post.d.reviewCount;
+        const uri = post.d.pictures.one.uri;
 
         const result = await Firebase.toggleLikes(uid, placeId, feedId, name, placeName, uri);
         if (!result) {
@@ -545,11 +519,11 @@ export default class Post extends React.Component<InjectedProps> {
             const data = {
                 // message: profile.name + ' likes your post. ❤',
                 message: '',
-                placeId: post.placeId,
-                feedId: post.id
+                placeId: post.d.placeId,
+                feedId: post.d.id
             };
 
-            sendPushNotification(uid, profile.name, post.uid, Cons.pushNotification.like, data);
+            sendPushNotification(uid, profile.name, post.d.uid, Cons.pushNotification.like, data);
         }
 
         // update state post for likes
@@ -557,14 +531,14 @@ export default class Post extends React.Component<InjectedProps> {
         console.log('jdub', 'update likes to state post');
 
         let newPost = this.state.post;
-        let { likes } = newPost;
+        let { likes } = newPost.d;
         const idx = likes.indexOf(uid);
         if (idx === -1) {
             likes.push(uid);
         } else {
             likes.splice(idx, 1);
         }
-        newPost.likes = likes;
+        newPost.d.likes = likes;
 
         !this.closed && this.setState({ post: newPost });
         */
@@ -815,30 +789,8 @@ export default class Post extends React.Component<InjectedProps> {
         }
         */
 
-        /*
-        let lastLogInTime = 'Activate a long time ago';
-        let circleColor = 'grey'; // green, yellow, grey
-        if (this.state.lastLogInTime) {
-            if (Math.abs(moment().diff(this.state.lastLogInTime, 'minutes')) < 2) {
-                lastLogInTime = 'Online now';
-            } else {
-                lastLogInTime = 'Activate ' + moment(this.state.lastLogInTime).fromNow();
-            }
-
-            const now = Date.now();
-            const difference = now - this.state.lastLogInTime;
-            const daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
-
-            console.log('jdub', 'daysDifference', daysDifference);
-
-            if (daysDifference > 7) circleColor = 'grey';
-            else if (daysDifference > 1) circleColor = 'yellow';
-            else circleColor = 'green';
-        }
-        */
-
         let views = null;
-        const visits = this.getVisitCount(post.visits);
+        const visits = this.getVisitCount(post.d.visits);
         if (visits === 0) {
             // views = Platform.OS === 'android' ? 'No views yet' : '0 views';
             views = 'No views yet';
@@ -849,7 +801,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         let likes = null;
-        const _likes = post.likes.length;
+        const _likes = post.d.likes.length;
         if (_likes === 0) {
             // likes = Platform.OS === 'android' ? 'No likes yet' : '0 likes';
             likes = 'No likes yet';
@@ -861,11 +813,11 @@ export default class Post extends React.Component<InjectedProps> {
 
         let showSettingsButton = false;
 
-        const distance = Util.getDistance(post.location, Vars.location);
+        const distance = Util.getDistance(post.d.location, Vars.location);
 
         if (distance === '? km away' || distance === '? miles away') showSettingsButton = true;
 
-        const averageRating = post.averageRating;
+        const averageRating = post.d.averageRating;
 
         const integer = Math.floor(averageRating);
 
@@ -880,8 +832,8 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         let color = '#FFFFFF';
-        if (post.gender === 'Woman') color = 'rgba(212, 112, 174, 0.3)';
-        else if (post.gender === 'Man') color = 'rgba(76, 169, 174, 0.3)';
+        if (post.d.gender === 'Woman') color = 'rgba(212, 112, 174, 0.3)';
+        else if (post.d.gender === 'Man') color = 'rgba(76, 169, 174, 0.3)';
 
         return (
             <View>
@@ -906,7 +858,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={[styles.views, { marginRight: 4 }]}>{views}</Text>
                                     <Octicons name='primitive-dot' color={Theme.color.title} size={10} style={{ marginHorizontal: 4 }} />
-                                    <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
+                                    <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.d.likes })}>
                                         <Text style={styles.likes}>{likes}</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -919,8 +871,8 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {/* name */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
-                        <Text style={styles.name}>{post.name}</Text>
-                        <Text style={styles.age}>{Util.getAge(post.birthday)}</Text>
+                        <Text style={styles.name}>{post.d.name}</Text>
+                        <Text style={styles.age}>{Util.getAge(post.d.birthday)}</Text>
                         {
                             this.renderPostReportButton()
                         }
@@ -931,7 +883,7 @@ export default class Post extends React.Component<InjectedProps> {
                         Platform.OS === 'android' &&
                         <View style={{ marginTop: 8, marginBottom: 4, flexDirection: 'row' }}>
                             {
-                                post.height !== 0 &&
+                                post.d.height !== 0 &&
                                 <View style={[styles.profileItem, { backgroundColor: color }]}>
                                     <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
                                         <Image
@@ -939,16 +891,16 @@ export default class Post extends React.Component<InjectedProps> {
                                             source={PreloadImage.ruler}
                                         />
                                     </View>
-                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                    <Text style={styles.bodyInfoTitle}>{post.d.height} cm</Text>
                                 </View>
                             }
                             {
-                                post.weight !== 0 &&
+                                post.d.weight !== 0 &&
                                 <View style={[styles.profileItem, { backgroundColor: color }]}>
                                     <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
                                         <MaterialCommunityIcons name='scale' color={Theme.color.subtitle} size={16} />
                                     </View>
-                                    <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
+                                    <Text style={styles.bodyInfoTitle}>{post.d.weight} kg</Text>
                                 </View>
                             }
                             <View style={[styles.profileItem, { backgroundColor: color }]}>
@@ -961,7 +913,7 @@ export default class Post extends React.Component<InjectedProps> {
                             </View>
                             <View style={[styles.profileItem, { backgroundColor: color }]}>
                                 {
-                                    post.gender === 'Woman' &&
+                                    post.d.gender === 'Woman' &&
                                     <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
                                         <Image
                                             style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
@@ -970,7 +922,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     </View>
                                 }
                                 {
-                                    post.gender === 'Man' &&
+                                    post.d.gender === 'Man' &&
                                     <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
                                         <Image
                                             style={{ width: 13, height: 13, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
@@ -979,7 +931,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     </View>
                                 }
                                 {
-                                    post.gender === 'Other' &&
+                                    post.d.gender === 'Other' &&
                                     <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
                                         <FontAwesome name='transgender' color={Theme.color.subtitle} size={18} />
                                     </View>
@@ -1023,7 +975,7 @@ export default class Post extends React.Component<InjectedProps> {
                             }
                         }}
                     >
-                        <Text style={styles.note}>{post.note}</Text>
+                        <Text style={styles.note}>{post.d.note}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -1031,7 +983,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 {/* map */}
                 <View style={styles.mapContainer}>
-                    <Text style={styles.location}>{post.location.description}</Text>
+                    <Text style={styles.location}>{post.d.location.description}</Text>
 
                     {
                         Platform.OS === 'android' ?
@@ -1052,8 +1004,8 @@ export default class Post extends React.Component<InjectedProps> {
                                         // mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
                                         // legalLabelInsets={{ top: 25, bottom: 25 }}
                                         initialRegion={{
-                                            longitude: post.location.longitude,
-                                            latitude: post.location.latitude,
+                                            longitude: post.d.location.longitude,
+                                            latitude: post.d.location.latitude,
                                             latitudeDelta: 0.008,
                                             longitudeDelta: 0.008 * ASPECT_RATIO
                                         }}
@@ -1064,8 +1016,8 @@ export default class Post extends React.Component<InjectedProps> {
                                     >
                                         <MapView.Marker
                                             coordinate={{
-                                                longitude: post.location.longitude,
-                                                latitude: post.location.latitude
+                                                longitude: post.d.location.longitude,
+                                                latitude: post.d.location.latitude
                                             }}
                                         // title={'title'}
                                         // description={'description'}
@@ -1094,8 +1046,8 @@ export default class Post extends React.Component<InjectedProps> {
                                     // mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
                                     // legalLabelInsets={{ top: 25, bottom: 25 }}
                                     initialRegion={{
-                                        longitude: post.location.longitude,
-                                        latitude: post.location.latitude,
+                                        longitude: post.d.location.longitude,
+                                        latitude: post.d.location.latitude,
                                         latitudeDelta: 0.008,
                                         longitudeDelta: 0.008 * ASPECT_RATIO
                                     }}
@@ -1106,8 +1058,8 @@ export default class Post extends React.Component<InjectedProps> {
                                 >
                                     <MapView.Marker
                                         coordinate={{
-                                            longitude: post.location.longitude,
-                                            latitude: post.location.latitude
+                                            longitude: post.d.location.longitude,
+                                            latitude: post.d.location.latitude
                                         }}
                                     // title={'title'}
                                     // description={'description'}
@@ -1161,7 +1113,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                         await this.contact();
                     }}>
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.d.name}</Text>
                     {
                         this.state.showPostLoader &&
                         <ActivityIndicator
@@ -1177,43 +1129,43 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderBodyType(post) {
-        if (post.bodyType === 'Prefer Not to Say' || post.bodyType === 'Rather not say') { // 하위호환
-            // return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
+        if (post.d.bodyType === 'Prefer Not to Say' || post.d.bodyType === 'Rather not say') { // 하위호환
+            // return <Text style={styles.preferNotToSay}>{post.d.bodyType}</Text>;
             // return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             return <Text style={styles.bodyInfoTitle}>{'Fit'}</Text>;
         } else {
-            return <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>;
+            return <Text style={styles.bodyInfoTitle}>{post.d.bodyType}</Text>;
         }
     }
 
     renderBoobs(post) {
-        if (post.gender === 'Woman') {
-            if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') { // 하위호환
-                // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+        if (post.d.gender === 'Woman') {
+            if (post.d.bust === 'Prefer Not to Say' || post.d.bust === 'Rather not say') { // 하위호환
+                // return <Text style={styles.preferNotToSay}>{post.d.bust}</Text>;
                 // return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
                 return <Text style={styles.bodyInfoTitle}>{'B cup'}</Text>;
             } else {
-                return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
+                return <Text style={styles.bodyInfoTitle}>{post.d.bust + ' cup'}</Text>;
             }
-        } else if (post.gender === 'Man') {
-            if (post.muscle === 'Prefer Not to Say' || post.muscle === 'Rather not say') {
-                // return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
+        } else if (post.d.gender === 'Man') {
+            if (post.d.muscle === 'Prefer Not to Say' || post.d.muscle === 'Rather not say') {
+                // return <Text style={styles.preferNotToSay}>{post.d.muscle}</Text>;
                 // return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
                 return <Text style={styles.bodyInfoTitle}>{'Medium'}</Text>;
             } else {
-                return <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>;
+                return <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.d.muscle)}</Text>;
             }
-        } else if (post.gender === 'Other') {
+        } else if (post.d.gender === 'Other') {
             return <Text style={styles.bodyInfoTitle}>{'Transgender'}</Text>;
         }
 
         /*
-        if (post.gender === 'Other' && post.bust) {
-            if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') {
-                // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+        if (post.d.gender === 'Other' && post.d.bust) {
+            if (post.d.bust === 'Prefer Not to Say' || post.d.bust === 'Rather not say') {
+                // return <Text style={styles.preferNotToSay}>{post.d.bust}</Text>;
                 return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
-                return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
+                return <Text style={styles.bodyInfoTitle}>{post.d.bust + ' cup'}</Text>;
             }
         }
         */
@@ -1221,15 +1173,15 @@ export default class Post extends React.Component<InjectedProps> {
         return null;
 
         /*
-        post.gender === 'Other' && post.muscle &&
-        <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
+        post.d.gender === 'Other' && post.d.muscle &&
+        <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.d.muscle)}</Text>
         */
     }
 
     renderSwiper(post) {
         let pictures = [];
 
-        let value = post.pictures.one.uri;
+        let value = post.d.pictures.one.uri;
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
@@ -1242,7 +1194,7 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                             else Vibration.vibrate(30);
                         } else { // right
-                            if (post.pictures.two.uri) {
+                            if (post.d.pictures.two.uri) {
                                 this.swiper.scrollToIndex({ index: 1, animated: false });
                                 if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
@@ -1264,7 +1216,7 @@ export default class Post extends React.Component<InjectedProps> {
             );
         }
 
-        value = post.pictures.two.uri;
+        value = post.d.pictures.two.uri;
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`two`}>
@@ -1278,7 +1230,7 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
-                            if (post.pictures.three.uri) {
+                            if (post.d.pictures.three.uri) {
                                 this.swiper.scrollToIndex({ index: 2, animated: false });
                                 if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
@@ -1300,7 +1252,7 @@ export default class Post extends React.Component<InjectedProps> {
             );
         }
 
-        value = post.pictures.three.uri;
+        value = post.d.pictures.three.uri;
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`three`}>
@@ -1314,7 +1266,7 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
-                            if (post.pictures.four.uri) {
+                            if (post.d.pictures.four.uri) {
                                 this.swiper.scrollToIndex({ index: 3, animated: false });
                                 if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
@@ -1336,7 +1288,7 @@ export default class Post extends React.Component<InjectedProps> {
             );
         }
 
-        value = post.pictures.four.uri;
+        value = post.d.pictures.four.uri;
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`four`}>
@@ -1426,7 +1378,7 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
         if (!post) return null;
 
-        this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.name + '?', async () => {
+        this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.d.name + '?', async () => {
             // report post
 
             // check the owner of the post
@@ -1444,11 +1396,11 @@ export default class Post extends React.Component<InjectedProps> {
 
             // 1. update database (reporters)
             const uid = Firebase.user().uid;
-            const placeId = post.placeId;
-            const feedId = post.id;
+            const placeId = post.d.placeId;
+            const feedId = post.d.id;
             // const name = post.name;
-            // const placeName = post.placeName;
-            // const uri = post.pictures.one.uri;
+            // const placeName = post.d.placeName;
+            // const uri = post.d.pictures.one.uri;
 
             const result = await Firebase.reportPost(uid, placeId, feedId);
             if (!result) {
@@ -1459,12 +1411,12 @@ export default class Post extends React.Component<InjectedProps> {
 
             // 2. update state post
             let _post = post;
-            if (!_post.reporters) {
+            if (!_post.d.reporters) {
                 let reporters = [];
                 reporters.push(uid);
-                _post.reporters = reporters;
+                _post.d.reporters = reporters;
             } else {
-                _post.reporters.push(uid);
+                _post.d.reporters.push(uid);
             }
             this.setState({ post: _post });
 
@@ -1518,8 +1470,8 @@ export default class Post extends React.Component<InjectedProps> {
 
             // 1. update database (reporters)
             const uid = Firebase.user().uid;
-            const placeId = post.placeId;
-            const feedId = post.id;
+            const placeId = post.d.placeId;
+            const feedId = post.d.id;
             const reviewId = review.id;
 
             const result = await Firebase.reportReview(uid, placeId, feedId, reviewId);
@@ -1607,7 +1559,7 @@ export default class Post extends React.Component<InjectedProps> {
     */
 
     renderReview(post) {
-        const averageRating = post.averageRating;
+        const averageRating = post.d.averageRating;
 
         const integer = Math.floor(averageRating);
 
@@ -1620,12 +1572,12 @@ export default class Post extends React.Component<InjectedProps> {
 
         /*
         let likesCount = 0;
-        if (post.likes) {
-            likesCount = post.likes.length;
+        if (post.d.likes) {
+            likesCount = post.d.likes.length;
         }
         */
 
-        if (post.reviewCount > 0) {
+        if (post.d.reviewCount > 0) {
             if (Platform.OS === 'android') {
                 // ratings & reviews
                 return (
@@ -1642,15 +1594,15 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                         <Text style={styles.rating}>{number}</Text>
                         <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.d.reviewCount)}</Text>
                     </View>
                 );
             } else { // ios
                 let reviewCount = "";
                 if (post.reviewCount > 1) {
-                    reviewCount = Util.numberWithCommas(post.reviewCount) + " comments";
+                    reviewCount = Util.numberWithCommas(post.d.reviewCount) + " comments";
                 } else {
-                    reviewCount = Util.numberWithCommas(post.reviewCount) + " comment";
+                    reviewCount = Util.numberWithCommas(post.d.reviewCount) + " comment";
                 }
 
                 // likes & reviews
@@ -1674,7 +1626,7 @@ export default class Post extends React.Component<InjectedProps> {
                         <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
 
                         <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.d.reviewCount)}</Text>
                         */}
                         <AntDesign style={{ marginLeft: 1.5, marginRight: 1.5, marginTop: 2 }} name='message1' color={'#f1c40f'} size={16} />
                         <Text style={styles.reviewCount}>{reviewCount}</Text>
@@ -2038,8 +1990,8 @@ export default class Post extends React.Component<InjectedProps> {
         const ranking = this.getRanking(chart); // total post >= 10 & average rating >= 4.0 & 1 <= ranking <= 10
 
         let gender = null;
-        if (this.state.post.gender === 'Woman') gender = 'girl';
-        else if (this.state.post.gender === 'Man') gender = 'guy';
+        if (this.state.post.d.gender === 'Woman') gender = 'girl';
+        else if (this.state.post.d.gender === 'Man') gender = 'guy';
         else gender = 'gay';
 
         if (ranking !== 0) {
@@ -2310,7 +2262,7 @@ export default class Post extends React.Component<InjectedProps> {
             }
         }
 
-        const reviewCount = this.state.post.reviewCount;
+        const reviewCount = this.state.post.d.reviewCount;
 
         return (
             <View style={styles.reviewContainer}
@@ -2340,8 +2292,8 @@ export default class Post extends React.Component<InjectedProps> {
                                 {
                                     reviewStore: this.reviewStore,
                                     isOwner: this.state.isOwner,
-                                    placeId: this.props.navigation.state.params.post.placeId,
-                                    feedId: this.props.navigation.state.params.post.id,
+                                    placeId: this.props.navigation.state.params.post.d.placeId,
+                                    feedId: this.props.navigation.state.params.post.d.id,
                                     initFromReadAllReviews: () => this.initFromReadAllReviews()
                                 });
                         }, Cons.buttonTimeout);
@@ -2594,8 +2546,8 @@ export default class Post extends React.Component<InjectedProps> {
                     this.openDialog('Unblock Review', 'Are you sure you want to unblock ' + _review.name + '?', async () => {
                         const uid = Firebase.user().uid;
                         const post = this.state.post;
-                        const placeId = post.placeId;
-                        const feedId = post.id;
+                        const placeId = post.d.placeId;
+                        const feedId = post.d.id;
                         const reviewId = _review.id;
 
                         const result = await Firebase.unblockReview(uid, placeId, feedId, reviewId);
@@ -2890,7 +2842,7 @@ export default class Post extends React.Component<InjectedProps> {
         const uid = Firebase.user().uid;
 
         // find existing chat room (by uid)
-        let room = await Firebase.findChatRoomByPostId(uid, post.id);
+        let room = await Firebase.findChatRoomByPostId(uid, post.d.id);
         if (room) {
             // this.props.navigation.navigate("chatRoom", { item: room });
 
@@ -2961,16 +2913,16 @@ export default class Post extends React.Component<InjectedProps> {
 
             const user2 = {
                 // pid: post.id, // post id
-                uid: post.uid, // owner
-                name: post.name,
-                picture: post.pictures.one.uri
+                uid: post.d.uid, // owner
+                name: post.d.name,
+                picture: post.d.pictures.one.uri
             };
 
             let users = [];
             users.push(user1);
             users.push(user2);
 
-            room = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.placeName, post.uid, true);
+            room = await Firebase.createChatRoom(uid, users, post.d.placeId, post.d.id, chatRoomId, post.d.placeName, post.d.uid, true);
             // --
 
             // this.props.navigation.navigate("chatRoom", { item: room });
@@ -3044,8 +2996,8 @@ export default class Post extends React.Component<InjectedProps> {
         const data = {
             // message: profile.name + ' replied to your review: ' + message,
             message,
-            placeId: post.placeId,
-            feedId: post.id
+            placeId: post.d.placeId,
+            feedId: post.d.id
         };
 
         sendPushNotification(Firebase.user().uid, profile.name, receiver, Cons.pushNotification.reply, data);
@@ -3064,8 +3016,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         const post = this.state.post;
 
-        const placeId = post.placeId;
-        const feedId = post.id;
+        const placeId = post.d.placeId;
+        const feedId = post.d.id;
         // const reviewOwnerUid = this.reviewStore.reviews[this.selectedItemIndex].profile.uid;
         // const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
         const reviewOwnerUid = this.state.reviews[this.selectedItemIndex].profile.uid;
@@ -3087,14 +3039,14 @@ export default class Post extends React.Component<InjectedProps> {
 
             // check if removed by the owner
             /*
-            if (!this.isValidPost(post.placeId, post.id)) {
+            if (!this.isValidPost(post.d.placeId, post.d.id)) {
                 this.refs["toast"].show('The post has been removed by its owner.', 500);
                 return;
             }
             */
 
-            const placeId = post.placeId;
-            const feedId = post.id;
+            const placeId = post.d.placeId;
+            const feedId = post.d.id;
             // const reviewId = this.reviewStore.reviews[index].review.id;
             const reviewId = this.state.reviews[index].review.id;
 
@@ -3118,8 +3070,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.openDialog('Delete Reply', 'Are you sure you want to delete this reply?', async () => {
             const post = this.state.post;
 
-            const placeId = post.placeId;
-            const feedId = post.id;
+            const placeId = post.d.placeId;
+            const feedId = post.d.id;
             // const reviewId = this.reviewStore.reviews[index].review.id;
             // const replyId = this.reviewStore.reviews[index].review.reply.id;
             const reviewId = this.state.reviews[index].review.id;
@@ -3138,12 +3090,12 @@ export default class Post extends React.Component<InjectedProps> {
 
     translateNote() {
         let { post } = this.state;
-        const { note } = post;
+        const { note } = post.d;
 
         if (this.translatedNote) {
             this.originNote = note;
 
-            post.note = this.translatedNote;
+            post.d.note = this.translatedNote;
             this.setState({ post });
         } else {
             Util.translate(note).then(translated => {
@@ -3151,7 +3103,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 this.originNote = note;
 
-                post.note = translated;
+                post.d.note = translated;
                 !this.closed && this.setState({ post });
 
                 this.translatedNote = translated;
@@ -3163,7 +3115,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     setOriginNote() {
         let { post } = this.state;
-        post.note = this.originNote;
+        post.d.note = this.originNote;
         this.setState({ post });
 
         this.originNote = null;
