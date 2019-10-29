@@ -2539,10 +2539,11 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReviewItemBlocked(review, i) {
+        const _review = review.review;
+
         return (
-            <TouchableOpacity activeOpacity={0.5}
+            <TouchableOpacity activeOpacity={0.5} key={_review.id}
                 onPress={() => {
-                    const _review = review.review;
                     this.openDialog('Unblock Review', 'Are you sure you want to unblock ' + _review.name + '?', async () => {
                         const uid = Firebase.user().uid;
                         const post = this.state.post;

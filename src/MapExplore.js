@@ -168,7 +168,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
         let geocollection: GeoCollectionReference = null;
 
         if (gender) {
-            geocollection = this.gf.collection("places").doc(placeId).collection("feed").where("d.gender", "==", gender);
+            geocollection = this.gf.collection("places").doc(placeId).collection("feed").where("gender", "==", gender);
         } else {
             geocollection = this.gf.collection("places").doc(placeId).collection("feed");
         }

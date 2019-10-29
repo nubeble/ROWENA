@@ -282,13 +282,13 @@ export default class FeedStore {
         }
     }
 
-    updateFeeds(posts) {
+    updateFeeds(posts) { // feed.d array
         if (this.feed) {
             this.feed.forEach((entry, index) => {
                 for (let i = 0; i < posts.length; i++) {
                     const post = posts[i];
-                    if (entry.post.d.id === post.d.id) {
-                        this.feed[index].post = post;
+                    if (entry.post.d.id === post.id) {
+                        this.feed[index].post.d = post;
                         break;
                     }
                 }
