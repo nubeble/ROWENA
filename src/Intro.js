@@ -147,8 +147,6 @@ export default class Intro extends React.Component<InjectedProps> {
     };
 
     final() {
-        console.log('jdub', 'Intro.final');
-
         Intro.places = [];
         Intro.popularFeeds = [];
         Intro.recentFeeds = [];
@@ -173,6 +171,11 @@ export default class Intro extends React.Component<InjectedProps> {
             instance();
         }
         Intro.countsUnsubscribes = [];
+    }
+
+    reload() {
+        this.getPlaces();
+        this.getFeeds();
     }
 
     constructor(props) {
@@ -299,20 +302,18 @@ export default class Intro extends React.Component<InjectedProps> {
     }
     */
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log('jdub', 'Intro.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
                 this._flatList.scrollToOffset({ offset: 0, animated: true });
             },
-            reload: async () => {
-                await this.getPlaces();
-
-                await this.getPosts();
-            },
             final: () => {
                 this.final();
+            },
+            reload: () => {
+                this.reload();
             }
         });
 
@@ -324,13 +325,8 @@ export default class Intro extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        if (Intro.places.length === 0) await this.getPlaces();
-
-        /*
-        await this.getPopularFeeds();
-        await this.getRecentFeeds();
-        */
-        await this.getPosts();
+        if (Intro.places.length === 0) this.getPlaces();
+        this.getFeeds();
     }
 
     componentWillUnmount() {
@@ -576,10 +572,7 @@ export default class Intro extends React.Component<InjectedProps> {
     }
     */
 
-    async getPosts() {
-        let popularFeeds = [];
-        let recentFeeds = [];
-
+    async getFeeds() {
         // get random places
         let placeList = [];
         let placesSize = 0;
@@ -590,168 +583,69 @@ export default class Intro extends React.Component<InjectedProps> {
             placeList = Util.shuffle(placeList);
         }
 
-        console.log('getPosts() placeList.length', placeList.length);
+        console.log('getFeeds() placeList.length', placeList.length);
 
         placesSize = placeList.length; // actual read size
         const length1 = placesSize / 2;
         // const length2 = placesSize - length1;
 
-        if (Intro.popularFeeds.length === 0) {
-            let gender = null;
-            if (Vars.showMe === 'Men') gender = 'Man';
-            else if (Vars.showMe === 'Women') gender = 'Woman';
+        this.getPopularFeeds(placeList, length1);
 
-            for (let i = 0; i < length1; i++) {
-                const placeId = placeList[i];
-                const feed = await Firebase.getFeedByAverageRating(placeId, gender);
-                if (feed) {
-                    popularFeeds.push(feed);
-                } else {
-                    console.log('feed not exists', placeId);
-                }
+        this.getRecentFeeds(placeList, length1);
+    }
+
+    async getPopularFeeds(placeList, length) {
+        if (Intro.popularFeeds.length > 0) return;
+
+        let popularFeeds = [];
+
+        let gender = null;
+        if (Vars.showMe === 'Men') gender = 'Man';
+        else if (Vars.showMe === 'Women') gender = 'Woman';
+
+        for (let i = 0; i < length; i++) {
+            const placeId = placeList[i];
+            const feed = await Firebase.getFeedByAverageRating(placeId, gender);
+            if (feed) {
+                popularFeeds.push(feed);
+            } else {
+                console.log('feed not exists', placeId);
             }
-            // console.log('jdub', 'popularFeeds', popularFeeds.length);
-
-            !this.closed && this.setState({ popularFeeds });
-            Intro.popularFeeds = popularFeeds;
-
-            // subscribe
-            this.subscribeToFeeds(popularFeeds);
         }
+        // console.log('jdub', 'popularFeeds', popularFeeds.length);
 
-        if (Intro.recentFeeds.length === 0) {
-            let gender = null;
-            if (Vars.showMe === 'Men') gender = 'Man';
-            else if (Vars.showMe === 'Women') gender = 'Woman';
+        !this.closed && this.setState({ popularFeeds });
+        Intro.popularFeeds = popularFeeds;
 
-            for (let i = length1; i < placeList.length; i++) {
-                const placeId = placeList[i];
-                const feed = await Firebase.getFeedByTimestamp(placeId, gender);
-                if (feed) {
-                    recentFeeds.push(feed);
-                } else {
-                    console.log('feed not exists', placeId);
-                }
+        // subscribe
+        this.subscribeToFeeds(popularFeeds);
+    }
+
+    async getRecentFeeds(placeList, startIndex) {
+        if (Intro.recentFeeds.length > 0) return;
+
+        let recentFeeds = [];
+
+        let gender = null;
+        if (Vars.showMe === 'Men') gender = 'Man';
+        else if (Vars.showMe === 'Women') gender = 'Woman';
+
+        for (let i = startIndex; i < placeList.length; i++) {
+            const placeId = placeList[i];
+            const feed = await Firebase.getFeedByTimestamp(placeId, gender);
+            if (feed) {
+                recentFeeds.push(feed);
+            } else {
+                console.log('feed not exists', placeId);
             }
-            // console.log('jdub', 'recentFeeds', recentFeeds.length);
-
-            !this.closed && this.setState({ recentFeeds });
-            Intro.recentFeeds = recentFeeds;
-
-            // subscribe
-            this.subscribeToFeeds(recentFeeds);
         }
+        // console.log('jdub', 'recentFeeds', recentFeeds.length);
 
-        //// subscribe ////
-        /*
-        for (let i = 0; i < popularFeeds.length; i++) {
-            const feed = popularFeeds[i];
+        !this.closed && this.setState({ recentFeeds });
+        Intro.recentFeeds = recentFeeds;
 
-            // subscribe post
-            // --
-            if (!Intro.feedList.has(feed.id)) {
-                // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
-
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                    if (newFeed === null) return; // error
-
-                    if (newFeed === undefined) {
-                        // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
-                        return;
-                    }
-
-                    // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
-
-                    this.updateFeed(newFeed);
-                });
-
-                Intro.popularFeedsUnsubscribes.push(fi);
-            }
-            // --
-
-            // subscribe feed count
-            // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
-                // this will be updated in subscribe
-                Intro.feedCountList.set(feed.placeId, -1);
-
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                    if (newPlace === null) return; // error
-
-                    if (newPlace === undefined) {
-                        // update Intro.feedCountList
-                        Intro.feedCountList.delete(feed.placeId);
-                        return;
-                    }
-
-                    // update Intro.feedCountList
-                    Intro.feedCountList.set(feed.placeId, newPlace.count);
-
-                    this.updatePlace(feed.placeId, newPlace);
-                });
-
-                Intro.countsUnsubscribes.push(ci);
-            }
-            // --
-        }
-
-        for (let i = 0; i < recentFeeds.length; i++) {
-            const feed = recentFeeds[i];
-
-            // subscribe post
-            // --
-            if (!Intro.feedList.has(feed.id)) {
-                // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
-
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                    if (newFeed === null) return; // error
-
-                    if (newFeed === undefined) {
-                        // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
-                        return;
-                    }
-
-                    // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
-
-                    this.updateFeed(newFeed);
-                });
-
-                Intro.recentFeedsUnsubscribes.push(fi);
-            }
-            // --
-
-            // subscribe feed count
-            // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
-                // this will be updated in subscribe
-                Intro.feedCountList.set(feed.placeId, -1);
-
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                    if (newPlace === null) return; // error
-
-                    if (newPlace === undefined) {
-                        // update Intro.feedCountList
-                        Intro.feedCountList.delete(feed.placeId);
-                        return;
-                    }
-
-                    // update Intro.feedCountList
-                    Intro.feedCountList.set(feed.placeId, newPlace.count);
-
-                    this.updatePlace(feed.placeId, newPlace);
-                });
-
-                Intro.countsUnsubscribes.push(ci);
-            }
-            // --
-        }
-        */
+        // subscribe
+        this.subscribeToFeeds(recentFeeds);
     }
 
     subscribeToFeeds(feeds) {

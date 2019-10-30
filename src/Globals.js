@@ -14,8 +14,8 @@ export var Vars = {
     distanceUnit: null, // unit of length - 'meter', 'mile' based on user location (user profile)
 
     // post filter
-    showMe: null // 'Women', 'Men', 'Everyone'
-    // ageRange: []
+    showMe: null, // 'Women', 'Men', 'Everyone'
+    // ageRange: [],
 };
 
 export const Cons = {

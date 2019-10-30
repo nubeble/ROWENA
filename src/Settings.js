@@ -14,7 +14,6 @@ import PreloadImage from './PreloadImage';
 import * as WebBrowser from 'expo-web-browser';
 import Dialog from "react-native-dialog";
 import NavigationService from './NavigationService';
-import Toast from 'react-native-easy-toast';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -36,6 +35,10 @@ export default class Settings extends React.Component<InjectedProps> {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+    }
+
+    componentWillReceiveProps() {
+        console.log('Settings.componentWillReceiveProps');
 
         // get Intro instance
         const mainStackNavigator = NavigationService.getRootRoute();
@@ -47,9 +50,17 @@ export default class Settings extends React.Component<InjectedProps> {
             const intro = home.routes.find(item => item.routeName === 'intro');
             const introHome = intro.routes.find(item => item.routeName === 'introHome');
 
-            this.Intro = introHome; // ToDo
+            this.Intro = introHome;
 
-            console.log('Settings Intro params', introHome.params);
+            if (!this.Intro.params.final || !this.Intro.params.reload) {
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('Settings Intro params not exists!');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            }
         }
     }
 
@@ -112,13 +123,6 @@ export default class Settings extends React.Component<InjectedProps> {
                         />
                     </View>
                 }
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
 
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
@@ -263,11 +267,6 @@ export default class Settings extends React.Component<InjectedProps> {
                         if (!profile) return;
 
                         this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', async () => {
-                            if (!this.Intro || !this.Intro.params.final) {
-                                this.refs["toast"].show('Please try again later.', 500);
-                                return;
-                            }
-
                             // show indicator
                             !this.closed && this.setState({ isLoadingFeeds: true });
 
@@ -276,6 +275,7 @@ export default class Settings extends React.Component<InjectedProps> {
 
                             // init & unsubscribe
                             this.Intro.params.final();
+                            // Intro.final();
 
                             Firebase.stopChatRoom(profile.uid);
 
@@ -420,13 +420,9 @@ export default class Settings extends React.Component<InjectedProps> {
         Vars.showMe = showMe;
 
 
-        if (!this.Intro || !this.Intro.params.final || !this.Intro.params.reload) {
-            this.refs["toast"].show('Please restart the app.', 500);
-            return;
-        }
-
         // init & unsubscribe
         this.Intro.params.final();
+        // Intro.final();
 
         // reload
         this.Intro.params.reload();
