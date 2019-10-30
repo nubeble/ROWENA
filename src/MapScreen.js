@@ -55,10 +55,10 @@ export default class MapScreen extends React.Component {
 
     load() {
         const { post } = this.props.navigation.state.params;
-        const latitude = post.location.latitude;
-        const longitude = post.location.longitude;
+        const latitude = post.d.location.latitude;
+        const longitude = post.d.location.longitude;
 
-        const distance = Util.getDistance(post.location, Vars.location);
+        const distance = Util.getDistance(post.d.location, Vars.location);
 
         const region = {
             latitude,
@@ -67,7 +67,7 @@ export default class MapScreen extends React.Component {
             longitudeDelta: 0.02 * ASPECT_RATIO
         };
 
-        const averageRating = post.averageRating;
+        const averageRating = post.d.averageRating;
         const integer = Math.floor(averageRating);
 
         let markerImage = null;
