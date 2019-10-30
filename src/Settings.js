@@ -43,26 +43,29 @@ export default class Settings extends React.Component<InjectedProps> {
         console.log('Settings.componentWillReceiveProps');
 
         // get Intro instance
-        const mainStackNavigator = NavigationService.getRootRoute();
-        if (mainStackNavigator) {
-            const root = mainStackNavigator.routes.find(item => item.routeName === 'root');
-            const main = root.routes.find(item => item.routeName === 'main');
-            const home = main.routes.find(item => item.routeName === 'home');
-            // const chat = main.routes.find(item => item.routeName === 'chat');
-            const intro = home.routes.find(item => item.routeName === 'intro');
-            const introHome = intro.routes.find(item => item.routeName === 'introHome');
+        if (!Settings.__Intro) {
+            const mainStackNavigator = NavigationService.getRootRoute();
+            if (mainStackNavigator) {
+                const root = mainStackNavigator.routes.find(item => item.routeName === 'root');
+                const main = root.routes.find(item => item.routeName === 'main');
+                const home = main.routes.find(item => item.routeName === 'home');
+                const intro = home.routes.find(item => item.routeName === 'intro');
+                const introHome = intro.routes.find(item => item.routeName === 'introHome');
 
-            // this.Intro = introHome;
-            Settings.__Intro = introHome;
+                if (!introHome.params.final || !introHome.params.reload) {
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    console.log('Settings Intro params not exists!');
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                } else {
+                    console.log('Intro params set.');
 
-            if (!Settings.__Intro.params.final || !Settings.__Intro.params.reload) {
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                console.log('Settings Intro params not exists!');
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    // this.Intro = introHome;
+                    Settings.__Intro = introHome;
+                }
             }
         }
     }
