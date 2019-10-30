@@ -187,7 +187,7 @@ const uploadImageToStorage = (file, fileDir) => {
 
 // app.post("/images", function (req, res, next) {
 app.post("/images", function (req, res) {
-    console.log('jdub', 'Image Upload', req.field);
+    console.log('app.post', 'Image Upload', req.field);
 
     // const fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
 
@@ -201,7 +201,7 @@ app.post("/images", function (req, res) {
 
     return new Promise((resolve, reject) => {
         uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
-            console.log('jdub', 'metadata', metadata);
+            console.log('uploadImageToStorage', 'metadata', metadata);
 
             // get download URL
             const storage = admin.storage();
@@ -211,7 +211,7 @@ app.post("/images", function (req, res) {
                 expires: '03-09-2200'
             }).then((signedUrl) => {
                 let url = signedUrl[0];
-                // console.log('jdub', 'getSignedUrl', url);
+                // console.log('uploadImageToStorage', 'getSignedUrl', url);
 
                 /*
                 if (req.field.type === 'profile') {
@@ -429,7 +429,7 @@ const sendPushNotification = async(function (chunks) {
     for (let chunk of chunks) {
         try {
             let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
-            console.log('jdub', ticketChunk);
+            console.log('sendPushNotification', ticketChunk);
 
             result.push(...ticketChunk);
         } catch (error) {
@@ -448,7 +448,7 @@ const getReceipts = async(function (receiptIdChunks) {
     for (let chunk of receiptIdChunks) {
         try {
             let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
-            console.log('jdub', receipts);
+            console.log('getReceipts', receipts);
 
             // The receipts specify whether Apple or Google successfully received the
             // notification and information about an error, if one occurred.
@@ -480,7 +480,7 @@ const processPushNotification = async(function () {
     const targetUid = fields.receiver; // uid
 
     const targetToken = await(getToken(targetUid));
-    console.log('jdub', 'targetToken', targetToken);
+    console.log('processPushNotification', 'targetToken', targetToken);
 
     if (!targetToken) {
         const error = `Push token is null.`;
@@ -636,7 +636,7 @@ const processPushNotification = async(function () {
     // ToDo: save tickets to database & make api to get receipts
     // await(getReceipts(receiptIdChunks));
 
-    console.log('jdub', 'tickets', tickets);
+    console.log('processPushNotification', 'tickets', tickets);
 
     res.status(200).send(tickets);
 });
@@ -650,7 +650,7 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
         busboy.on("field", (fieldname, val) => {
             fields[fieldname] = val;
 
-            // console.log('jdub', fieldname, val);
+            // console.log('sendPushNotification', fieldname, val);
         });
 
         let params = {};
@@ -673,7 +673,7 @@ const deleteFiles = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    // console.log('jdub', 'Done parsing form.', fields);
+    // console.log('deleteFiles', 'Done parsing form.', fields);
 
     const storage = admin.storage();
 
@@ -685,7 +685,7 @@ const deleteFiles = async(function () {
         const key = 'file' + number.toString();
         const value = fields[key];
 
-        // console.log('jdub', key, value);
+        console.log('deleteFiles', key, value);
 
         const fileRef = storage.bucket(BUCKET_NAME).file(value);
         /*
@@ -715,7 +715,7 @@ exports.cleanPostImages = functions.https.onRequest((req, res) => {
         let fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
+            // console.log('cleanPostImages', 'Field [' + fieldname + ']: value: ' + val);
 
             fields[fieldname] = val;
         });

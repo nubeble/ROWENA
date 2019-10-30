@@ -42,6 +42,7 @@ export default class Explore extends React.Component<InjectedProps> {
         titleText: '',
         feedSize: 0,
         placeId: null,
+        placeCounts: null,
         latitude: 0,
         longitude: 0,
 
@@ -132,7 +133,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const titleText = placeName;
 
-        this.setState({ searchText, titleText, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
+        this.setState({ searchText, titleText, placeId: place.place_id, feedSize: place.length, placeCounts: place.placeCounts, latitude: place.lat, longitude: place.lng });
 
         // setState isLoadingFeeds true in Feed.js
         this._feed.setState({ isLoadingFeeds: true });
@@ -163,20 +164,22 @@ export default class Explore extends React.Component<InjectedProps> {
         let placeCounts = null;
 
         const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
-        if (!placeDoc.exists) return;
+        if (!placeDoc.exists) {
+            // return;
+        } else {
+            let place = placeDoc.data();
 
-        let place = placeDoc.data();
+            if (Vars.showMe === 'Men') count = place.men;
+            else if (Vars.showMe === 'Women') count = place.women;
+            else count = place.count;
 
-        if (Vars.showMe === 'Men') count = place.men;
-        else if (Vars.showMe === 'Women') count = place.women;
-        else count = place.count;
-
-        const counts = {
-            count: place.count,
-            men: place.men,
-            women: place.women
-        };
-        placeCounts = counts;
+            const counts = {
+                count: place.count,
+                men: place.men,
+                women: place.women
+            };
+            placeCounts = counts;
+        }
 
         const placeData = {
             name: name,
@@ -228,7 +231,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const extra = {
             // cityName: this.state.searchText,
-            placeCounts: this.props.navigation.state.params.place.placeCounts
+            placeCounts: this.state.placeCounts
         };
 
         /*
@@ -689,7 +692,7 @@ export default class Explore extends React.Component<InjectedProps> {
             // const placeName = this.state.searchText;
             const placeName = this.state.titleText;
             const placeId = this.state.placeId;
-            const placeCounts = this.props.navigation.state.params.place.placeCounts;
+            const placeCounts = this.state.placeCounts;
 
             !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, placeCounts, initFromMap: (posts) => this.initFromMap(posts) });
         }, Cons.buttonTimeout);

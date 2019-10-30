@@ -23,6 +23,8 @@ type InjectedProps = {
 @inject("profileStore")
 @observer
 export default class Settings extends React.Component<InjectedProps> {
+    static __Intro = null;
+
     state = {
         isLoadingFeeds: false,
 
@@ -50,9 +52,10 @@ export default class Settings extends React.Component<InjectedProps> {
             const intro = home.routes.find(item => item.routeName === 'intro');
             const introHome = intro.routes.find(item => item.routeName === 'introHome');
 
-            this.Intro = introHome;
+            // this.Intro = introHome;
+            Settings.__Intro = introHome;
 
-            if (!this.Intro.params.final || !this.Intro.params.reload) {
+            if (!Settings.__Intro.params.final || !Settings.__Intro.params.reload) {
                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -274,7 +277,7 @@ export default class Settings extends React.Component<InjectedProps> {
                             this.props.profileStore.final();
 
                             // init & unsubscribe
-                            this.Intro.params.final();
+                            Settings.__Intro.params.final();
                             // Intro.final();
 
                             Firebase.stopChatRoom(profile.uid);
@@ -411,21 +414,23 @@ export default class Settings extends React.Component<InjectedProps> {
         if (!profile) return null;
 
         let postFilter = profile.postFilter;
-        postFilter.showMe = showMe;
 
-        profile.postFilter = postFilter;
+        if (postFilter.showMe !== showMe) {
+            postFilter.showMe = showMe;
+            profile.postFilter = postFilter;
 
-        await Firebase.updateShowMe(profile.uid, profile);
+            await Firebase.updateShowMe(profile.uid, profile);
 
-        Vars.showMe = showMe;
+            Vars.showMe = showMe;
 
 
-        // init & unsubscribe
-        this.Intro.params.final();
-        // Intro.final();
+            // init & unsubscribe
+            Settings.__Intro.params.final();
+            // Intro.final();
 
-        // reload
-        this.Intro.params.reload();
+            // reload
+            Settings.__Intro.params.reload();
+        }
     }
 
     openDialog(type, title, message, callback) {

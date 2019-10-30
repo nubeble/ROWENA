@@ -400,7 +400,7 @@ export default class EditPost extends React.Component {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
-            const formData = new FormData();
+            let formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
@@ -2604,7 +2604,7 @@ export default class EditPost extends React.Component {
             this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
             // upload image
-            this.uploadImage(path, index, (uri) => {
+            await this.uploadImage(path, index, (uri) => {
                 if (!uri) {
                     this.hideFlash();
                     this.showNotification('An error happened. Please try again later.');

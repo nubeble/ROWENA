@@ -479,11 +479,11 @@ export default class Firebase {
             const placeDoc = await transaction.get(placeRef);
             if (!placeDoc.exists) { // new
                 if (data.gender === 'Man') {
-                    transaction.set(placeRef, { count: 1, men: 1, women: 0, timestamp: data.timestamp, name: data.placeName, rn: data.rn, lat: extra.lat, lng: extra.lng });
+                    transaction.set(placeRef, { count: 1, men: 1, women: 0, timestamp: d.timestamp, name: data.placeName, rn: d.rn, lat: extra.lat, lng: extra.lng });
                 } else if (data.gender === 'Woman') {
-                    transaction.set(placeRef, { count: 1, men: 0, women: 1, timestamp: data.timestamp, name: data.placeName, rn: data.rn, lat: extra.lat, lng: extra.lng });
+                    transaction.set(placeRef, { count: 1, men: 0, women: 1, timestamp: d.timestamp, name: data.placeName, rn: d.rn, lat: extra.lat, lng: extra.lng });
                 } else {
-                    transaction.set(placeRef, { count: 1, men: 0, women: 0, timestamp: data.timestamp, name: data.placeName, rn: data.rn, lat: extra.lat, lng: extra.lng });
+                    transaction.set(placeRef, { count: 1, men: 0, women: 0, timestamp: d.timestamp, name: data.placeName, rn: d.rn, lat: extra.lat, lng: extra.lng });
                 }
             } else { // update
                 let place = placeDoc.data();

@@ -137,7 +137,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
-            const formData = new FormData();
+            let formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
@@ -469,7 +469,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             await Firebase.cleanRemovedFeed(profile.uid, item.placeId, item.feedId);
 
             // 2. storage 삭제
-            const formData = new FormData();
+            let formData = new FormData();
             formData.append("uid", profile.uid);
             formData.append("feedId", item.feedId);
 
@@ -1218,7 +1218,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
                 // upload image
-                this.uploadImage(path, async (uri) => {
+                await this.uploadImage(path, async (uri) => {
                     if (!uri) {
                         this.setState({ onUploadingImage: false });
                         return;

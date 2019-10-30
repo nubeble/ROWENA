@@ -267,7 +267,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
-            const formData = new FormData();
+            let formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
@@ -933,7 +933,7 @@ export default class AdvertisementMain extends React.Component {
                         <Image
                             style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
                             style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
-                            style={{ width: (8 + 34 + 8) * 0.84, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
+                            // style={{ width: (8 + 34 + 8) * 0.84, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }
@@ -2466,7 +2466,7 @@ export default class AdvertisementMain extends React.Component {
             this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
             // upload image
-            this.uploadImage(path, index, (uri) => {
+            await this.uploadImage(path, index, (uri) => {
                 if (!uri) {
                     this.hideFlash();
                     this.showNotification('An error happened. Please try again later.');
@@ -2502,8 +2502,6 @@ export default class AdvertisementMain extends React.Component {
                         this.uploadImage4Ref = ref;
                         break;
                 }
-
-                // this.imageRefs.push(ref);
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });

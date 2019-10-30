@@ -366,22 +366,22 @@ export default class Intro extends React.Component<InjectedProps> {
             // load count from database (then subscribe)
             const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
             if (!placeDoc.exists) {
-                this.refs["toast"].show('Please try again later.', 500);
-                return;
+                // this.refs["toast"].show('Please try again later.', 500);
+                // return;
+            } else {
+                let place = placeDoc.data();
+
+                count = this._getPlaceCount(place, Vars.showMe);
+                const counts = {
+                    count: place.count,
+                    men: place.men,
+                    women: place.women
+                };
+                placeCounts = counts;
+
+                // subscribe feed count
+                this.subscribeToPlace(result.place_id);
             }
-
-            let place = placeDoc.data();
-
-            count = this._getPlaceCount(place, Vars.showMe);
-            const counts = {
-                count: place.count,
-                men: place.men,
-                women: place.women
-            };
-            placeCounts = counts;
-
-            // subscribe feed count
-            this.subscribeToPlace(result.place_id);
         } else {
             count = feedSize;
             placeCounts = this.getPlaceCounts(result.place_id);
@@ -727,7 +727,7 @@ export default class Intro extends React.Component<InjectedProps> {
         let _recentFeeds = [...this.state.recentFeeds];
         const index2 = _recentFeeds.findIndex(item => item.d.placeId === newFeed.d.placeId && item.d.id === newFeed.d.id); // snap.id
         if (index2 !== -1) {
-            console.log('jdub', 'recentFeeds[', index2, '] changed.');
+            // console.log('jdub', 'recentFeeds[', index2, '] changed.');
             _recentFeeds[index2] = newFeed;
             !this.closed && this.setState({ recentFeeds: _recentFeeds });
 
@@ -745,11 +745,12 @@ export default class Intro extends React.Component<InjectedProps> {
         // Intro.feedCountList.set(placeId, place.count);
 
         // update UI (number, badge)
-        let __places = [...this.state.places];
-        let __index = __places.findIndex(el => el.place_id === placeId);
-        console.log('jdub', 'Intro.updatePlace, index', __index);
-        if (__index !== -1) {
-            let __place = __places[__index];
+        let places = [...this.state.places];
+        const index = places.findIndex(el => el.place_id === placeId);
+        // console.log('jdub', 'Intro.updatePlace, index', index);
+
+        if (index !== -1) {
+            let __place = places[index];
             __place.length = this._getPlaceCount(place, Vars.showMe);
 
             if (typeof __place.newPostAdded === 'undefined') {
@@ -760,10 +761,10 @@ export default class Intro extends React.Component<InjectedProps> {
                 showBadge = true;
             }
 
-            __places[__index] = __place;
+            places[index] = __place;
 
-            Intro.places = __places;
-            !this.closed && this.setState({ places: __places });
+            Intro.places = places;
+            !this.closed && this.setState({ places: places });
         }
 
         if (showBadge) {

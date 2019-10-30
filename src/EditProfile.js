@@ -226,7 +226,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
-            const formData = new FormData();
+            let formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
@@ -1310,7 +1310,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
             // upload image
-            this.uploadImage(path, (uri) => {
+            await this.uploadImage(path, (uri) => {
                 if (!uri) {
                     this.showNotification('An error happened. Please try again later.');
                     this.setState({ onUploadingImage: false });
