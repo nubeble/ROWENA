@@ -1265,7 +1265,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         let type = Util.getImageType(ext);
         // console.log('jdub', 'file type:', type);
 
-        const formData = new FormData();
+        let formData = new FormData();
         // formData.append("type", "post");
         formData.append("type", "profile");
 

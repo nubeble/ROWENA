@@ -2668,7 +2668,7 @@ export default class EditPost extends React.Component {
 
         let type = Util.getImageType(ext);
 
-        const formData = new FormData();
+        let formData = new FormData();
         formData.append("type", "post");
 
         const feedId = this.state.post.d.id;

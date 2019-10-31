@@ -2528,7 +2528,7 @@ export default class AdvertisementMain extends React.Component {
         let type = Util.getImageType(ext);
         // console.log('jdub', 'file type:', type);
 
-        const formData = new FormData();
+        let formData = new FormData();
         // formData.append("type", "profile");
         formData.append("type", "post");
 

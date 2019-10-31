@@ -167,9 +167,9 @@ export default class Tutorial extends React.Component {
     renderDoneButton() {
         return (
             <View style={{
-                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: Theme.color.selection,
             }}>
-                <Entypo name='check' color={Theme.color.selection} size={26} />
+                <Entypo name='check' color="white" size={26} />
             </View>
         );
     };

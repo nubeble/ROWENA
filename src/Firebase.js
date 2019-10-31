@@ -160,10 +160,9 @@ export default class Firebase {
             const name = profile.name;
             let uri = null;
             if (profile.picture.uri) uri = profile.picture.uri;
+
             const user = Firebase.auth.currentUser;
             await user.updateProfile({
-                // displayName: "Jane Q. User",
-                // photoURL: "https://example.com/jane-q-user/profile.jpg"
                 displayName: name,
                 photoURL: uri
             }).then(function () {
@@ -174,10 +173,11 @@ export default class Firebase {
         }
     }
 
-    static async updateProfilePicture(uid, data) {
-        await Firebase.firestore.collection("users").doc(uid).update(data);
+    static async updateProfilePicture(uid, profile) {
+        await Firebase.firestore.collection("users").doc(uid).update(profile);
 
-        const uri = data.picture.uri;
+        const uri = profile.picture.uri;
+
         const user = Firebase.auth.currentUser;
         await user.updateProfile({
             photoURL: uri
@@ -219,7 +219,7 @@ export default class Firebase {
         if (!result) return false;
 
         // delete firebase auth
-        let user = Firebase.auth.currentUser;
+        const user = Firebase.auth.currentUser;
         await user.delete().then(function () {
             // User deleted.
             // console.log('jdub', 'Firebase auth deleted.');
@@ -238,7 +238,7 @@ export default class Firebase {
 
     static async signOut(uid) {
         // sign out all users
-        const formData = new FormData();
+        let formData = new FormData();
         formData.append("uid", uid);
 
         try {

@@ -37,7 +37,7 @@ export async function registerExpoPushToken(uid, name) {
     // const user = Firebase.user();
 
     /*
-    const formData = new FormData();
+    let formData = new FormData();
     formData.append("token", token);
     // formData.append("uid", user.uid);
     // formData.append("name", user.name);
@@ -94,7 +94,7 @@ export async function unregisterExpoPushToken(uid) {
 
     // const user = Firebase.user();
 
-    const formData = new FormData();
+    let formData = new FormData();
     formData.append("token", token);
     formData.append("uid", uid);
     // formData.append("name", name);
@@ -114,7 +114,7 @@ export async function unregisterExpoPushToken(uid) {
 export async function sendPushNotification(sender, senderName, receiver, type, data) {
     console.log('jdub', 'sendPushNotification', sender, receiver, data);
 
-    const formData = new FormData();
+    let formData = new FormData();
     formData.append("sender", sender);
     formData.append("senderName", senderName);
     formData.append("receiver", receiver);
