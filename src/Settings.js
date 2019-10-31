@@ -12,8 +12,9 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import Firebase from "./Firebase";
 import PreloadImage from './PreloadImage';
 import * as WebBrowser from 'expo-web-browser';
-import Dialog from "react-native-dialog";
 import NavigationService from './NavigationService';
+import Dialog from "react-native-dialog";
+import Toast from 'react-native-easy-toast';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -146,6 +147,13 @@ export default class Settings extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
             </View>
         );
     }
@@ -273,6 +281,11 @@ export default class Settings extends React.Component<InjectedProps> {
                         if (!profile) return;
 
                         this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', async () => {
+                            if (!Settings.__Intro) {
+                                this.refs["toast"].show('Please try again later.', 500);
+                                return;
+                            }
+
                             // show indicator
                             !this.closed && this.setState({ isLoadingFeeds: true });
 
@@ -413,7 +426,7 @@ export default class Settings extends React.Component<InjectedProps> {
         else if (selectedIndex === 1) showMe = 'Women';
         else if (selectedIndex === 2) showMe = 'Everyone';
 
-        let { profile } = this.props.profileStore;
+        const { profile } = this.props.profileStore;
         if (!profile) return null;
 
         let postFilter = profile.postFilter;
@@ -426,6 +439,11 @@ export default class Settings extends React.Component<InjectedProps> {
 
             Vars.showMe = showMe;
 
+
+            if (!Settings.__Intro) {
+                this.refs["toast"].show('Please try again later.', 500);
+                return;
+            }
 
             // init & unsubscribe
             Settings.__Intro.params.final();

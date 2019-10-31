@@ -341,8 +341,8 @@ export default class WriteReviewScreen extends React.Component {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 /*
-                style={{backgroundColor:'red'}}
-                textStyle={{color:'red'}}
+                style={{ backgroundColor: 'red' }}
+                textStyle={{ color: 'red' }}
                 fadeInDuration={750}
                 fadeOutDuration={1000}
                 */

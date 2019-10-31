@@ -780,19 +780,19 @@ export default class UserMain extends React.Component<InjectedProps> {
                     </View>
                 }
 
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
-
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
                     <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
             </View>
         );
     } // end of render()
