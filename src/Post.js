@@ -2970,7 +2970,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 title,
                 post,
-                placeCount,
+                placeCounts,
                 customerProfile
             };
 

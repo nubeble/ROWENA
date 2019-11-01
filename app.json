@@ -34,7 +34,7 @@
         "facebookDisplayName": "Rowena",
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
-            "buildNumber": "1.1.28",
+            "buildNumber": "1.1.30",
             "icon": "./assets/ios_icon.png",
             "supportsTablet": true,
             "infoPlist": {

@@ -15,6 +15,7 @@ import * as WebBrowser from 'expo-web-browser';
 import NavigationService from './NavigationService';
 import Dialog from "react-native-dialog";
 import Toast from 'react-native-easy-toast';
+import Intro from './Intro';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -53,7 +54,8 @@ export default class Settings extends React.Component<InjectedProps> {
                 const intro = home.routes.find(item => item.routeName === 'intro');
                 const introHome = intro.routes.find(item => item.routeName === 'introHome');
 
-                if (!introHome.params.final || !introHome.params.reload) {
+                // if (!introHome.params.final || !introHome.params.reload) {
+                if (!introHome || !introHome.params || !introHome.params.reload) {
                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -64,7 +66,6 @@ export default class Settings extends React.Component<InjectedProps> {
                 } else {
                     console.log('Intro params set.');
 
-                    // this.Intro = introHome;
                     Settings.__Intro = introHome;
                 }
             }
@@ -281,11 +282,6 @@ export default class Settings extends React.Component<InjectedProps> {
                         if (!profile) return;
 
                         this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', async () => {
-                            if (!Settings.__Intro) {
-                                this.refs["toast"].show('Please try again later.', 500);
-                                return;
-                            }
-
                             // show indicator
                             !this.closed && this.setState({ isLoadingFeeds: true });
 
@@ -293,8 +289,8 @@ export default class Settings extends React.Component<InjectedProps> {
                             this.props.profileStore.final();
 
                             // init & unsubscribe
-                            Settings.__Intro.params.final();
-                            // Intro.final();
+                            // Settings.__Intro.params.final();
+                            Intro.final();
 
                             Firebase.stopChatRoom(profile.uid);
 
@@ -440,14 +436,14 @@ export default class Settings extends React.Component<InjectedProps> {
             Vars.showMe = showMe;
 
 
-            if (!Settings.__Intro) {
+            if (!Settings.__Intro) { // ToDo: restart app
                 this.refs["toast"].show('Please try again later.', 500);
                 return;
             }
 
             // init & unsubscribe
-            Settings.__Intro.params.final();
-            // Intro.final();
+            // Settings.__Intro.params.final();
+            Intro.final();
 
             // reload
             Settings.__Intro.params.reload();

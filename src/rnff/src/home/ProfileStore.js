@@ -239,6 +239,19 @@ export default class ProfileStore {
 
     final() {
         if (this.instance) this.instance();
+
+        this._profile = undefined;
+        this.lastChangedTime = undefined;
+        this.lastTimeFeedsUpdated = undefined;
+        this.lastTimeLikesUpdated = undefined;
+        this.lastTimeReviewsUpdated = undefined;
+        this.lastTimeCommentsUpdated = undefined;
+
+        this.feedsUpdatedCallbackList = [];
+        this.likesUpdatedCallbackList = [];
+        this.reviewsUpdatedCallbackList = [];
+        this.commentsUpdatedCallbackList = [];
+        this.replyAddedOnReviewCallbackList = [];
     }
 
     compareFeeds(oldFeeds, newFeeds) {

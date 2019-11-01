@@ -146,7 +146,7 @@ export default class Intro extends React.Component<InjectedProps> {
         dialogMessage: ''
     };
 
-    final() {
+    static final() {
         Intro.places = [];
         Intro.popularFeeds = [];
         Intro.recentFeeds = [];
@@ -309,9 +309,11 @@ export default class Intro extends React.Component<InjectedProps> {
             scrollToTop: () => {
                 this._flatList.scrollToOffset({ offset: 0, animated: true });
             },
+            /*
             final: () => {
                 this.final();
             },
+            */
             reload: () => {
                 this.reload();
             }
