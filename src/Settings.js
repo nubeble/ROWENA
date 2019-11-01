@@ -63,6 +63,8 @@ export default class Settings extends React.Component<InjectedProps> {
                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    console.log('mainStackNavigator', mainStackNavigator);
+
                 } else {
                     console.log('Intro params set.');
 
@@ -206,27 +208,6 @@ export default class Settings extends React.Component<InjectedProps> {
                 </View>
 
                 {/* Age Range */}
-                {/*
-                <View style={{
-                    width: '100%', height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                    paddingLeft: 2,
-                }}>
-                    <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Age Range'}</Text>
-                    <TouchableOpacity
-                        onPress={async () => {
-                            // ToDo
-                        }}
-                    >
-                        <View style={{
-                            flexDirection: 'row', alignItems: 'center',
-                            justifyContent: 'space-between',
-                        }}>
-                            <Text style={{ fontSize: 18, color: Theme.color.splash, fontFamily: "Roboto-Regular" }}>{'18 - 26'}</Text>
-                            <Entypo name='chevron-right' color={'transparent'} size={24} style={{ marginLeft: 10 }} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                */}
 
                 {/* Legal */}
                 <View style={{
@@ -436,8 +417,11 @@ export default class Settings extends React.Component<InjectedProps> {
             Vars.showMe = showMe;
 
 
-            if (!Settings.__Intro) { // ToDo: restart app
-                this.refs["toast"].show('Please try again later.', 500);
+            if (!Settings.__Intro) {
+                this.refs["toast"].show('Posts will be updated soon.', 500);
+
+                // ToDo: restart app or navigate()
+
                 return;
             }
 
