@@ -81,11 +81,7 @@ export default class Firebase {
     }
 
     static async setToken(uid, data) {
-        await Firebase.firestore.collection("tokens").doc(uid).set(data).then(function () {
-            // console.log('jdub', 'Firebase.setToken', 'set successful.');
-        }).catch(function (error) {
-            console.log('jdub', 'Firebase.setToken', error);
-        });
+        await Firebase.firestore.collection("tokens").doc(uid).set(data);
     }
 
     static async deleteToken(uid) {
@@ -94,9 +90,9 @@ export default class Firebase {
 
     static async getProfile(uid) {
         const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
-        if (userDoc.exists) return userDoc.data();
+        if (!userDoc.exists) return null;
 
-        return null;
+        return userDoc.data();
     }
 
     static async createProfile(uid, name, email, phoneNumber, photoURL) {
@@ -2690,7 +2686,4 @@ export default class Firebase {
             console.log('jdub', 'Firebase.updateChatRoom, error', error);
         });
     }
-
-
-
 }
