@@ -370,13 +370,19 @@ export default class Loading extends React.Component<InjectedProps> {
                 Vars.distanceUnit = 'meter';
                 console.log('jdub', 'meter unit');
             }
-        } else {
+        } else { // first sign up
             Vars.distanceUnit = 'meter';
             console.log('jdub', 'meter unit');
         }
     }
 
     setPostFilter(postFilter) {
+        if (!postFilter) { // first sign up
+            const showme = 'Everyone';
+            Vars.showMe = showme;
+            return showme;
+        }
+
         // 1. Show Me
         const showMe = postFilter.showMe;
         Vars.showMe = showMe;
