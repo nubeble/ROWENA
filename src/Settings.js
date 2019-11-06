@@ -417,20 +417,22 @@ export default class Settings extends React.Component<InjectedProps> {
             Vars.showMe = showMe;
 
 
-            if (!Settings.__Intro) {
-                this.refs["toast"].show('Posts will be updated soon.', 500);
-
-                // ToDo: restart app or navigate()
-
-                return;
-            }
 
             // init & unsubscribe
             // Settings.__Intro.params.final();
             Intro.final();
 
-            // reload
-            Settings.__Intro.params.reload();
+            if (!Settings.__Intro) {
+                // restart
+                this.refs["toast"].show('App is reloading now.', 500, () => {
+                    this.props.navigation.navigate("loading");
+                });
+
+                // return;
+            } else {
+                // reload
+                Settings.__Intro.params.reload();
+            }
         }
     }
 

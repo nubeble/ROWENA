@@ -510,7 +510,7 @@ export default class SignUpWithMobileMain extends React.Component {
     }
 
     async _handleOpenURL(event) {
-        if (SignUpWithMobileMain.onAuth) return; // ToDo: To block multi call
+        if (SignUpWithMobileMain.onAuth) return; // Consider: To block multi call
         SignUpWithMobileMain.onAuth = true;
 
         if (Platform.OS === 'ios') WebBrowser.dismissBrowser();
