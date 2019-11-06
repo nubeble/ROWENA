@@ -202,6 +202,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         }
 
         let _count = 0;
+        let subscribeList = []; // save index
 
         for (let i = startIndex; i < length; i++) {
             // if (count >= DEFAULT_FEED_COUNT) break;
@@ -248,13 +249,15 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                 newFeeds.push(newFeed);
 
-                // ToDo: subscribe post after set state feeds!
-
+                // subscribe post after set state feeds!
+                /*
                 // subscribe post
                 this.subscribeToPost(placeId, feedId);
 
                 // subscribe count
                 this.subscribeToPlace(placeId);
+                */
+                subscribeList.push(i);
             }
 
             this.lastLoadedFeedIndex = i;
@@ -264,6 +267,20 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         if (reload) this.setState({ feeds: newFeeds });
         else this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
+
+        // subscribe
+        subscribeList.forEach(index => {
+            const feed = feeds[index];
+
+            const placeId = feed.placeId;
+            const feedId = feed.feedId;
+
+            // subscribe post
+            this.subscribeToPost(placeId, feedId);
+
+            // subscribe count
+            this.subscribeToPlace(placeId);
+        });
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
