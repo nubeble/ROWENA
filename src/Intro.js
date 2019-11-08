@@ -382,7 +382,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 placeCounts = counts;
 
                 // subscribe feed count
-                this.subscribeToPlace(result.place_id);
+                // no need to subscribe for now
+                // this.subscribeToPlace(result.place_id);
             }
         } else {
             count = feedSize;
@@ -585,7 +586,7 @@ export default class Intro extends React.Component<InjectedProps> {
             placeList = Util.shuffle(placeList);
         }
 
-        console.log('getFeeds() placeList.length', placeList.length);
+        // console.log('getFeeds() placeList.length', placeList.length);
 
         placesSize = placeList.length; // actual read size
         const length1 = placesSize / 2;
@@ -749,16 +750,18 @@ export default class Intro extends React.Component<InjectedProps> {
         // update UI (number, badge)
         let places = [...this.state.places];
         const index = places.findIndex(el => el.place_id === placeId);
-        // console.log('jdub', 'Intro.updatePlace, index', index);
+        console.log('jdub', 'Intro.updatePlace, index', index);
 
         if (index !== -1) {
             let __place = places[index];
             __place.length = this._getPlaceCount(place, Vars.showMe);
+            console.log('jdub', 'Intro.updatePlace, length', __place.length);
 
             if (typeof __place.newPostAdded === 'undefined') {
                 __place.newPostAdded = false;
             } else {
                 __place.newPostAdded = true;
+                // console.log('jdub', 'Intro.updatePlace, showBadge = true');
 
                 showBadge = true;
             }
