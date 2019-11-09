@@ -36,7 +36,8 @@ export const Cons = {
     redDotWidth: Math.round(Dimensions.get('window').height / 100) + 1,
 
     // log-in dot badge
-    logInDotWidth: Math.round(Dimensions.get('window').height / 30),
+    // logInDotWidth: Math.round(Dimensions.get('window').height / 30),
+    logInDotWidth: Math.round(Dimensions.get('window').height / 36),
 
     // button press timeout
     // buttonTimeout: 100,

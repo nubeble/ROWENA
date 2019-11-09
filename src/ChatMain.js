@@ -676,7 +676,7 @@ export default class ChatMain extends React.Component<InjectedProps> {
                             right: 0,
                             backgroundColor: circleColor,
                             borderColor: Theme.color.background,
-                            borderWidth: Cons.logInDotWidth / 6,
+                            borderWidth: Cons.logInDotWidth / 8,
                             borderRadius: Cons.logInDotWidth / 2,
                             width: Cons.logInDotWidth,
                             height: Cons.logInDotWidth
