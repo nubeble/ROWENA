@@ -266,6 +266,12 @@ export default class Settings extends React.Component<InjectedProps> {
                             // show indicator
                             !this.closed && this.setState({ isLoadingFeeds: true });
 
+                            // update activating
+                            let _profile = this.props.profileStore.profile;
+                            _profile.activating = false;
+                            _profile.lastLogInTime = Date.now();
+                            await Firebase.updateProfile(profile.uid, _profile, false);
+
                             // unsubscribe profile
                             this.props.profileStore.final();
 

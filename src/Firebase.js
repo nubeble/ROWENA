@@ -247,13 +247,14 @@ export default class Firebase {
                 body: formData
             });
 
-            console.log('jdub', 'Firebase.signOut result', response);
+            // console.log('jdub', 'Firebase.signOut result', response);
         } catch (error) {
-            console.error(error);
+            console.error('Firebase.signOut', error);
         }
 
         // sign out
         AuthMain.animation = true;
+
         await Firebase.auth.signOut();
     }
 
