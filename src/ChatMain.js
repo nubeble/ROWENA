@@ -587,6 +587,8 @@ export default class ChatMain extends React.Component<InjectedProps> {
             }
         }
 
+        const logInDotWidth = avatarHeight / 4;
+
         let circleColor = '#999999'; // grey
         let logInState = null;
         if (opponent.activating) {
@@ -672,14 +674,14 @@ export default class ChatMain extends React.Component<InjectedProps> {
 
                         <View style={{
                             position: 'absolute',
-                            bottom: 0,
-                            right: 0,
+                            bottom: logInDotWidth / 12,
+                            right: logInDotWidth / 12,
                             backgroundColor: circleColor,
                             borderColor: Theme.color.background,
-                            borderWidth: Cons.logInDotWidth / 8,
-                            borderRadius: Cons.logInDotWidth / 2,
-                            width: Cons.logInDotWidth,
-                            height: Cons.logInDotWidth
+                            borderWidth: logInDotWidth / 8,
+                            borderRadius: logInDotWidth / 2,
+                            width: logInDotWidth,
+                            height: logInDotWidth
                         }} />
 
                         {
@@ -714,7 +716,7 @@ export default class ChatMain extends React.Component<InjectedProps> {
                         <Text style={styles.name} numberOfLines={1}>{opponent.name}</Text>
                         <Text style={styles.contents} numberOfLines={1}>{_contents}</Text>
 
-                        <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10 }}>
+                        <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10, paddingBottom: 3 }}>
                             <Text style={styles.logInState}>{logInState}</Text>
                         </View>
                     </View>
