@@ -692,8 +692,10 @@ export default class ChatMain extends React.Component<InjectedProps> {
                                 top: 0 + viewHeight * 0.08,
                                 left: viewHeight - Cons.redDotWidth - viewHeight * 0.08,
                                 */
-                                top: 0,
-                                left: viewHeight,
+                                // top: 0,
+                                // left: viewHeight,
+                                top: 2,
+                                right: 2,
 
                                 backgroundColor: 'red',
                                 borderRadius: Cons.redDotWidth / 2,
@@ -716,7 +718,7 @@ export default class ChatMain extends React.Component<InjectedProps> {
                         <Text style={styles.name} numberOfLines={1}>{opponent.name}</Text>
                         <Text style={styles.contents} numberOfLines={1}>{_contents}</Text>
 
-                        <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10, paddingBottom: logInDotWidth / 8 }}>
+                        <View style={{ height: logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10, paddingBottom: logInDotWidth / 8 }}>
                             <Text style={styles.logInState}>{logInState}</Text>
                         </View>
                     </View>
