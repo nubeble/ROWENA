@@ -692,11 +692,8 @@ export default class ChatMain extends React.Component<InjectedProps> {
                                 top: 0 + viewHeight * 0.08,
                                 left: viewHeight - Cons.redDotWidth - viewHeight * 0.08,
                                 */
-                                // top: 0,
-                                // left: viewHeight,
-                                top: 2,
-                                right: 2,
-
+                                top: 0,
+                                right: 0,
                                 backgroundColor: 'red',
                                 borderRadius: Cons.redDotWidth / 2,
                                 width: Cons.redDotWidth,
