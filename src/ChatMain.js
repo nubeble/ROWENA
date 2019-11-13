@@ -716,7 +716,7 @@ export default class ChatMain extends React.Component<InjectedProps> {
                         <Text style={styles.name} numberOfLines={1}>{opponent.name}</Text>
                         <Text style={styles.contents} numberOfLines={1}>{_contents}</Text>
 
-                        <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10, paddingBottom: 3 }}>
+                        <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10, paddingBottom: logInDotWidth / 8 }}>
                             <Text style={styles.logInState}>{logInState}</Text>
                         </View>
                     </View>
