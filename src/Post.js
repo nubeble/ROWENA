@@ -233,7 +233,7 @@ export default class Post extends React.Component<InjectedProps> {
             }
             !this.closed && this.setState({ liked });
 
-            // ToDo: update feedStore: No need to update for views & likes
+            // No need to update feedStore for views & likes
             // const { feedStore } = this.props;
             // feedStore.updateFeed(newPost);
         });
@@ -2826,7 +2826,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         if (this.state.disableContactButton) {
-            this.refs["toast"].show('Sorry, You have already opened a chatroom.', 500);
+            this.refs["toast"].show('Sorry, You have already opened the chatroom.', 500);
             return;
         }
 
@@ -2845,8 +2845,6 @@ export default class Post extends React.Component<InjectedProps> {
         // find existing chat room (by uid)
         let room = await Firebase.findChatRoomByPostId(uid, post.d.id);
         if (room) {
-            // this.props.navigation.navigate("chatRoom", { item: room });
-
             // title
             let titleImageUri = null;
             let titleName = null;
@@ -2897,6 +2895,13 @@ export default class Post extends React.Component<InjectedProps> {
             this.props.navigation.navigate("chatRoom", { item: params });
         } else {
             const { profile } = this.props.profileStore;
+
+            // check if over the limit
+            const result = this.CheckInitiatedMessage(profile);
+            if (!result) {
+                // ToDo: toast
+                return;
+            }
 
             // create new chat room
             // --
@@ -2977,6 +2982,62 @@ export default class Post extends React.Component<InjectedProps> {
             this.setState({ showPostLoader: false });
             this.props.navigation.navigate("chatRoom", { item: params });
         }
+    }
+
+    CheckInitiatedMessage(profile) {
+        const initiatedMessage = profile.initiatedMessage;
+        if (initiatedMessage) {
+            const count = initiatedMessage.count;
+            const lastInitTime = initiatedMessage.lastInitTime;
+
+            const date1 = new Date(lastInitTime);
+            const date2 = new Date();
+            const result = Util.isSameDay(date1, date2);
+            if (result) {
+                // check count
+                if (count >= 4) return false;
+
+                this.updateInitiatedMessage(profile);
+
+                return true;
+            } else {
+                // init & update
+                let _profile = _.clone(profile);
+                const message = {
+                    count: 1,
+                    lastInitTime: Date.now()
+                };
+                _profile.initiatedMessage = message;
+
+                Firebase.updateProfile(_profile.uid, _profile, false);
+
+                return true;
+            }
+        } else {
+            this.updateInitiatedMessage(profile);
+            return true;
+        }
+    }
+
+    updateInitiatedMessage(profile) {
+        let _profile = _.clone(profile);
+
+        let initiatedMessage = _profile.initiatedMessage;
+        if (initiatedMessage) {
+            initiatedMessage.count = initiatedMessage.count + 1;
+            initiatedMessage.lastInitTime = Date.now();
+
+            _profile.initiatedMessage = initiatedMessage; // ToDo: javascript object change
+        } else {
+            const message = {
+                count: 1,
+                lastInitTime: Date.now()
+            };
+
+            _profile.initiatedMessage = message;
+        }
+
+        Firebase.updateProfile(_profile.uid, _profile, false);
     }
 
     sendReply() {

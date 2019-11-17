@@ -124,7 +124,8 @@ export default class Firebase {
             postFilter: {
                 showMe: 'Everyone',
                 // ageRange: [18, 24]
-            }
+            },
+            initiatedMessage: null
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);
@@ -148,10 +149,10 @@ export default class Firebase {
     }
 
     static async updateProfile(uid, profile, updateAuth) {
-        // 2. update user doc
+        // update user doc
         await Firebase.firestore.collection("users").doc(uid).update(profile);
 
-        // 3. update firebase auth
+        // update firebase auth
         if (updateAuth) {
             const name = profile.name;
             let uri = null;

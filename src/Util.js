@@ -1515,20 +1515,23 @@ export default class Util extends React.Component {
         return code;
     }
 
-    /*
     static isSameDay(date1, date2) {
         const y1 = date1.getFullYear();
+        const m1 = date1.getMonth();
         const d1 = date1.getDate();
 
         const y2 = date2.getFullYear();
+        const m2 = date1.getMonth();
         const d2 = date2.getDate();
 
+        console.log("Util.isSameDay", "date1: ", y1, m1, d1, "date2: ", y2, m2, d2);
+
         if (y1 !== y2) return false;
+        if (m1 !== m2) return false;
         if (d1 !== d2) return false;
 
         return true;
     }
-    */
 
     static getDistance(location1, location2) {
         // location1

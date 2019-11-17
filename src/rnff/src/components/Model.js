@@ -52,14 +52,14 @@ type CommentRef = {
     picture: string
 };
 
-type PostRef = {
-    placeId: string,
-    feedId: string,
-    /*
-    picture: string,
-    name: string,
-    placeName: string
-    */
+type PostFilter = {
+    showMe: string,
+    // ageRange: Array<number>
+};
+
+type Message = {
+    count: number,
+    lastInitTime: number
 };
 
 export type Profile = {
@@ -70,10 +70,10 @@ export type Profile = {
     // country: string,
     // city: string,
     place: string, // Bangkok, Thailand
+    // location: Location,
     email: string,
     phoneNumber: string,
     picture: Picture,
-    // location: Location,
     about: string,
     feeds: FeedRef[], // 내가 만든 feed
     reviews: ReviewRef[], // 내가 남긴 review
@@ -84,7 +84,9 @@ export type Profile = {
     commentAdded: boolean,
     timestamp: number,
     activating: boolean,
-    lastLogInTime: number
+    lastLogInTime: number,
+    postFilter: PostFilter,
+    initiatedMessage: Message // 내가 말을 건 대화 개수
 };
 
 type Pictures = {
@@ -167,27 +169,3 @@ type Comment = {
 
 export type CommentEntry = { comment: Comment, post: Post };
 export type Comments = CommentEntry[];
-
-
-
-/*
-export type Post = {
-    uid: string,
-    id: string,
-    likes: string[],
-    comments: number,
-    timestamp: number,
-    text: string,
-    picture: Picture
-};
-
-export type Comment = {
-    uid: string,
-    id: string,
-    text: string,
-    timestamp: number
-};
-*/
-
-// export type CommentEntry = { comment: Comment, profile: Profile };
-// export type Comments = CommentEntry[];
