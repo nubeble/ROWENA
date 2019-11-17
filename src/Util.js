@@ -1524,7 +1524,7 @@ export default class Util extends React.Component {
         const m2 = date1.getMonth();
         const d2 = date2.getDate();
 
-        console.log("Util.isSameDay", "date1: ", y1, m1, d1, "date2: ", y2, m2, d2);
+        // console.log("Util.isSameDay", "date1: ", y1, m1, d1, "date2: ", y2, m2, d2);
 
         if (y1 !== y2) return false;
         if (m1 !== m2) return false;

@@ -121,7 +121,7 @@ export default class WriteReviewScreen extends React.Component {
 
         const { post, user } = this.props.navigation.state.params;
         if (user.uid === post.d.uid) {
-            this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
+            this.refs["toast"].show('Sorry, you can not write a self-recommendation.', 500, () => {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
                     this.props.navigation.state.params.initFromWriteReview(false);

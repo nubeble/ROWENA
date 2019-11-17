@@ -2826,7 +2826,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         if (this.state.disableContactButton) {
-            this.refs["toast"].show('Sorry, You have already opened the chatroom.', 500);
+            this.refs["toast"].show('Sorry, you have already opened the chatroom.', 500);
             return;
         }
 
@@ -2899,7 +2899,9 @@ export default class Post extends React.Component<InjectedProps> {
             // check if over the limit
             const result = this.CheckInitiatedMessage(profile);
             if (!result) {
-                // ToDo: toast
+                // this.refs["toast"].show("You can only initiate up to 4 conversations in a day. 😂\nLuckily it's free during the promotion of our first release. 😍", 1000);
+                this.refs["toast"].show("Sorry, you can have up to 4 conversations in a day. 😂", 2000);
+                this.setState({ showPostLoader: false });
                 return;
             }
 
@@ -2989,6 +2991,8 @@ export default class Post extends React.Component<InjectedProps> {
         if (initiatedMessage) {
             const count = initiatedMessage.count;
             const lastInitTime = initiatedMessage.lastInitTime;
+
+            console.log('Post.CheckInitiatedMessage', 'count:', count);
 
             const date1 = new Date(lastInitTime);
             const date2 = new Date();
