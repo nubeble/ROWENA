@@ -1892,4 +1892,13 @@ export default class Util extends React.Component {
         if (showMe === 'Women') return 'chicks';
         if (showMe === 'Everyone') return 'guys';
     }
+
+    static validateName(name) {
+        const reg = /^[a-zA-Z\s]*$/;
+        if (reg.test(String(name).toLowerCase())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

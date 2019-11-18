@@ -306,6 +306,18 @@ export default class SignUpWithMobileName extends React.Component {
             this.hideAlertIcon();
         }
 
+        if (text.trim() === '') {
+            // disable
+            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+
+            // show icon
+            this.setState({ nameIcon: 0 });
+
+            this.setState({ name: '' });
+
+            return;
+        }
+
         // enable/disable signup button
         if (text === '') {
             // disable
@@ -316,17 +328,19 @@ export default class SignUpWithMobileName extends React.Component {
         }
 
         // check character
-        if (!text) {
-            // hide icon
+        if (text === '') {
+            // show icon
             this.setState({ nameIcon: 0 });
         } else {
             const reg = /^[a-zA-Z\s]*$/;
             if (reg.test(String(text).toLowerCase())) {
-                console.log('jdub', 'validateName', "Name is Correct");
+                console.log('validateName', "Name is correct");
 
                 // show icon
                 this.setState({ nameIcon: 2 });
             } else {
+                console.log('validateName', "Name is NOT correct");
+
                 // show icon
                 this.setState({ nameIcon: 0 });
             }

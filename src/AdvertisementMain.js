@@ -602,6 +602,14 @@ export default class AdvertisementMain extends React.Component {
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17 + 1, animated: true });
 
             return;
+        } else if (!Util.validateName(name)) {
+            this.showNotification('Please use valid characters for your name.');
+
+            this.setState({ showNameAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17 + 1, animated: true });
+
+            return;
         }
 
         if (birthday === null) {
