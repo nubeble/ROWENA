@@ -135,7 +135,7 @@ export default class Loading extends React.Component<InjectedProps> {
         Firebase.init();
 
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
-            // console.log('jdub', 'Loading.onAuthStateChanged, user', user);
+            console.log('jdub', 'Loading.onAuthStateChanged, user', user);
 
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
@@ -174,9 +174,13 @@ export default class Loading extends React.Component<InjectedProps> {
                 Loading.userSignedIn = true;
 
                 // save profile
-                let name = Vars.signUpName; // means just sign up
+                let name = Vars.signUpName; // means just signed up
+                if (!name) {
+                    // name = user.displayName;
 
-                if (!name) name = user.displayName;
+                    if (!user.displayName) name = 'Anonymous';
+                    else name = user.displayName;
+                }
                 const email = user.email;
                 const mobile = user.phoneNumber;
                 // const photoURL = user.photoURL; // get profile picture from facebook
