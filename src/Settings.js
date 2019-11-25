@@ -262,33 +262,39 @@ export default class Settings extends React.Component<InjectedProps> {
                     onPress={() => {
                         if (!profile) return;
 
-                        this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', async () => {
-                            // show indicator
-                            !this.closed && this.setState({ isLoadingFeeds: true });
+                        this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', () => {
 
-                            // update activating
-                            let _profile = this.props.profileStore.profile;
-                            _profile.activating = false;
-                            _profile.lastLogInTime = Date.now();
-                            await Firebase.updateProfile(profile.uid, _profile, false);
+                            setTimeout(async () => {
+                                if (this.closed) return;
 
-                            // unsubscribe profile
-                            this.props.profileStore.final();
+                                // show indicator
+                                this.setState({ isLoadingFeeds: true });
 
-                            // init & unsubscribe
-                            // Settings.__Intro.params.final();
-                            Intro.final();
+                                // update activating
+                                let _profile = this.props.profileStore.profile;
+                                _profile.activating = false;
+                                _profile.lastLogInTime = Date.now();
+                                await Firebase.updateProfile(profile.uid, _profile, false);
 
-                            Firebase.stopChatRoom(profile.uid);
+                                // unsubscribe profile
+                                this.props.profileStore.final();
 
-                            // remove push token
-                            // await unregisterExpoPushToken(profile.uid);
-                            await Firebase.deleteToken(profile.uid);
+                                // init & unsubscribe
+                                // Settings.__Intro.params.final();
+                                Intro.final();
 
-                            await Firebase.signOut(profile.uid);
+                                Firebase.stopChatRoom(profile.uid);
 
-                            // hide indicator
-                            !this.closed && this.setState({ isLoadingFeeds: false });
+                                // remove push token
+                                // await unregisterExpoPushToken(profile.uid);
+                                await Firebase.deleteToken(profile.uid);
+
+                                await Firebase.signOut(profile.uid);
+
+                                // hide indicator
+                                this.setState({ isLoadingFeeds: false });
+                            }, Cons.buttonTimeout);
+
                         });
                     }}
                 >
@@ -306,46 +312,52 @@ export default class Settings extends React.Component<InjectedProps> {
                     onPress={() => {
                         if (!profile) return;
 
-                        this.openDialog('alert', 'Delete Account', 'Are you sure you want to remove all data from this device?', async () => {
-                            // show indicator
-                            !this.closed && this.setState({ isLoadingFeeds: true });
+                        this.openDialog('alert', 'Delete Account', 'Are you sure you want to remove all data from this device?', () => {
 
-                            // feeds
-                            // storage
-                            // user profile & auth
+                            setTimeout(async () => {
+                                if (this.closed) return;
 
-                            // comment store
-                            //// reviews, comments
+                                // show indicator
+                                this.setState({ isLoadingFeeds: true });
 
-                            // chat
-                            // token
+                                // feeds
+                                // storage
+                                // user profile & auth
+
+                                // comment store
+                                //// reviews, comments
+
+                                // chat
+                                // token
 
 
-                            // 1. unsubscribe profile first!
-                            this.props.profileStore.final();
+                                // 1. unsubscribe profile first!
+                                this.props.profileStore.final();
 
-                            // 2. remove all the created feeds (place - feed)
-                            const uid = profile.uid;
-                            const feeds = profile.feeds;
-                            const length = feeds.length;
+                                // 2. remove all the created feeds (place - feed)
+                                const uid = profile.uid;
+                                const feeds = profile.feeds;
+                                const length = feeds.length;
 
-                            for (let i = 0; i < length; i++) {
-                                const feed = feeds[i];
-                                await Firebase.removeFeed(uid, feed.placeId, feed.feedId);
-                            }
+                                for (let i = 0; i < length; i++) {
+                                    const feed = feeds[i];
+                                    await Firebase.removeFeed(uid, feed.placeId, feed.feedId);
+                                }
 
-                            // 3. delete all the chat rooms
-                            await Firebase.deleteChatRooms(uid);
+                                // 3. delete all the chat rooms
+                                await Firebase.deleteChatRooms(uid);
 
-                            // 4. remove push token (tokens - uid)
-                            await Firebase.deleteToken(uid);
+                                // 4. remove push token (tokens - uid)
+                                await Firebase.deleteToken(uid);
 
-                            // 5. remove all the received comments (users - user - comments - all the documents)
-                            // 6. remove database (user profile & remove auth)
-                            await Firebase.deleteProfile(uid);
+                                // 5. remove all the received comments (users - user - comments - all the documents)
+                                // 6. remove database (user profile & remove auth)
+                                await Firebase.deleteProfile(uid);
 
-                            // hide indicator
-                            !this.closed && this.setState({ isLoadingFeeds: false });
+                                // hide indicator
+                                this.setState({ isLoadingFeeds: false });
+                            }, Cons.buttonTimeout);
+
                         });
                     }}
                 >
