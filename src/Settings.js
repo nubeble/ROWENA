@@ -507,11 +507,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     logo: {
-        flex: 1,
-        marginTop: 20,
+        // flex: 1,
+        // marginTop: 20,
         paddingVertical: 10,
-        // width: '100%',
-        // height: '100%',
+        width: '100%',
+        height: Dimensions.get('window').height / 3,
         // backgroundColor: 'green',
         alignItems: 'center',
         justifyContent: 'flex-end'
