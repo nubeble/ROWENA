@@ -37,6 +37,8 @@ type InjectedProps = {
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
+const MAX_INITIATED_MESSAGE_COUNT = 4;
+
 const DEFAULT_REVIEW_COUNT = 3;
 
 const profilePictureWidth = 50;
@@ -2897,12 +2899,18 @@ export default class Post extends React.Component<InjectedProps> {
             const { profile } = this.props.profileStore;
 
             // check if over the limit
-            const result = this.CheckInitiatedMessage(profile);
-            if (!result) {
-                // this.refs["toast"].show("You can only initiate up to 4 conversations in a day. 😂\nLuckily it's free during the promotion of our first release. 😍", 1000);
-                this.refs["toast"].show("Sorry, you can have up to 4 conversations in a day. 😂", 2000);
+            const count = this.getInitiatedMessageCount(profile); // 1 ~ MAX
+            if (count === MAX_INITIATED_MESSAGE_COUNT) {
+                this.showToast("Sorry, you can have up to 4 chances to talk in a day. 😂", 2000);
                 this.setState({ showPostLoader: false });
                 return;
+            } else {
+                const left = MAX_INITIATED_MESSAGE_COUNT - count; // 3 2 1
+                if (left === 1) {
+                    this.showToast("You still have " + left + " chance left today to talk! 😃", 2000);
+                } else {
+                    this.showToast("You still have " + left + " chances left today to talk! 😃", 2000);
+                }
             }
 
             // create new chat room
@@ -2986,24 +2994,26 @@ export default class Post extends React.Component<InjectedProps> {
         }
     }
 
-    CheckInitiatedMessage(profile) {
+    getInitiatedMessageCount(profile) {
         const initiatedMessage = profile.initiatedMessage;
         if (initiatedMessage) {
             const count = initiatedMessage.count;
             const lastInitTime = initiatedMessage.lastInitTime;
 
-            console.log('Post.CheckInitiatedMessage', 'count:', count);
+            // console.log('Post.CheckInitiatedMessage', 'count:', count);
 
             const date1 = new Date(lastInitTime);
             const date2 = new Date();
             const result = Util.isSameDay(date1, date2);
             if (result) {
                 // check count
-                if (count >= 4) return false;
+                if (count >= MAX_INITIATED_MESSAGE_COUNT) {
+                    return MAX_INITIATED_MESSAGE_COUNT;
+                } else {
+                    this.updateInitiatedMessage(profile);
 
-                this.updateInitiatedMessage(profile);
-
-                return true;
+                    return count + 1;
+                }
             } else {
                 // init & update
                 let _profile = _.clone(profile);
@@ -3015,11 +3025,12 @@ export default class Post extends React.Component<InjectedProps> {
 
                 Firebase.updateProfile(_profile.uid, _profile, false);
 
-                return true;
+                return 1;
             }
         } else {
             this.updateInitiatedMessage(profile);
-            return true;
+
+            return 1;
         }
     }
 
@@ -3302,6 +3313,10 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms);
     }
 }
 

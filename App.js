@@ -481,7 +481,9 @@ export default class App extends React.Component {
                                 changeBadgeOnHome: this.changeBadgeOnHome,
                                 changeBadgeOnLikes: this.changeBadgeOnLikes,
                                 changeBadgeOnChat: this.changeBadgeOnChat,
-                                changeBadgeOnProfile: this.changeBadgeOnProfile
+                                changeBadgeOnProfile: this.changeBadgeOnProfile,
+
+                                showToast: this.showToast
                             }}
                         />
                     </Provider>
@@ -508,6 +510,11 @@ export default class App extends React.Component {
     @autobind
     changeBadgeOnProfile(show, count) {
         this.setState({ showBadgeOnProfile: show, badgeOnProfileCount: count });
+    }
+
+    @autobind
+    showToast(msg, ms) {
+        this.refs["toast"].show(msg, ms);
     }
 }
 
