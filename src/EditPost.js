@@ -16,7 +16,6 @@ import Swiper from './Swiper';
 import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
 import { Cons, Vars } from "./Globals";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -940,25 +939,17 @@ export default class EditPost extends React.Component {
         const result = await Firebase.updateFeed(post.d.uid, post.d.placeId, post.d.id, data, genderChanged, prevGender);
 
         if (!result) {
-            this.refs["toast"].show('An error happened. Please try again later.', 500, () => {
-                // hide loader
-                this.setState({ showPostLoader: false });
-
-                this.props.navigation.dismiss();
-            });
+            this.showToast('An error happened. Please try again later.', 500);
         } else {
             await this.removeImagesFromServer();
 
-            // 3. move to finish page
-            this.refs["toast"].show('Your post updated successfully.', 500, () => {
-                if (this.closed) return;
-
-                // hide loader
-                this.setState({ showPostLoader: false });
-
-                this.props.navigation.dismiss();
-            });
+            this.showToast('Your post updated successfully.', 500);
         }
+
+        // hide loader
+        this.setState({ showPostLoader: false });
+
+        this.props.navigation.dismiss();
     }
 
     getImage(lastSavedImageNumber) {
@@ -1198,13 +1189,6 @@ export default class EditPost extends React.Component {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -1536,7 +1520,7 @@ export default class EditPost extends React.Component {
                                     !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
                                 }, Cons.buttonTimeout);
                                 */
-                                this.refs["toast"].show("Can't change country!", 500);
+                                this.showToast("Can't change country!", 500);
                             }}
                         >
                             <Text
@@ -1618,7 +1602,7 @@ export default class EditPost extends React.Component {
                                     !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                                 }, Cons.buttonTimeout);
                                 */
-                                this.refs["toast"].show("Can't change street!", 500);
+                                this.showToast("Can't change street!", 500);
                             }}
                         >
                             <Text
@@ -2291,7 +2275,7 @@ export default class EditPost extends React.Component {
                                 !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeout);
                             */
-                            this.refs["toast"].show("Can't change country!", 500);
+                            this.showToast("Can't change country!", 500);
                         }}
                     >
                         <Text
@@ -2373,7 +2357,7 @@ export default class EditPost extends React.Component {
                                 !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                             }, Cons.buttonTimeout);
                             */
-                            this.refs["toast"].show("Can't change street!", 500);
+                            this.showToast("Can't change street!", 500);
                         }}
                     >
                         <Text
@@ -2968,6 +2952,10 @@ export default class EditPost extends React.Component {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

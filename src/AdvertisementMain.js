@@ -19,7 +19,6 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 // https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
 // import { Chevron } from 'react-native-shapes';
-import Toast, { DURATION } from 'react-native-easy-toast';
 
 const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
@@ -801,13 +800,11 @@ export default class AdvertisementMain extends React.Component {
         await this.createFeed(data, extra);
 
         // 3. move to finish page
-        this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
-            if (this.closed) return;
+        this.showToast('Your advertisement posted successfully.', 500);
 
-            // hide loader
-            this.setState({ showPostLoader: false });
-
-            this.props.navigation.navigate("advertisementFinish");
+        // hide loader
+        this.setState({ showPostLoader: false }, () => {
+            !this.closed && this.props.navigation.navigate("advertisementFinish");
         });
     }
 
@@ -1039,13 +1036,6 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                 }
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -2853,6 +2843,10 @@ export default class AdvertisementMain extends React.Component {
         this._height.blur();
         this._weight.blur();
         this._note.blur();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

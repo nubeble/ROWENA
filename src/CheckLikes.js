@@ -10,7 +10,6 @@ import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
-import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import Util from './Util';
 
@@ -264,14 +263,7 @@ export default class CheckLikes extends React.Component {
                         />
                     </View>
                 }
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
-            </View >
+            </View>
         );
     }
 

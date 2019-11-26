@@ -23,7 +23,6 @@ import Util from './Util';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 // https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
-import Toast from 'react-native-easy-toast';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -516,14 +515,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
         }
 
         // 3. go back
-        this.refs["toast"].show('Your profile updated successfully.', 500, () => {
-            if (this.closed) return;
+        this.showToast('Your profile updated successfully.', 500);
 
-            // hide loader
-            this.setState({ showPostLoader: false });
+        // hide loader
+        this.setState({ showPostLoader: false });
 
-            this.props.navigation.dispatch(NavigationActions.back());
-        });
+        this.props.navigation.dispatch(NavigationActions.back());
     }
 
     render() {
@@ -680,13 +677,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     </View>
                     */
                 }
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -1130,7 +1120,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 // navigate
                             }, Cons.buttonTimeout);
                             */
-                            this.refs["toast"].show("Can't change email address!", 500);
+                            this.showToast("Can't change email address!", 500);
                         }}
                     >
                         <Text
@@ -1186,7 +1176,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 // navigate
                             }, Cons.buttonTimeout);
                             */
-                            this.refs["toast"].show("Can't change phone number!", 500);
+                            this.showToast("Can't change phone number!", 500);
                         }}
                     >
                         <Text
@@ -1617,6 +1607,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this._hideMessageBox = false;
         });
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

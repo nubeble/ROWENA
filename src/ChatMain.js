@@ -9,7 +9,6 @@ import autobind from "autobind-decorator";
 import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Firebase from './Firebase';
-import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 // import _ from 'lodash';
@@ -530,13 +529,6 @@ export default class ChatMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -624,7 +616,6 @@ export default class ChatMain extends React.Component<InjectedProps> {
                     const index = list.findIndex(el => el.id === id);
                     if (index === -1) {
                         // this should never happen
-                        this.refs["toast"].show('The room no longer exists.', 500);
                     } else {
                         const chatRoom = list[index];
                         this.moveToChatRoom(chatRoom);
@@ -750,21 +741,21 @@ export default class ChatMain extends React.Component<InjectedProps> {
         const post = this.getPost(item.feedId);
         if (post === null) {
             // the post is not subscribed yet
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
         if (post === undefined) {
-            this.refs["toast"].show('The post no longer exists.', 500, () => {
-                const me = users[0];
-                const you = users[1];
+            this.showToast('The post no longer exists.', 500);
 
-                // remove the chat room
-                Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+            const me = users[0];
+            const you = users[1];
 
-                // update state
-                this.deleteChatRoom(item.id);
-            });
+            // remove the chat room
+            Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+
+            // update state
+            this.deleteChatRoom(item.id);
 
             return;
         }
@@ -772,7 +763,7 @@ export default class ChatMain extends React.Component<InjectedProps> {
         // count
         const feedSize = this.getPlaceCounts(item.placeId);
         if (feedSize === null) {
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
@@ -789,21 +780,21 @@ export default class ChatMain extends React.Component<InjectedProps> {
             const profile = this.getProfile(customer);
             if (profile === null) {
                 // the post is not subscribed yet
-                this.refs["toast"].show('Please try again.', 500);
+                this.showToast('Please try again.', 500);
                 return;
             }
 
             if (profile === undefined) {
-                this.refs["toast"].show('The user no longer exists.', 500, () => {
-                    const me = users[0];
-                    const you = users[1];
+                this.showToast('The user no longer exists.', 500);
 
-                    // remove the chat room
-                    Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+                const me = users[0];
+                const you = users[1];
 
-                    // update state
-                    this.deleteChatRoom(item.id);
-                });
+                // remove the chat room
+                Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+
+                // update state
+                this.deleteChatRoom(item.id);
 
                 return;
             }
@@ -1012,6 +1003,10 @@ export default class ChatMain extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

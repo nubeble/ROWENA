@@ -2,7 +2,7 @@
 import * as React from "react";
 import moment from "moment";
 import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from "react-native";
-import Toast, { DURATION } from 'react-native-easy-toast';
+import Toast from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
 import { AirbnbRating } from '../../../../react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";

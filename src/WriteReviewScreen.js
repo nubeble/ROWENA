@@ -9,7 +9,6 @@ import { Text, Theme } from './rnff/src/components';
 import { AirbnbRating } from './react-native-ratings/src';
 import autobind from "autobind-decorator";
 import Firebase from "./Firebase";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -121,12 +120,12 @@ export default class WriteReviewScreen extends React.Component {
 
         const { post, user } = this.props.navigation.state.params;
         if (user.uid === post.d.uid) {
-            this.refs["toast"].show('Sorry, you can not write a self-recommendation.', 500, () => {
-                if (!this.closed) {
-                    // this.refs.rating.stopAnimation();
-                    this.props.navigation.state.params.initFromWriteReview(false);
-                    this.props.navigation.goBack();
-                }
+            this.showToast('Sorry, you can not write a self-recommendation.', 500, () => {
+                if (this.closed) return;
+
+                // this.refs.rating.stopAnimation();
+                this.props.navigation.state.params.initFromWriteReview(false);
+                this.props.navigation.goBack();
             });
             return;
         }
@@ -139,24 +138,24 @@ export default class WriteReviewScreen extends React.Component {
 
         if (!result) {
             // the post is removed
-            this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
-                if (!this.closed) {
-                    // this.refs.rating.stopAnimation();
+            this.showToast('The post has been removed by its owner.', 500, () => {
+                if (this.closed) return;
 
-                    this.props.navigation.state.params.initFromWriteReview(false);
-                    this.props.navigation.goBack();
-                }
+                // this.refs.rating.stopAnimation();
+
+                this.props.navigation.state.params.initFromWriteReview(false);
+                this.props.navigation.goBack();
             });
         } else {
             this.sendPushNotification(comment);
 
-            this.refs["toast"].show('Your review has been submitted!', 500, () => {
-                if (!this.closed) {
-                    // this.refs.rating.stopAnimation();
+            this.showToast('Your review has been submitted!', 500, () => {
+                if (this.closed) return;
 
-                    this.props.navigation.state.params.initFromWriteReview(true);
-                    this.props.navigation.goBack();
-                }
+                // this.refs.rating.stopAnimation();
+
+                this.props.navigation.state.params.initFromWriteReview(true);
+                this.props.navigation.goBack();
             });
         }
 
@@ -334,19 +333,6 @@ export default class WriteReviewScreen extends React.Component {
                         }
                     </TouchableOpacity>
                 </View>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                /*
-                style={{ backgroundColor: 'red' }}
-                textStyle={{ color: 'red' }}
-                fadeInDuration={750}
-                fadeOutDuration={1000}
-                */
-                />
             </View>
         );
     }
@@ -406,6 +392,10 @@ export default class WriteReviewScreen extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
         }
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 
 

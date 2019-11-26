@@ -11,7 +11,6 @@ import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
-import Toast, { DURATION } from 'react-native-easy-toast';
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
@@ -262,7 +261,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                             const result = await Firebase.unblockPost(uid, placeId, feedId);
                                             if (!result) {
                                                 // the post is removed
-                                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                                this.showToast('The post has been removed by its owner.', 500);
                                                 return;
                                             }
                                         });
@@ -391,13 +390,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -595,13 +587,13 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         const post = this.getPost(item);
         if (post === null) {
             // the post is not subscribed yet
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
         if (post === undefined) {
             // the post is removed
-            this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
+            this.showToast('The post has been removed by its owner.', 500, () => {
                 // update UI
                 let feeds = [...this.state.feeds];
                 for (let i = 0; i < feeds.length; i++) {
@@ -621,7 +613,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         const feedSize = this.getPlaceCounts(item.placeId);
         if (feedSize === null) {
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
@@ -692,6 +684,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

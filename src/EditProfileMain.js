@@ -20,7 +20,6 @@ import CommentStore from "./CommentStore";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
-import Toast from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
 import _ from 'lodash';
 
@@ -406,13 +405,6 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -598,7 +590,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                         const uid = Firebase.user().uid;
                         const result = await Firebase.unblockComment(uid, uid, _review.id);
                         if (!result) {
-                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            this.showToast('The review has been removed by its owner.', 500);
                             return;
                         }
 
@@ -828,7 +820,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
             const result = await Firebase.reportComment(uid, uid, review.id);
             if (!result) {
                 // the comment is removed
-                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                this.showToast('The review has been removed by its owner.', 500);
                 return;
             }
 
@@ -844,7 +836,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
             */
             this.hideComment(index, uid);
 
-            this.refs["toast"].show('Thanks for your feedback.', 500);
+            this.showToast('Thanks for your feedback.', 500);
         });
     }
 
@@ -932,6 +924,10 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

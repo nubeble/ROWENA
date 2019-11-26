@@ -22,7 +22,6 @@ import { inject, observer } from "mobx-react/native";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
 import { Cons, Vars } from "./Globals";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
@@ -246,7 +245,6 @@ export default class Post extends React.Component<InjectedProps> {
     edit() {
         if (!this.feed) {
             // this should never happen
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
@@ -265,9 +263,7 @@ export default class Post extends React.Component<InjectedProps> {
             this.refs.rating.setPosition(0); // bug in AirbnbRating
         }
 
-        if (result) {
-            this.reloadReviews();
-        }
+        if (result) this.reloadReviews();
     }
 
     initFromReadAllReviews() { // back from read all reviews
@@ -454,15 +450,19 @@ export default class Post extends React.Component<InjectedProps> {
 
         // check the owner of the post
         if (Firebase.user().uid === post.d.uid) {
-            this.refs["toast"].show('Sorry, this is your post.', 500);
+            this.showToast('Sorry, this is your post.', 500);
+
             this.toggling = false;
+
             return;
         }
 
         // check existence
         if (!this.feed) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.showToast('The post has been removed by its owner.', 500);
+
             this.toggling = false;
+
             return;
         }
 
@@ -482,7 +482,7 @@ export default class Post extends React.Component<InjectedProps> {
             }).start();
 
             // toast
-            // this.refs["toast"].show('Saved to ❤', 500);
+            // this.showToast('Saved to ❤', 500);
 
             // show badge on likes
             showBadge = true;
@@ -490,7 +490,7 @@ export default class Post extends React.Component<InjectedProps> {
             this.setState({ liked: false });
 
             // toast
-            // this.refs["toast"].show('Removed from ❤', 500);
+            // this.showToast('Removed from ❤', 500);
         }
 
         // update database
@@ -506,8 +506,10 @@ export default class Post extends React.Component<InjectedProps> {
         const result = await Firebase.toggleLikes(uid, placeId, feedId, name, placeName, uri);
         if (!result) {
             // the post is removed
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.showToast('The post has been removed by its owner.', 500);
+
             this.toggling = false;
+
             return;
         }
 
@@ -767,13 +769,6 @@ export default class Post extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -1386,13 +1381,13 @@ export default class Post extends React.Component<InjectedProps> {
             // check the owner of the post
             // if (Firebase.user().uid === post.uid) {
             if (this.state.isOwner) {
-                this.refs["toast"].show('Sorry, this is your post.', 500);
+                this.showToast('Sorry, this is your post.', 500);
                 return;
             }
 
             // check existence
             if (!this.feed) {
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                this.showToast('The post has been removed by its owner.', 500);
                 return;
             }
 
@@ -1407,7 +1402,7 @@ export default class Post extends React.Component<InjectedProps> {
             const result = await Firebase.reportPost(uid, placeId, feedId);
             if (!result) {
                 // the post is removed
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                this.showToast('The post has been removed by its owner.', 500);
                 return;
             }
 
@@ -1427,9 +1422,7 @@ export default class Post extends React.Component<InjectedProps> {
             feedStore.updateFeed(_post);
 
             // 4. go back
-            this.refs["toast"].show('Thanks for your feedback.', 500, () => {
-                if (this.closed) return;
-
+            this.showToast('Thanks for your feedback.', 500, () => {
                 if (this._showNotification) {
                     this.hideNotification();
                 }
@@ -1479,7 +1472,7 @@ export default class Post extends React.Component<InjectedProps> {
             const result = await Firebase.reportReview(uid, placeId, feedId, reviewId);
             if (!result) {
                 // the review is removed
-                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                this.showToast('The review has been removed by its owner.', 500);
                 return;
             }
 
@@ -1487,7 +1480,7 @@ export default class Post extends React.Component<InjectedProps> {
             // this.reloadReviews();
             this.hideReview(index, uid);
 
-            this.refs["toast"].show('Thanks for your feedback.', 500);
+            this.showToast('Thanks for your feedback.', 500);
         });
     }
 
@@ -2286,7 +2279,7 @@ export default class Post extends React.Component<InjectedProps> {
                             if (this.closed) return;
 
                             if (!this.feed) {
-                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                this.showToast('The post has been removed by its owner.', 500);
                                 return;
                             }
 
@@ -2555,7 +2548,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                         const result = await Firebase.unblockReview(uid, placeId, feedId, reviewId);
                         if (!result) {
-                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            this.showToast('The review has been removed by its owner.', 500);
                             return;
                         }
 
@@ -2696,7 +2689,7 @@ export default class Post extends React.Component<InjectedProps> {
 
             // check if removed by the owner
             if (!this.feed) {
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                this.showToast('The post has been removed by its owner.', 500);
                 return;
             }
 
@@ -2823,18 +2816,18 @@ export default class Post extends React.Component<InjectedProps> {
 
     async contact() {
         if (this.state.isOwner) {
-            this.refs["toast"].show('Sorry, this is your post.', 500);
+            this.showToast('Sorry, this is your post.', 500);
             return;
         }
 
         if (this.state.disableContactButton) {
-            this.refs["toast"].show('Sorry, you have already opened the chatroom.', 500);
+            this.showToast('Sorry, you have already opened the chatroom.', 500);
             return;
         }
 
         // check if removed by the owner
         if (!this.feed) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.showToast('The post has been removed by its owner.', 500);
             return;
         }
 
@@ -2901,8 +2894,10 @@ export default class Post extends React.Component<InjectedProps> {
             // check if over the limit
             const count = this.getInitiatedMessageCount(profile); // 1 ~ MAX
             if (count === MAX_INITIATED_MESSAGE_COUNT) {
-                this.showToast("Sorry, you can have up to 4 chances to talk in a day. 😂", 2000);
+                this.showToast("Sorry, you only have 4 chances to talk in a day. 😂", 2000);
+
                 this.setState({ showPostLoader: false });
+
                 return;
             } else {
                 const left = MAX_INITIATED_MESSAGE_COUNT - count; // 3 2 1
@@ -3079,11 +3074,11 @@ export default class Post extends React.Component<InjectedProps> {
 
         sendPushNotification(Firebase.user().uid, profile.name, receiver, Cons.pushNotification.reply, data);
 
-        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
-            if (this.closed) return;
-            if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-            this.reloadReviews();
-        });
+        this.showToast('Your reply has been submitted!', 500);
+
+        if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+
+        this.reloadReviews();
     }
 
     async addReply(message) {
@@ -3114,14 +3109,6 @@ export default class Post extends React.Component<InjectedProps> {
         this.openDialog(title, subtitle, async () => {
             const post = this.state.post;
 
-            // check if removed by the owner
-            /*
-            if (!this.isValidPost(post.d.placeId, post.d.id)) {
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
-                return;
-            }
-            */
-
             const placeId = post.d.placeId;
             const feedId = post.d.id;
             // const reviewId = this.reviewStore.reviews[index].review.id;
@@ -3132,14 +3119,13 @@ export default class Post extends React.Component<InjectedProps> {
             const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
             if (!result) {
                 // the post is removed
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                this.showToast('The post has been removed by its owner.', 500);
                 return;
             }
 
-            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
-                if (this.closed) return;
-                this.reloadReviews();
-            });
+            this.showToast('Your review has successfully been removed.', 500);
+
+            this.reloadReviews();
         });
     }
 
@@ -3158,10 +3144,9 @@ export default class Post extends React.Component<InjectedProps> {
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
-                if (this.closed) return;
-                this.reloadReviews();
-            });
+            this.showToast('Your reply has successfully been removed.', 500);
+
+            this.reloadReviews();
         });
     }
 
@@ -3315,8 +3300,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.hideDialog();
     }
 
-    showToast(msg, ms) {
-        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms);
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

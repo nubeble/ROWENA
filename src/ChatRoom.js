@@ -13,7 +13,6 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
 import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
@@ -355,7 +354,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         const result = await Firebase.addVisits(Firebase.user().uid, post.d.placeId, post.d.id);
         if (!result) { // post removed
-            this.refs["toast"].show('The post no longer exists.', 500);
+            this.showToast('The post no longer exists.', 500);
         } else {
             const extra = { placeCounts: item.placeCounts };
 
@@ -643,13 +642,6 @@ export default class Post extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     } // end of render
@@ -962,7 +954,7 @@ export default class Post extends React.Component<InjectedProps> {
                             const result = await Firebase.reportPost(uid, placeId, feedId);
                             if (!result) {
                                 // the post is removed
-                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                this.showToast('The post has been removed by its owner.', 500);
                                 return;
                             }
 
@@ -980,9 +972,7 @@ export default class Post extends React.Component<InjectedProps> {
                             feedStore.updateFeed(_post);
 
                             // 3. go back (leave room)
-                            this.refs["toast"].show('Thanks for your feedback.', 500, async () => {
-                                if (this.closed) return;
-
+                            this.showToast('Thanks for your feedback.', 500, async () => {
                                 // this.goBack();
 
                                 // leave room
@@ -993,7 +983,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                                 await Firebase.deleteChatRoom(myUid, myName, opponentUid, roomId);
 
-                                this.props.navigation.navigate("chatMain", { roomId });
+                                !this.closed && this.props.navigation.navigate("chatMain", { roomId });
                             });
                         });
                     }}>
@@ -1031,6 +1021,10 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

@@ -14,7 +14,6 @@ import PreloadImage from './PreloadImage';
 import * as WebBrowser from 'expo-web-browser';
 import NavigationService from './NavigationService';
 import Dialog from "react-native-dialog";
-import Toast from 'react-native-easy-toast';
 import Intro from './Intro';
 
 type InjectedProps = {
@@ -150,13 +149,6 @@ export default class Settings extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -442,11 +434,9 @@ export default class Settings extends React.Component<InjectedProps> {
 
             if (!Settings.__Intro) {
                 // restart
-                this.refs["toast"].show('App is reloading now.', 500, () => {
-                    this.props.navigation.navigate("loading");
+                this.showToast('App is reloading now.', 500, () => {
+                    !this.closed && this.props.navigation.navigate("loading");
                 });
-
-                // return;
             } else {
                 // reload
                 Settings.__Intro.params.reload();
@@ -500,6 +490,10 @@ export default class Settings extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

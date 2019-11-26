@@ -23,7 +23,6 @@ import autobind from "autobind-decorator";
 // import _ from 'lodash';
 import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
-import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
 import { LinearGradient } from 'expo-linear-gradient';
 import Dialog from "react-native-dialog";
@@ -358,7 +357,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
         const feedSize = this.getPlaceCount(result.place_id, Vars.showMe);
         if (feedSize === null) {
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
@@ -368,8 +367,8 @@ export default class Intro extends React.Component<InjectedProps> {
             // load count from database (then subscribe)
             const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
             if (!placeDoc.exists) {
-                // this.refs["toast"].show('Please try again later.', 500);
-                // return;
+                // this will never happen
+                return;
             } else {
                 let place = placeDoc.data();
 
@@ -1051,7 +1050,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
                                     const feedSize = this.getPlaceCount(place_id, Vars.showMe);
                                     if (feedSize === null) {
-                                        this.refs["toast"].show('Please try again.', 500);
+                                        this.showToast('Please try again.', 500);
                                         return;
                                     }
 
@@ -1299,13 +1298,6 @@ export default class Intro extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     } // end of render()
@@ -1589,18 +1581,18 @@ export default class Intro extends React.Component<InjectedProps> {
                         const post = this.getPost(feed.d.id);
                         if (post === null) {
                             // the post is not subscribed yet
-                            this.refs["toast"].show('Please try again.', 500);
+                            this.showToast('Please try again.', 500);
                             return;
                         }
 
                         if (post === undefined) {
-                            this.refs["toast"].show('The post no longer exists.', 500);
+                            this.showToast('The post no longer exists.', 500);
                             return;
                         }
 
                         const feedSize = this.getPlaceCounts(feed.d.placeId);
                         if (feedSize === null) {
-                            this.refs["toast"].show('Please try again.', 500);
+                            this.showToast('Please try again.', 500);
                             return;
                         }
 
@@ -1659,7 +1651,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             const result = await Firebase.unblockPost(uid, placeId, feedId);
                             if (!result) {
                                 // the post is removed
-                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                this.showToast('The post has been removed by its owner.', 500);
                                 return;
                             }
                         });
@@ -1968,6 +1960,10 @@ export default class Intro extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

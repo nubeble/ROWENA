@@ -13,7 +13,6 @@ import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 // import { unregisterExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
@@ -431,7 +430,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             let feeds = [...this.state.feeds];
             const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
             if (index === -1) {
-                this.refs["toast"].show('The post no longer exists.', 500);
+                this.showToast('The post no longer exists.', 500);
                 return;
             }
 
@@ -454,7 +453,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const post = this.getPost(item);
         if (post === null) {
             // the post is not subscribed yet
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
@@ -463,7 +462,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             console.log('uid', profile.uid, 'feedId', item.feedId);
 
-            this.refs["toast"].show('Your post has been deleted.', 500);
+            this.showToast('Your post has been deleted.', 500);
 
             // 1. user 밑에 feeds 업데이트
             await Firebase.cleanRemovedFeed(profile.uid, item.placeId, item.feedId);
@@ -487,7 +486,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         const feedSize = this.getPlaceCounts(item.placeId);
         if (feedSize === null) {
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
@@ -1009,13 +1008,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     } // end of render()
@@ -1362,6 +1354,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         };
 
         await Firebase.updateProfilePicture(profile.uid, profile);
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

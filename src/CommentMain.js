@@ -10,7 +10,6 @@ import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
-import Toast, { DURATION } from 'react-native-easy-toast';
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
@@ -304,13 +303,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         />
                     </View>
                 }
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -503,13 +495,13 @@ export default class CommentMain extends React.Component<InjectedProps> {
         const customer = this.customerList.get(item.uid);
         if (customer === null) {
             // the user is not subscribed yet
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
         if (customer === undefined) {
             // the user is removed
-            this.refs["toast"].show('The user no longer exists.', 500, () => {
+            this.showToast('The user no longer exists.', 500, () => {
                 // update UI
                 let feeds = [...this.state.feeds];
                 for (let i = 0; i < feeds.length; i++) {
@@ -559,6 +551,10 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.getCommentedFeeds();
 
         !this.closed && this.setState({ refreshing: false });
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

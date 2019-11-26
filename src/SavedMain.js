@@ -10,7 +10,6 @@ import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import autobind from 'autobind-decorator';
 import { Text, Theme, RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
@@ -587,13 +586,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }

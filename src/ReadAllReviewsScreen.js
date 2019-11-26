@@ -15,7 +15,6 @@ import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 // import ReadMore from "./ReadMore";
 import { Ionicons, MaterialIcons, AntDesign } from "react-native-vector-icons";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
 import { Cons, Vars } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
@@ -309,13 +308,6 @@ export default class ReadAllReviewsScreen extends React.Component {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     } // end of render()
@@ -591,7 +583,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
                         const result = await Firebase.unblockReview(uid, placeId, feedId, reviewId);
                         if (!result) {
-                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            this.showToast('The review has been removed by its owner.', 500);
                             return;
                         }
 
@@ -882,7 +874,7 @@ export default class ReadAllReviewsScreen extends React.Component {
             const result = await Firebase.reportReview(uid, placeId, feedId, reviewId);
             if (!result) {
                 // the review is removed
-                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                this.showToast('The review has been removed by its owner.', 500);
                 return;
             }
 
@@ -898,7 +890,7 @@ export default class ReadAllReviewsScreen extends React.Component {
             */
             this.hideReview(index, uid);
 
-            this.refs["toast"].show('Thanks for your feedback.', 500);
+            this.showToast('Thanks for your feedback.', 500);
         });
     }
 
@@ -1050,20 +1042,20 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         sendPushNotification(Firebase.user().uid, Firebase.user().name, receiver, Cons.pushNotification.reply, data);
 
-        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
-            if (!this.closed) {
-                // this._reply.blur();
-                this.setState({ showKeyboard: false });
+        this.showToast('Your reply has been submitted!', 500, () => {
+            if (this.closed) return;
 
-                // reload
-                let count = this.state.reviews.length;
-                if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
-                else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
-                this.reload(count);
+            // this._reply.blur();
+            this.setState({ showKeyboard: false });
 
-                // move scroll top
-                this._flatList.scrollToOffset({ offset: 0, animated: false });
-            }
+            // reload
+            let count = this.state.reviews.length;
+            if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+            else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
+            this.reload(count);
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: false });
         });
     }
 
@@ -1101,20 +1093,20 @@ export default class ReadAllReviewsScreen extends React.Component {
             const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
             if (!result) {
                 // the post is removed
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                this.showToast('The post has been removed by its owner.', 500);
                 return;
             }
 
-            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
-                if (!this.closed) {
-                    let count = this.state.reviews.length;
-                    if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
-                    else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
-                    this.reload(count);
+            this.showToast('Your review has successfully been removed.', 500, () => {
+                if (this.closed) return;
 
-                    // move scroll top
-                    this._flatList.scrollToOffset({ offset: 0, animated: false });
-                }
+                let count = this.state.reviews.length;
+                if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
+                this.reload(count);
+
+                // move scroll top
+                this._flatList.scrollToOffset({ offset: 0, animated: false });
             });
         });
     }
@@ -1132,16 +1124,16 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
-                if (!this.closed) {
-                    let count = this.state.reviews.length;
-                    if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
-                    else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
-                    this.reload(count);
+            this.showToast('Your reply has successfully been removed.', 500, () => {
+                if (this.closed) return;
 
-                    // move scroll top
-                    this._flatList.scrollToOffset({ offset: 0, animated: false });
-                }
+                let count = this.state.reviews.length;
+                if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                else if (count > MAX_REVIEW_COUNT) count = MAX_REVIEW_COUNT;
+                this.reload(count);
+
+                // move scroll top
+                this._flatList.scrollToOffset({ offset: 0, animated: false });
             });
         });
     }
@@ -1261,6 +1253,10 @@ export default class ReadAllReviewsScreen extends React.Component {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

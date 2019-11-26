@@ -21,7 +21,6 @@ import moment from "moment";
 import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
-import Toast from 'react-native-easy-toast';
 import { sendPushNotification } from './PushNotifications';
 import Dialog from "react-native-dialog";
 import _ from 'lodash';
@@ -133,7 +132,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             */
 
             if (user === undefined) {
-                this.refs["toast"].show('The user no longer exists.', 500);
+                this.showToast('The user no longer exists.', 500);
                 this.setState({ guest: null });
                 return;
             }
@@ -253,19 +252,19 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         this.sendPushNotification(message);
 
-        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
-            if (!this.closed) {
-                // this._reply.blur();
-                this.setState({ showKeyboard: false });
+        this.showToast('Your reply has been submitted!', 500, () => {
+            if (this.closed) return;
 
-                let count = this.state.reviews.length;
-                if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
-                else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
-                this.loadReviewFromStart(count);
+            // this._reply.blur();
+            this.setState({ showKeyboard: false });
 
-                // move scroll top
-                this._flatList.scrollToOffset({ offset: 0, animated: false });
-            }
+            let count = this.state.reviews.length;
+            if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+            else if (count > MAX_COMMENT_COUNT) count = MAX_COMMENT_COUNT;
+            this.loadReviewFromStart(count);
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: false });
         });
     }
 
@@ -288,11 +287,11 @@ export default class UserMain extends React.Component<InjectedProps> {
             const commentId = reviews[index].comment.id;
             const result = await Firebase.removeComment(host.uid, guest.uid, commentId);
             if (!result) {
-                this.refs["toast"].show('The user no longer exists.', 500);
+                this.showToast('The user no longer exists.', 500);
                 return;
             }
 
-            this.refs["toast"].show('Your review has successfully been removed.', 500);
+            this.showToast('Your review has successfully been removed.', 500);
 
             let count = this.state.reviews.length;
             if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
@@ -642,12 +641,12 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             }]}
                                             onPress={() => {
                                                 if (this.state.disableReviewButton) {
-                                                    this.refs["toast"].show("Can't add a review here.", 500);
+                                                    this.showToast("Can't add a review here.", 500);
                                                     return;
                                                 }
 
                                                 if (!this.state.guest) {
-                                                    this.refs["toast"].show('The user no longer exists.', 500);
+                                                    this.showToast('The user no longer exists.', 500);
                                                     return;
                                                 }
 
@@ -786,13 +785,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     } // end of render()
@@ -975,7 +967,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         const { host, guest } = this.state;
                         const result = await Firebase.unblockComment(uid, guest.uid, _review.id);
                         if (!result) {
-                            this.refs["toast"].show('The review has been removed by its owner.', 500);
+                            this.showToast('The review has been removed by its owner.', 500);
                             return;
                         }
 
@@ -1204,7 +1196,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             const result = await Firebase.reportComment(uid, this.state.guest.uid, review.id);
             if (!result) {
                 // the comment is removed
-                this.refs["toast"].show('The review has been removed by its owner.', 500);
+                this.showToast('The review has been removed by its owner.', 500);
                 return;
             }
 
@@ -1220,7 +1212,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             */
             this.hideComment(index, uid);
 
-            this.refs["toast"].show('Thanks for your feedback.', 500);
+            this.showToast('Thanks for your feedback.', 500);
         });
     }
 
@@ -1346,6 +1338,10 @@ export default class UserMain extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

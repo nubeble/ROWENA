@@ -10,7 +10,6 @@ import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import autobind from 'autobind-decorator';
 import { Text, Theme, RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
@@ -407,13 +406,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         if (!post) {
             // this should never happen
-            // this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
         const feedSize = this.getPlaceCounts(item.placeId);
         if (feedSize === null) {
-            this.refs["toast"].show('Please try again.', 500);
+            this.showToast('Please try again.', 500);
             return;
         }
 
@@ -533,7 +531,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     <TouchableOpacity activeOpacity={0.5}
                                         onPress={() => {
                                             if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
-                                            else this.refs["toast"].show('Please try again.', 500);
+                                            else this.showToast('Please try again.', 500);
                                         }}
                                         onLongPress={() => {
                                             this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + item.name + "?", async () => {
@@ -610,7 +608,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                                 const result = await Firebase.unblockPost(uid, placeId, feedId);
                                                 if (!result) {
                                                     // the post is removed
-                                                    this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                                    this.showToast('The post has been removed by its owner.', 500);
                                                     return;
                                                 }
                                             });
@@ -776,13 +774,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -936,6 +927,10 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

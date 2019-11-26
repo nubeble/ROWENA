@@ -20,7 +20,6 @@ import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
 import Util from "./Util";
 import { LinearGradient } from 'expo-linear-gradient';
-import Toast from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
 import { inject, observer } from "mobx-react/native";
 
@@ -345,13 +344,6 @@ export default class MapExplore extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -619,7 +611,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                     onPress={async () => {
                         const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
                         if (!result) {
-                            this.refs["toast"].show('The post no longer exists.', 500);
+                            this.showToast('The post no longer exists.', 500);
                         } else {
                             const { placeCounts } = this.props.navigation.state.params;
                             const extra = { placeCounts };
@@ -668,7 +660,7 @@ export default class MapExplore extends React.Component<InjectedProps> {
                             const result = await Firebase.unblockPost(uid, placeId, feedId);
                             if (!result) {
                                 // the post is removed
-                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                this.showToast('The post has been removed by its owner.', 500);
                                 return;
                             }
 
@@ -889,6 +881,10 @@ export default class MapExplore extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 }
 

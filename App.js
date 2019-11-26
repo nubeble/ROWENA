@@ -447,6 +447,12 @@ export default class App extends React.Component {
                 position='top'
                 positionValue={Dimensions.get('window').height / 2 - 20}
                 opacity={0.6}
+            /*
+                style={{ backgroundColor: 'red' }}
+                textStyle={{ color: 'red' }}
+                fadeInDuration={750}
+                fadeOutDuration={1000}
+            */
             />
         );
 
@@ -513,8 +519,10 @@ export default class App extends React.Component {
     }
 
     @autobind
-    showToast(msg, ms) {
-        this.refs["toast"].show(msg, ms);
+    showToast(msg, ms, cb) {
+        this.refs["toast"].show(msg, ms, () => {
+            if (cb) cb();
+        });
     }
 }
 
@@ -1023,7 +1031,8 @@ class EditProfileStackNavigatorWrapper extends React.Component {
             <EditProfileStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1092,7 +1101,8 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
             <AdvertisementStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1159,7 +1169,8 @@ class SavedStackNavigatorWrapper extends React.Component {
             <SavedStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1190,7 +1201,8 @@ class ChatStackNavigatorWrapper extends React.Component {
             <ChatStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1222,7 +1234,8 @@ class SettingsStackNavigatorWrapper extends React.Component {
             <SettingsStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );

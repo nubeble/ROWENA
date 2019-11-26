@@ -8,7 +8,6 @@ import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import Util from './Util';
-import Toast, { DURATION } from 'react-native-easy-toast';
 
 const API_KEY = 'AIzaSyDGeKg4ewR0-MfmHnBWkv6Qfeoc5Ia4vP8'; // API key for Places API, Geocoding API, Cloud Translation API
 
@@ -229,7 +228,7 @@ export default class SearchScreen extends React.Component {
                         fetchDetails={true}
                         // renderDescription={row => row.description} // custom description render
                         onFail={(message) => {
-                            this.refs["toast"].show(message, 500);
+                            this.showToast(message, 500);
                         }}
                         onPress={async (data, details = null) => { // 'details' is provided when fetchDetails = true
                             console.log('jdub', 'SearchScreen, data', data);
@@ -292,7 +291,7 @@ export default class SearchScreen extends React.Component {
 
                                     if (!obj) { // error
                                         // ToDo: toast or something
-
+                                        this.showToast('Please try again.', 500);
                                         return;
                                     }
 
@@ -406,13 +405,6 @@ export default class SearchScreen extends React.Component {
                     // renderRightButton={() => <Text>Custom text after the input</Text>}
                     />
                 }
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -724,6 +716,10 @@ export default class SearchScreen extends React.Component {
             // Error retrieving data
             return null;
         }
+    }
+
+    showToast(msg, ms, cb = null) {
+        if (this.props.screenProps.data) this.props.screenProps.data.showToast(msg, ms, cb);
     }
 };
 
