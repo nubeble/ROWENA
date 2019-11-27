@@ -701,7 +701,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         refreshing={this.state.refreshing}
 
                         ListFooterComponent={
-                            // this.state.isLoadingFeeds &&
                             this.state.isLoadingFeeds && this.state.loadingType === 200 &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                                 <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
@@ -716,7 +715,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                             */
 
                             // render illustration
-                            // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
@@ -756,7 +754,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 }
 
                 {
-                    // this.state.isLoadingFeeds &&
                     this.state.isLoadingFeeds && this.state.loadingType === 100 &&
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator
