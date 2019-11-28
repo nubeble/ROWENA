@@ -58,12 +58,12 @@ export default class Loading extends React.Component<InjectedProps> {
         this.imageOpacity = new Animated.Value(0);
 
         SplashScreen.hide();
+
+        StatusBar.setHidden(true);
     }
 
     componentDidMount() {
-        StatusBar.setHidden(true);
-
-        !this.closed && this.setState({ showIndicator: true });
+        this.setState({ showIndicator: true });
     }
 
     componentWillUnmount() {
@@ -91,7 +91,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 {
                     this.state.showIndicator &&
-                    <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 1000, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ position: 'absolute', top: Constants.statusBarHeight, left: 0, width: windowWidth, height: windowHeight - Constants.statusBarHeight, zIndex: 1000, justifyContent: 'center', alignItems: 'center' }}>
                         <RefreshIndicator refreshing total={3} size={7} color={Theme.color.splash} />
                     </View>
                 }
