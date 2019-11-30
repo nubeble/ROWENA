@@ -367,8 +367,7 @@ export default class Intro extends React.Component<InjectedProps> {
             // load count from database (then subscribe)
             const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
             if (!placeDoc.exists) {
-                // this will never happen
-                return;
+                // nothing to do here
             } else {
                 let place = placeDoc.data();
 

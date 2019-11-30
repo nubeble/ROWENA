@@ -165,7 +165,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
         if (!placeDoc.exists) {
-            // return;
+            // nothing to do here
         } else {
             let place = placeDoc.data();
 

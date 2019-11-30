@@ -91,7 +91,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 {
                     this.state.showIndicator &&
-                    <View style={{ position: 'absolute', top: Constants.statusBarHeight, left: 0, width: windowWidth, height: windowHeight - Constants.statusBarHeight, zIndex: 1000, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={Platform.OS === 'android' ? styles.androidIndicator : styles.iosIndicator}>
                         <RefreshIndicator refreshing total={3} size={7} color={Theme.color.splash} />
                     </View>
                 }
@@ -396,3 +396,28 @@ export default class Loading extends React.Component<InjectedProps> {
         // ToDo
     }
 }
+
+const styles = StyleSheet.create({
+    androidIndicator: {
+        position: 'absolute',
+        top: Constants.statusBarHeight,
+        left: 0,
+        width: windowWidth,
+        height: windowHeight - Constants.statusBarHeight,
+        zIndex: 1000,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    iosIndicator: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1000,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});
+
+
