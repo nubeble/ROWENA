@@ -556,7 +556,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 // this.showNotification(error.code + error.message);
             }
         } else {
-            this.showNotification('token is null!!!');
+            this.showNotification('Please try again.');
         }
 
         SignUpWithMobileMain.onAuth = false;
