@@ -9,10 +9,13 @@
 </head>
 
 <body>
-    <p style="text-align: center; font-size: 1.2em; font-family: 'Roboto', sans-serif;">Please select captcha for continue</p>
-    <button id="continue-btn" style="display:none">Continue to app</button>
-
-
+    <!--
+    <p style="text-align: center; font-size: 1.2em; font-family: 'Roboto', sans-serif;">Please select captcha for
+        continue
+    </p>
+    -->
+    <p style="text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 1.2em;">Please
+        select captcha for continue</p>
 
     <!-- Firebase App is always required and must be first -->
     <script defer src="https://www.gstatic.com/firebasejs/5.10.1/firebase-app.js"></script>
@@ -24,17 +27,25 @@
 
     <script>
         function getToken(callback) {
+            // capatcha div
             const container = document.createElement('div');
             container.id = 'captcha';
+            container.setAttribute("style", "margin-top: 30px;");
+            const wildcard = 15; // ToDo: check
+            const gap = (window.outerWidth - 302 - wildcard) / 2;
+            container.style["margin-left"] = gap + "px";
             document.body.appendChild(container);
+
             const captcha = new firebase.auth.RecaptchaVerifier('captcha', {
                 'type': 'image',
                 'size': 'normal',
-                'callback': function (response) { // reCAPTCHA solved, allow signInWithPhoneNumber.
+                'callback': function (response) {
+                    // reCAPTCHA solved, allow signInWithPhoneNumber.
                     callback(response); // token
                 },
-                'expired-callback': function () { // Response expired. Ask user to solve reCAPTCHA again.
-                    callback('');
+                'expired-callback': function () {
+                    // Response expired. Ask user to solve reCAPTCHA again.
+                    callback(null);
                 }
             });
 
@@ -44,14 +55,30 @@
         }
 
         function sendTokenToApp(token) {
+            if (!token) return;
+
             const baseUri = decodeURIComponent(location.search.replace(/^\?appurl\=/, ''));
             const finalUrl = location.href = baseUri + '/?token=' + encodeURIComponent(token);
 
-            const continueBtn = document.querySelector('#continue-btn');
-            continueBtn.onclick = (event) => {
+            // create button
+            const div = document.createElement('div');
+            // div.id = 'div1';
+            div.setAttribute("style", "text-align: center");
+
+            const btn = document.createElement('button');
+            // div.id = 'button1';
+            btn.innerHTML = "Continue";
+
+            // btn.setAttribute("style", "color:red; font-size:23px");
+            btn.setAttribute("style",
+                "margin-top: 10px; width: 85%; height: 40px; border: none; border-radius: 5px; background-color: #3EA5FF; color: white; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;");
+
+            btn.onclick = (event) => {
                 window.open(finalUrl, '_blank');
             }
-            continueBtn.style.display = "block";
+
+            div.appendChild(btn);
+            document.body.appendChild(div);
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -63,29 +90,26 @@
 </html>
 
 
-
 <!--
 <html>
+    <head>
+        <title>Firebase+reCAPTCHA</title>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script type="text/javascript">function dataCallback(response) {
+                console.log('jdub', "dataCallback", response);
+                window.location.href = "/checkRecaptcha?response=" + encodeURIComponent(response);
+            }
 
-<head>
-    <title>Firebase + reCAPTCHA</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script type="text/javascript">
-        function dataCallback(response) {
-            console.log('jdub', "dataCallback", response);
-            window.location.href = "/checkRecaptcha?response=" + encodeURIComponent(response);
-        }
+            function dataExpiredCallback() {
+                console.log('jdub', "dataExpiredCallback")
+            }
 
-        function dataExpiredCallback() {
-            console.log('jdub', "dataExpiredCallback")
-        }
-    </script>
-</head>
+        </script>
+    </head>
 
-<body>
-    <div class="g-recaptcha" data-sitekey="6Lf1T6IUAAAAADeeC0OP4RWbVRyXqXcWMH_b9l9z" data-callback="dataCallback"
-        data-expired-callback="dataExpiredCallback" />
-</body>
-
+    <body>
+        <div class="g-recaptcha" data-sitekey="6Lf1T6IUAAAAADeeC0OP4RWbVRyXqXcWMH_b9l9z" data-callback="dataCallback"
+            data-expired-callback="dataExpiredCallback" />
+    </body>
 </html>
 -->
