@@ -19,6 +19,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 // https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
 // import { Chevron } from 'react-native-shapes';
+import { sendPushNotificationToTopic } from './PushNotifications';
 
 const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
@@ -263,6 +264,12 @@ export default class AdvertisementMain extends React.Component {
         this.onBlurListener.remove();
 
         // remove server files
+        // this.cleanImages();
+
+        this.closed = true;
+    }
+
+    async cleanImages() {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
@@ -286,8 +293,6 @@ export default class AdvertisementMain extends React.Component {
                 body: formData
             });
         }
-
-        this.closed = true;
     }
 
     initFromSelect(result) { // country
@@ -424,6 +429,9 @@ export default class AdvertisementMain extends React.Component {
         if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
         if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
         if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+
+        // remove server files
+        this.cleanImages();
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -802,6 +810,8 @@ export default class AdvertisementMain extends React.Component {
         // 3. move to finish page
         this.showToast('Your advertisement posted successfully.', 500);
 
+        sendPushNotificationToTopic(Cons.pushNotification.post, data.placeName, data.placeId, data.feedId, result.place_id);
+
         // hide loader
         this.setState({ showPostLoader: false }, () => {
             !this.closed && this.props.navigation.navigate("advertisementFinish");
@@ -980,12 +990,13 @@ export default class AdvertisementMain extends React.Component {
                             }
 
                             // add current upload files to remove list
-                            // --
                             if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
                             if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
                             if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
                             if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
-                            // --
+
+                            // remove server files
+                            this.cleanImages();
 
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}

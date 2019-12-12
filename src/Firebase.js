@@ -88,6 +88,64 @@ export default class Firebase {
         await Firebase.firestore.collection("tokens").doc(uid).delete();
     }
 
+    static async addTokenToTopic(topic, token) {
+        // extract token
+        const start = token.indexOf('[');
+        const end = token.indexOf(']');
+        const __token = token.substring(start + 1, end);
+
+        const topicRef = Firebase.firestore.collection("topics").doc(topic);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const topicDoc = await transaction.get(topicRef);
+            if (!topicDoc.exists) {
+                // create new
+                const subscribers = [];
+                subscribers.push(__token);
+                const data = {
+                    subscribers
+                };
+                transaction.set(topicRef, data);
+            } else {
+                // add
+                let topic = topicDoc.data();
+                let { subscribers } = topic;
+                const index = subscribers.indexOf(__token);
+                if (index === -1) {
+                    subscribers.push(__token);
+                    topic.subscribers = subscribers;
+                    transaction.update(topicRef, topic);
+                }
+            }
+        });
+    }
+
+    static async removeTokenToTopic(topic, token) {
+        // extract token
+        const start = token.indexOf('[');
+        const end = token.indexOf(']');
+        const __token = token.substring(start + 1, end);
+
+        const topicRef = Firebase.firestore.collection("topics").doc(topic);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const topicDoc = await transaction.get(topicRef);
+            if (!topicDoc.exists) {
+                // nothing to do
+            } else {
+                // remove
+                let topic = topicDoc.data();
+                let { subscribers } = topic;
+                const index = subscribers.indexOf(__token);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                    topic.subscribers = subscribers;
+                    transaction.update(topicRef, topic);
+                }
+            }
+        });
+    }
+
     static async getProfile(uid) {
         const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
         if (!userDoc.exists) return null;

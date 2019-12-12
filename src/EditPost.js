@@ -390,12 +390,12 @@ export default class EditPost extends React.Component {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
-        // this.removeImagesFromServer();
+        // this.cleanImages();
 
         this.closed = true;
     }
 
-    async removeImagesFromServer() {
+    async cleanImages() {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
@@ -559,7 +559,7 @@ export default class EditPost extends React.Component {
         this.removeItemFromList();
 
         // remove image files from server
-        await this.removeImagesFromServer();
+        this.cleanImages();
     }
 
     removeItemFromList() {
@@ -941,7 +941,7 @@ export default class EditPost extends React.Component {
         if (!result) {
             this.showToast('An error happened. Please try again later.', 500);
         } else {
-            await this.removeImagesFromServer();
+            this.cleanImages();
 
             this.showToast('Your post updated successfully.', 500);
         }

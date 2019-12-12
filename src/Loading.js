@@ -13,6 +13,7 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Cons, Vars } from './Globals';
 import { Text } from './rnff/src/components';
 import Util from './Util';
+import { registerExpoPushToken } from './PushNotifications';
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -207,6 +208,13 @@ export default class Loading extends React.Component<InjectedProps> {
                 }
 
                 profileStore.init();
+
+                // save push token
+                if (Platform.OS === 'android' && !Constants.isDevice) {
+                    // console.log('jdub', 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
+                } else {
+                    await registerExpoPushToken(user.uid, name, email, mobile);
+                }
 
                 //////// set up environment ////////
 

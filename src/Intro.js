@@ -26,6 +26,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import Util from './Util';
 import { LinearGradient } from 'expo-linear-gradient';
 import Dialog from "react-native-dialog";
+import { subscribeToTopic, unsubscribeToTopic, sendPushNotificationToTopic } from './PushNotifications';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -387,6 +388,8 @@ export default class Intro extends React.Component<InjectedProps> {
             count = feedSize;
             placeCounts = this.getPlaceCounts(result.place_id);
         }
+
+        subscribeToTopic(result.place_id);
 
         const place = {
             name: name,
@@ -1060,6 +1063,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                     }
 
                                     const placeCounts = this.getPlaceCounts(place_id);
+
+                                    subscribeToTopic(place_id);
 
                                     // let newPlace = _.clone(place);
                                     // newPlace.length = feedSize;

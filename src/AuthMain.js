@@ -12,12 +12,10 @@ import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
-
 import *  as ReactNative from 'react-native';
-
-import { registerExpoPushToken } from './PushNotifications';
 import autobind from "autobind-decorator";
 import * as WebBrowser from 'expo-web-browser';
+// import { registerExpoPushToken } from './PushNotifications';
 
 // const AnimatedImage = Animated.createAnimatedComponent(Image);
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
@@ -119,9 +117,7 @@ export default class AuthMain extends React.Component {
                 console.log('jdub', 'Firebase.auth.signInWithCredential, user', user);
 
                 // save token
-                // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                await registerExpoPushToken(user.user.uid, user.user.displayName);
-                // }
+                // await registerExpoPushToken(user.user.uid, user.user.displayName);
             } catch (error) {
                 console.log('jdub', 'signInWithCredential error', error);
 

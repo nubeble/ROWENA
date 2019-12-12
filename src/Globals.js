@@ -29,7 +29,8 @@ export const Cons = {
         review: 2,
         reply: 3,
         comment: 4,
-        like: 5
+        like: 5,
+        post: 6
     },
 
     // red dot badge

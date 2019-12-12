@@ -12,7 +12,7 @@ import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
-import { registerExpoPushToken } from './PushNotifications';
+// import { registerExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 
 const windowWidth = Dimensions.get('window').width;
@@ -309,9 +309,7 @@ export default class SignUpWithEmail extends React.Component {
             console.log('jdub', 'SignUpWithEmail.signInWithEmailAndPassword, user', user);
 
             // save token
-            // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-            await registerExpoPushToken(user.user.uid, user.user.email);
-            // }
+            // await registerExpoPushToken(user.user.uid, user.user.email);
 
             // hide indicator
             this.setState({ showSignUpLoader: false });
@@ -348,9 +346,7 @@ export default class SignUpWithEmail extends React.Component {
             console.log('jdub', 'SignUpWithEmail.processSignUp, user', user);
 
             // save token
-            // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-            await registerExpoPushToken(user.user.uid, user.user.email);
-            // }
+            // await registerExpoPushToken(user.user.uid, user.user.email);
 
             // hide indicator
             this.setState({ showSignUpLoader: false });

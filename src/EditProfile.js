@@ -222,6 +222,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
         this.onBlurListener.remove();
 
         // remove server files
+        // this.cleanImages();
+
+        this.closed = true;
+    }
+
+    async cleanImages() {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
@@ -245,8 +251,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 body: formData
             });
         }
-
-        this.closed = true;
     }
 
     initFromSearch(result) { // 'Cebu, Philippines'
@@ -336,6 +340,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         // remove origin image files from remove list
         this.removeItemFromList();
+
+        // remove server files
+        this.cleanImages();
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -588,6 +595,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
                             // remove origin image files from remove list
                             this.removeItemFromList();
+
+                            // remove server files
+                            this.cleanImages();
 
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}

@@ -18,6 +18,7 @@ import SwiperFlatList from './react-native-swiper-flatlist/src/components/Swiper
 import { Cons, Vars } from "./Globals";
 import Util from "./Util";
 import PreloadImage from "./PreloadImage";
+import { subscribeToTopic, unsubscribeToTopic } from './PushNotifications';
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -180,6 +181,8 @@ export default class Explore extends React.Component<InjectedProps> {
             };
             placeCounts = counts;
         }
+
+        subscribeToTopic(result.place_id);
 
         const placeData = {
             name: name,

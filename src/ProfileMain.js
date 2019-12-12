@@ -14,7 +14,6 @@ import Firebase from "./Firebase";
 import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import PreloadImage from './PreloadImage';
-// import { unregisterExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
@@ -83,8 +82,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.feedsUnsubscribes = [];
         this.countsUnsubscribes = [];
-
-        // this.imageRefs = []; // for cleaning files in server
     }
 
     componentDidMount() {
@@ -131,47 +128,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             instance();
         }
 
-        // remove server files
-        /*
-        if (this.imageRefs.length > 0) {
-            console.log('jdub', 'clean image files');
-
-            let formData = new FormData();
-            for (let i = 0; i < this.imageRefs.length; i++) {
-                const ref = this.imageRefs[i];
-
-                const number = i + 1;
-                const fieldName = 'file' + number.toString();
-                formData.append(fieldName, ref);
-
-                console.log('jdub', fieldName, ref);
-            }
-
-            fetch(SERVER_ENDPOINT + "cleanPostImages", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "multipart/form-data"
-                },
-                body: formData
-            });
-        }
-        */
-
         this.closed = true;
     }
-
-    /*
-    removeItemFromList() {
-        if (this.uploadImageRef) {
-            const ref = this.uploadImageRef;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-    }
-    */
 
     @autobind
     handleHardwareBackPress() {
@@ -1219,11 +1177,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     // this.setState({ uploadImageUri: uri });
 
                     const ref = 'images/' + profile.uid + '/profile/' + path.split('/').pop();
-                    /*
-                    this.uploadImageRef = ref;
-
-                    this.imageRefs.push(ref);
-                    */
 
                     // update database
                     await this.updateProfilePicture(uri, ref);

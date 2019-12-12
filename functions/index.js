@@ -471,7 +471,7 @@ const getReceipts = async(function (receiptIdChunks) {
     }
 });
 
-const processPushNotification = async(function () {
+const processSendPushNotification = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
@@ -480,7 +480,7 @@ const processPushNotification = async(function () {
     const targetUid = fields.receiver; // uid
 
     const targetToken = await(getToken(targetUid));
-    console.log('processPushNotification', 'targetToken', targetToken);
+    console.log('processSendPushNotification', 'targetToken', targetToken);
 
     if (!targetToken) {
         const error = `Push token is null.`;
@@ -636,7 +636,7 @@ const processPushNotification = async(function () {
     // ToDo: save tickets to database & make api to get receipts
     // await(getReceipts(receiptIdChunks));
 
-    console.log('processPushNotification', 'tickets', tickets);
+    console.log('processSendPushNotification', 'tickets', tickets);
 
     res.status(200).send(tickets);
 });
@@ -657,7 +657,7 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
         params.fields = fields;
         params.res = res;
 
-        busboy.on("finish", processPushNotification.bind(params));
+        busboy.on("finish", processSendPushNotification.bind(params));
 
         busboy.end(req.rawBody);
     } else {
@@ -668,12 +668,12 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     }
 });
 
-const deleteFiles = async(function () {
+const processCleanPostImages = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
 
-    // console.log('deleteFiles', 'Done parsing form.', fields);
+    // console.log('processCleanPostImages', 'Done parsing form.', fields);
 
     const storage = admin.storage();
 
@@ -687,19 +687,21 @@ const deleteFiles = async(function () {
 
         console.log('deleteFiles', key, value);
 
-        const fileRef = storage.bucket(BUCKET_NAME).file(value);
-        /*
-        fileRef.delete().then(function () {
-            // File deleted successfully
-        }).catch(function (error) {
-            // Uh-oh, an error occurred!
-            // res.status(405).end(error + fileRef);
-            res.status(405).end(error);
-        });
-        */
-        await(fileRef.delete());
+        if (value) {
+            const fileRef = storage.bucket(BUCKET_NAME).file(value);
+            /*
+            fileRef.delete().then(function () {
+                // File deleted successfully
+            }).catch(function (error) {
+                // Uh-oh, an error occurred!
+                // res.status(405).end(error + fileRef);
+                res.status(405).end(error);
+            });
+            */
+            await(fileRef.delete());
 
-        // refs.push(fileRef);
+            // refs.push(fileRef);
+        }
     }
 
     // console.log('jdub', 'Done deleting files in database.');
@@ -724,7 +726,7 @@ exports.cleanPostImages = functions.https.onRequest((req, res) => {
         params.fields = fields;
         params.res = res;
 
-        busboy.on("finish", deleteFiles.bind(params));
+        busboy.on("finish", processCleanPostImages.bind(params));
 
         // req.pipe(busboy); // not working!
         busboy.end(req.rawBody);
@@ -771,7 +773,7 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
 });
 */
 
-const signOut = async(function () {
+const processSignOutUsers = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
@@ -811,7 +813,7 @@ exports.signOutUsers = functions.https.onRequest((req, res) => {
         params.fields = fields;
         params.res = res;
 
-        busboy.on("finish", signOut.bind(params));
+        busboy.on("finish", processSignOutUsers.bind(params));
 
         busboy.end(req.rawBody);
     } else {
@@ -822,7 +824,7 @@ exports.signOutUsers = functions.https.onRequest((req, res) => {
     }
 });
 
-const deleteFolder = async(function () {
+const processDeletePostImages = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
@@ -857,7 +859,345 @@ exports.deletePostImages = functions.https.onRequest((req, res) => {
         params.fields = fields;
         params.res = res;
 
-        busboy.on("finish", deleteFolder.bind(params));
+        busboy.on("finish", processDeletePostImages.bind(params));
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});
+
+/***
+// 1. subscribeToTopic
+const processSubscribeToTopic = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+    const topic = fields.topic;
+    const token = fields.token;
+
+    const tokens = [];
+    tokens.push(token);
+
+    // Subscribe the devices corresponding to the registration tokens to the topic.
+    admin.messaging().subscribeToTopic(tokens, topic).then(function (response) {
+        // See the MessagingTopicManagementResponse reference documentation for the contents of response.
+        console.log('Successfully subscribed to topic:', response);
+
+        // ToDo: tmp
+        const e = response.errors;
+        for (i = 0; i < e.length; i++) console.log('response error: ', i, e[i].error);
+
+        res.status(200).send(response);
+    }).catch(function (error) {
+        console.log('Error subscribing to topic:', error);
+
+        res.status(405).end(error);
+    });
+});
+
+exports.subscribeToTopic = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        let fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            fields[fieldname] = val;
+
+            console.log('subscribeToTopic', fieldname, val);
+        });
+
+        let params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", processSubscribeToTopic.bind(params));
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});
+
+// 2. unsubscribeToTopic
+const processUnsubscribeToTopic = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+    const topic = fields.topic;
+    const token = fields.token;
+
+    const tokens = [];
+    tokens.push(token);
+
+    // Subscribe the devices corresponding to the registration tokens to the topic.
+    admin.messaging().unsubscribeFromTopic(tokens, topic).then(function (response) {
+        // See the MessagingTopicManagementResponse reference documentation for the contents of response.
+        console.log('Successfully unsubscribed from topic:', response);
+
+        res.status(200).send(response);
+    }).catch(function (error) {
+        console.log('Error unsubscribing from topic:', error);
+
+        res.status(405).end(error);
+    });
+});
+
+exports.unsubscribeToTopic = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        let fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            fields[fieldname] = val;
+
+            // console.log('unsubscribeToTopic', fieldname, val);
+        });
+
+        let params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", processUnsubscribeToTopic.bind(params));
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});
+
+// 3. sendPushNotificationToTopic
+const processPushNotificationToTopic = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+    // console.log('jdub', 'Done parsing form.', fields);
+
+    const topic = fields.topic;
+    const title = fields.title;
+    const subtitle = fields.subtitle;
+
+    // ToDo: check
+    const message = {
+        data: {
+            title: title,
+            subtitle: subtitle
+        },
+        topic: topic
+    };
+
+    // Send a message to devices subscribed to the provided topic.
+    admin.messaging().send(message).then((response) => {
+        // Response is a message ID string.
+        console.log('Successfully sent message:', response);
+
+        res.status(200).send(response);
+    }).catch((error) => {
+        console.log('Error sending message:', error);
+
+        res.status(405).end(error);
+    });
+});
+
+exports.sendPushNotificationToTopic = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        let fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            fields[fieldname] = val;
+
+            // console.log('sendPushNotification', fieldname, val);
+        });
+
+        let params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", processPushNotificationToTopic.bind(params));
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});
+***/
+
+const getTokens = async(function (topic) {
+    const doc = await(admin.firestore().collection("topics").doc(topic).get());
+    if (doc.exists) {
+        const tokens = doc.data().subscribers;
+        return tokens;
+    }
+
+    return null;
+});
+
+const processSendPushNotificationToTopic = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+    // console.log('jdub', 'Done parsing form.', fields);
+
+    const type = fields.type;
+    const placeName = fields.placeName;
+    const placeId = fields.placeId;
+    const feedId = fields.feedId;
+    const topic = fields.topic;
+
+    const tokens = await(getTokens(topic));
+    // console.log('processSendPushNotificationToTopic', 'tokens', tokens);
+
+    if (!tokens || tokens.length === 0) {
+        const msg = `Subscribers not exist.`;
+        res.status(200).send(msg);
+
+        return;
+    }
+
+    // validation check & assemble token
+    let targetTokens = [];
+    for (i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        const __token = 'ExponentPushToken[' + token + ']';
+
+        if (!Expo.isExpoPushToken(__token)) {
+            const error = `Push token ${__token} is not a valid Expo push token.`;
+            console.error(error);
+        } else {
+            targetTokens.push(__token);
+        }
+    }
+
+    if (targetTokens.length === 0) {
+        const msg = `Valid subscribers not exist.`;
+        res.status(200).send(msg);
+
+        return;
+    }
+
+    let userData = {};
+    userData['placeId'] = placeId;
+    userData['feedId'] = feedId;
+
+    const title = 'New post in ' + placeName + ' just uploaded.';
+    const subtitle = 'Take a look now!⭐';
+
+
+    let messages = [];
+    messages.push({
+        /**
+         * An Expo push token specifying the recipient of this message.
+         */
+        to: targetTokens,
+
+        /**
+         * A JSON object delivered to your app. It may be up to about 4KiB; the total
+         * notification payload sent to Apple and Google must be at most 4KiB or else
+         * you will get a "Message Too Big" error.
+         */
+        data: {
+            type: type,
+            userData: userData
+        },
+
+        /**
+         * The title to display in the notification. Devices often display this in
+         * bold above the notification body. Only the title might be displayed on
+         * devices with smaller screens like Apple Watch.
+         */
+        // title: 'title',
+        title: title,
+
+        /**
+         * The message to display in the notification
+         */
+        body: subtitle,
+
+        // iOS-specific fields
+
+        /**
+         * A sound to play when the recipient receives this notification. Specify
+         * "default" to play the device's default notification sound, or omit this
+         * field to play no sound.
+         *
+         * Note that on apps that target Android 8.0+ (if using `expo build`, built
+         * in June 2018 or later), this setting will have no effect on Android.
+         * Instead, use `channelId` and a channel with the desired setting.
+         */
+        // sound: 'default' | null,
+        sound: 'default',
+
+        /**
+         * Number to display in the badge on the app icon. Specify zero to clear the
+         * badge.
+         */
+        // badge?: number,
+
+        _displayInForeground: true,
+
+        // Android-specific fields
+
+        /**
+         * ID of the Notification Channel through which to display this notification
+         * on Android devices. If an ID is specified but the corresponding channel
+         * does not exist on the device (i.e. has not yet been created by your app),
+         * the notification will not be displayed to the user.
+         *
+         * If left null, a "Default" channel will be used, and Expo will create the
+         * channel on the device if it does not yet exist. However, use caution, as
+         * the "Default" channel is user-facing and you may not be able to fully
+         * delete it.
+         */
+        // channelId?: string
+    });
+
+    let chunks = expo.chunkPushNotifications(messages);
+
+    let tickets = [];
+
+    tickets = await(sendPushNotification(chunks));
+
+    // ToDo: save tickets to database & make api to get receipts
+    // await(getReceipts(receiptIdChunks));
+
+    console.log('processSendPushNotificationToTopic', 'tickets', tickets);
+
+    res.status(200).send(tickets);
+});
+
+exports.sendPushNotificationToTopic = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        let fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            fields[fieldname] = val;
+
+            // console.log('sendPushNotificationToTopic', fieldname, val);
+        });
+
+        let params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", processSendPushNotificationToTopic.bind(params));
 
         busboy.end(req.rawBody);
     } else {

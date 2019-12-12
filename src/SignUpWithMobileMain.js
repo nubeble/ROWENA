@@ -13,7 +13,7 @@ import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
-import { registerExpoPushToken } from './PushNotifications';
+// import { registerExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 
 // https://github.com/ttdung11t2/react-native-confirmation-code-input
@@ -579,9 +579,7 @@ export default class SignUpWithMobileMain extends React.Component {
             console.log('jdub', 'user', user);
 
             // save token
-            // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-            await registerExpoPushToken(user.user.uid, user.user.phoneNumber);
-            // }
+            // await registerExpoPushToken(user.user.uid, user.user.phoneNumber);
         } catch (error) {
             console.log('jdub', 'onSignIn error', error.code, error.message);
 

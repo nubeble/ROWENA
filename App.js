@@ -283,6 +283,11 @@ export default class App extends React.Component {
                             // this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                         }
                     } break;
+
+                    case Cons.pushNotification.post: {
+                        // ToDo
+                        // data.userData.placeId, data.userData.feedId
+                    } break;
                 }
             }
         } else if (origin === 'selected') {
@@ -342,6 +347,11 @@ export default class App extends React.Component {
 
                         // move to post preview
                         this.moveToUserPost(placeId, feedId);
+                    } break;
+
+                    case Cons.pushNotification.post: {
+                        // ToDo
+                        // data.userData.placeId, data.userData.feedId
                     } break;
                 }
             }
