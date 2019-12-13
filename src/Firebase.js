@@ -89,11 +89,6 @@ export default class Firebase {
     }
 
     static async addTokenToTopic(topic, token) {
-        // extract token
-        const start = token.indexOf('[');
-        const end = token.indexOf(']');
-        const __token = token.substring(start + 1, end);
-
         const topicRef = Firebase.firestore.collection("topics").doc(topic);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -101,8 +96,12 @@ export default class Firebase {
             if (!topicDoc.exists) {
                 // create new
                 const subscribers = [];
-                subscribers.push(__token);
+                subscribers.push(token);
                 const data = {
+                    /*
+                    subscribers,
+                    lastSentTime: 0
+                    */
                     subscribers
                 };
                 transaction.set(topicRef, data);
@@ -110,9 +109,9 @@ export default class Firebase {
                 // add
                 let topic = topicDoc.data();
                 let { subscribers } = topic;
-                const index = subscribers.indexOf(__token);
+                const index = subscribers.indexOf(token);
                 if (index === -1) {
-                    subscribers.push(__token);
+                    subscribers.push(token);
                     topic.subscribers = subscribers;
                     transaction.update(topicRef, topic);
                 }
@@ -121,11 +120,6 @@ export default class Firebase {
     }
 
     static async removeTokenToTopic(topic, token) {
-        // extract token
-        const start = token.indexOf('[');
-        const end = token.indexOf(']');
-        const __token = token.substring(start + 1, end);
-
         const topicRef = Firebase.firestore.collection("topics").doc(topic);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -136,7 +130,7 @@ export default class Firebase {
                 // remove
                 let topic = topicDoc.data();
                 let { subscribers } = topic;
-                const index = subscribers.indexOf(__token);
+                const index = subscribers.indexOf(token);
                 if (index !== -1) {
                     subscribers.splice(index, 1);
                     topic.subscribers = subscribers;

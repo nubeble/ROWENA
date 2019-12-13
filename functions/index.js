@@ -71,7 +71,7 @@ exports.addMessage = functions.https.onRequest((req, res) => {
 exports.makeUppercase = functions.database.ref('/messages/{pushId}/original').onCreate((snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
     const original = snapshot.val();
-    console.log('jdub', 'Uppercasing', context.params.pushId, original);
+    console.log('Uppercasing', context.params.pushId, original);
 
     const uppercase = original.toUpperCase();
 
@@ -116,13 +116,13 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
     // const fileDir = path.dirname(filePath); // folder path
 
     if (path.basename(filePath).startsWith('resized_')) {
-        // console.log('jdub', 'We already resized it!');
+        // console.log('We already resized it!');
 
         return 'skip the resized file.';
     }
 
     const tmpFilePath = path.join(os.tmpdir(), fileName);
-    // console.log('jdub', 'Temp Path:', tmpFilePath); // /tmp/9968D23359B3622120.jpeg
+    // console.log('Temp Path:', tmpFilePath); // /tmp/9968D23359B3622120.jpeg
 
     // const destBucket = gcs.bucket(bucket);
     const destBucket = admin.storage().bucket(bucket);
@@ -131,11 +131,11 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
     return destBucket.file(filePath).download({
         destination: tmpFilePath
     }).then(() => {
-        // console.log('jdub', 'Image downloaded locally to', tmpFilePath);
+        // console.log('Image downloaded locally to', tmpFilePath);
 
         return spawn('convert', [tmpFilePath, '-resize', '1080x1080', tmpFilePath]);
     }).then(() => {
-        // console.log('jdub', 'Resized image created at', tmpFilePath);
+        // console.log('Resized image created at', tmpFilePath);
 
         // We add a 'resized_' prefix to new file name.
         const resizedFileName = `resized_${fileName}`;
@@ -152,7 +152,7 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
 });
 
 exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
-    console.log('jdub', event);
+    console.log('onFileDelete', event);
 
     return;
 });
@@ -280,7 +280,7 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
             // var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex);
             var uri = (dataSnapshot.val() && dataSnapshot.val().uri);
 
-            // console.log('jdub', 'Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
+            // console.log('Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
 
             if (command === 'addPicture') {
                 // let data = makeData(pictureIndex, uri);
@@ -292,16 +292,16 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
                 };
 
                 admin.firestore().collection('users').doc(userUid).update(data).then(() => {
-                    console.log('jdub', "User info updated.");
+                    console.log("User info updated.");
 
                     // remove
                     admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
-                        console.log('jdub', "Database removed.");
+                        console.log("Database removed.");
                     });
 
                     resolve();
                 }).catch((error) => {
-                    console.log('jdub', 'update user error', err);
+                    console.log('update user error', err);
 
                     reject(error);
                 });
@@ -328,11 +328,7 @@ const saveToken = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    console.log('jdub', 'Done parsing form.', fields);
-
     const result = await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
-
-    console.log('jdub', 'Done saving to database.');
 
     res.status(200).send(result);
 });
@@ -344,8 +340,6 @@ exports.setToken = functions.https.onRequest((req, res) => {
         let fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
-
             fields[fieldname] = val;
         });
 
@@ -372,13 +366,8 @@ const removeToken = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('jdub', 'Done parsing form.', fields);
-
-    console.log('jdub', 'Done parsing form.', fields);
 
     const result = await(admin.firestore().collection('tokens').doc(fields.uid).delete());
-
-    console.log('jdub', 'Done removing to database.');
 
     res.status(200).send(result);
 });
@@ -390,8 +379,6 @@ exports.unsetToken = functions.https.onRequest((req, res) => {
         let fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
-
             fields[fieldname] = val;
         });
 
@@ -418,20 +405,26 @@ const getToken = async(function (uid) {
     const doc = await(admin.firestore().collection("tokens").doc(uid).get());
     if (doc.exists) {
         const token = doc.data().token;
-        if (token) targetToken = token;
+        if (token) {
+            if (token.includes('ExponentPushToken')) { // 하위호환
+                targetToken = token;
+            } else {
+                targetToken = 'ExponentPushToken[' + token + ']';
+            }
+        }
     }
 
     return targetToken;
 });
 
 const sendPushNotification = async(function (chunks) {
-    let result = [];
+    // let result = [];
     for (let chunk of chunks) {
         try {
             let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
             console.log('sendPushNotification', ticketChunk);
 
-            result.push(...ticketChunk);
+            // result.push(...ticketChunk);
         } catch (error) {
             // NOTE: If a ticket contains an error code in ticket.details.error, you
             // must handle it appropriately. The error codes are listed in the Expo
@@ -441,7 +434,7 @@ const sendPushNotification = async(function (chunks) {
         }
     }
 
-    return result;
+    // return result;
 });
 
 const getReceipts = async(function (receiptIdChunks) {
@@ -475,7 +468,6 @@ const processSendPushNotification = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('jdub', 'Done parsing form.', fields);
 
     const targetUid = fields.receiver; // uid
 
@@ -629,16 +621,19 @@ const processSendPushNotification = async(function () {
 
     let chunks = expo.chunkPushNotifications(messages);
 
+    /*
     let tickets = [];
-
     tickets = await(sendPushNotification(chunks));
+    */
+    await(sendPushNotification(chunks));
 
     // ToDo: save tickets to database & make api to get receipts
     // await(getReceipts(receiptIdChunks));
 
-    console.log('processSendPushNotification', 'tickets', tickets);
+    // console.log('processSendPushNotification', 'tickets', tickets);
 
-    res.status(200).send(tickets);
+    // res.status(200).send(tickets);
+    res.status(200).send("Sending Push Notification is done.");
 });
 
 exports.sendPushNotification = functions.https.onRequest((req, res) => {
@@ -704,9 +699,6 @@ const processCleanPostImages = async(function () {
         }
     }
 
-    // console.log('jdub', 'Done deleting files in database.');
-
-    // res.status(200).send(refs);
     res.status(200).send('Deleting files in database is done.');
 });
 
@@ -748,7 +740,7 @@ exports.cleanPostImages = functions.https.onRequest((req, res) => {
 /*
 exports.checkRecaptcha = functions.https.onRequest((req, res) => {
     const response = req.query.response;
-    console.log('jdub', "recaptcha response", response);
+    console.log("recaptcha response", response);
 
     rp({
         uri: 'https://recaptcha.google.com/recaptcha/api/siteverify',
@@ -759,7 +751,7 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
         },
         json: true
     }).then(result => {
-        console.log('jdub', "recaptcha result", result)
+        console.log("recaptcha result", result)
         if (result.success) {
             res.send("You're good to go, human.")
         }
@@ -767,7 +759,7 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
             res.send("Recaptcha verification failed. Are you a robot?")
         }
     }).catch(reason => {
-        console.log('jdub', "Recaptcha request failure", reason)
+        console.log("Recaptcha request failure", reason)
         res.send("Recaptcha request failed.")
     });
 });
@@ -778,20 +770,18 @@ const processSignOutUsers = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    // console.log('jdub', 'Done parsing form.', fields);
-
     const uid = fields.uid;
 
     // Revoke all refresh tokens for a specified user for whatever reason.
     // Retrieve the timestamp of the revocation, in seconds since the epoch.
     let result = await(admin.auth().revokeRefreshTokens(uid).then(() => {
-        console.log('jdub', 'revoke success.', uid);
+        console.log('revoke success.', uid);
         return admin.auth().getUser(uid);
     }).then((userRecord) => {
-        console.log('jdub', 'userRecord.tokensValidAfterTime', userRecord.tokensValidAfterTime);
+        console.log('userRecord.tokensValidAfterTime', userRecord.tokensValidAfterTime);
         return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
     }).then((timestamp) => {
-        console.log('jdub', "Tokens revoked at: ", timestamp);
+        console.log("Tokens revoked at: ", timestamp);
     }));
 
     res.status(200).send(result);
@@ -804,7 +794,7 @@ exports.signOutUsers = functions.https.onRequest((req, res) => {
         let fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
+            // console.log('field [' + fieldname + ']: value: ' + val);
 
             fields[fieldname] = val;
         });
@@ -829,8 +819,6 @@ const processDeletePostImages = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    // console.log('jdub', 'Done parsing form.', fields);
-
     const uid = fields.uid;
     const feedId = fields.feedId;
 
@@ -839,9 +827,7 @@ const processDeletePostImages = async(function () {
         prefix: `images/${uid}/post/${feedId}`
     });
 
-    const result = 'Deleting files in database is done.';
-
-    res.status(200).send(result);
+    res.status(200).send('Deleting files in database is done.');
 });
 
 // Deleting all files within a folder
@@ -887,7 +873,7 @@ const processSubscribeToTopic = async(function () {
         // See the MessagingTopicManagementResponse reference documentation for the contents of response.
         console.log('Successfully subscribed to topic:', response);
 
-        // ToDo: tmp
+        // log
         const e = response.errors;
         for (i = 0; i < e.length; i++) console.log('response error: ', i, e[i].error);
 
@@ -982,13 +968,11 @@ const processPushNotificationToTopic = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('jdub', 'Done parsing form.', fields);
 
     const topic = fields.topic;
     const title = fields.title;
     const subtitle = fields.subtitle;
 
-    // ToDo: check
     const message = {
         data: {
             title: title,
@@ -1046,13 +1030,33 @@ const getTokens = async(function (topic) {
     }
 
     return null;
+
+    /*
+    let tokens = null;
+
+    const ref = admin.firestore().collection("topics").doc(topic);
+
+    await(admin.firestore().runTransaction(transaction => {
+        const topicDoc = await(transaction.get(ref));
+        if (topicDoc.exists) {
+            let data = topicDoc.data();
+
+            tokens = data.subscribers;
+
+            data.lastSentTime = Date.now();
+
+            transaction.update(ref, data);
+        }
+    }));
+
+    return tokens;
+    */
 });
 
 const processSendPushNotificationToTopic = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('jdub', 'Done parsing form.', fields);
 
     const type = fields.type;
     const placeName = fields.placeName;
@@ -1064,8 +1068,7 @@ const processSendPushNotificationToTopic = async(function () {
     // console.log('processSendPushNotificationToTopic', 'tokens', tokens);
 
     if (!tokens || tokens.length === 0) {
-        const msg = `Subscribers not exist.`;
-        res.status(200).send(msg);
+        res.status(200).send(`Subscribers not exist.`);
 
         return;
     }
@@ -1085,8 +1088,7 @@ const processSendPushNotificationToTopic = async(function () {
     }
 
     if (targetTokens.length === 0) {
-        const msg = `Valid subscribers not exist.`;
-        res.status(200).send(msg);
+        res.status(200).send(`Valid subscribers not exist.`);
 
         return;
     }
@@ -1169,16 +1171,19 @@ const processSendPushNotificationToTopic = async(function () {
 
     let chunks = expo.chunkPushNotifications(messages);
 
+    /*
     let tickets = [];
-
     tickets = await(sendPushNotification(chunks));
+    */
+    await(sendPushNotification(chunks));
 
     // ToDo: save tickets to database & make api to get receipts
     // await(getReceipts(receiptIdChunks));
 
-    console.log('processSendPushNotificationToTopic', 'tickets', tickets);
+    // console.log('processSendPushNotificationToTopic', 'tickets', tickets);
 
-    res.status(200).send(tickets);
+    // res.status(200).send(tickets);
+    res.status(200).send("Sending Push Notifications is done.");
 });
 
 exports.sendPushNotificationToTopic = functions.https.onRequest((req, res) => {

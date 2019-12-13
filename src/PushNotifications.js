@@ -34,11 +34,16 @@ export async function registerExpoPushToken(uid, name, email, mobile) {
     const token = await Notifications.getExpoPushTokenAsync();
     console.log('jdub', "push token", token);
 
-    // const user = Firebase.user();
+    // extract token
+    const start = token.indexOf('[');
+    const end = token.indexOf(']');
+    const __token = token.substring(start + 1, end);
 
     /*
+    const user = Firebase.user();
+
     let formData = new FormData();
-    formData.append("token", token);
+    formData.append("token", __token);
     // formData.append("uid", user.uid);
     // formData.append("name", user.name);
     formData.append("uid", uid);
@@ -56,7 +61,7 @@ export async function registerExpoPushToken(uid, name, email, mobile) {
     });
     */
     const data = {
-        uid, name, email, mobile, token
+        uid, name, email, mobile, token: __token
     };
     await Firebase.setToken(uid, data);
 }
@@ -330,7 +335,12 @@ export async function subscribeToTopic(topic) { // topic: place id, user id, ...
     const token = await Notifications.getExpoPushTokenAsync();
     console.log('jdub', "push token", token);
 
-    Firebase.addTokenToTopic(topic, token);
+    // extract token
+    const start = token.indexOf('[');
+    const end = token.indexOf(']');
+    const __token = token.substring(start + 1, end);
+
+    Firebase.addTokenToTopic(topic, __token);
 }
 
 export async function unsubscribeToTopic(topic) {
@@ -358,7 +368,12 @@ export async function unsubscribeToTopic(topic) {
     const token = await Notifications.getExpoPushTokenAsync();
     console.log('jdub', "push token", token);
 
-    Firebase.removeTokenToTopic(topic, token);
+    // extract token
+    const start = token.indexOf('[');
+    const end = token.indexOf(']');
+    const __token = token.substring(start + 1, end);
+
+    Firebase.removeTokenToTopic(topic, __token);
 }
 
 export function sendPushNotificationToTopic(type, placeName, placeId, feedId, topic) {

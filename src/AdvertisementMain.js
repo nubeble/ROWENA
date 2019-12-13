@@ -810,7 +810,7 @@ export default class AdvertisementMain extends React.Component {
         // 3. move to finish page
         this.showToast('Your advertisement posted successfully.', 500);
 
-        sendPushNotificationToTopic(Cons.pushNotification.post, data.placeName, data.placeId, data.feedId, result.place_id);
+        sendPushNotificationToTopic(Cons.pushNotification.post, data.placeName, data.placeId, data.feedId, data.placeId);
 
         // hide loader
         this.setState({ showPostLoader: false }, () => {

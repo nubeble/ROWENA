@@ -285,7 +285,7 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.post: {
-                        // ToDo
+                        // ToDo: open post
                         // data.userData.placeId, data.userData.feedId
                     } break;
                 }
@@ -350,7 +350,7 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.post: {
-                        // ToDo
+                        // ToDo: open post
                         // data.userData.placeId, data.userData.feedId
                     } break;
                 }
