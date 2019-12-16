@@ -285,8 +285,8 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.post: {
-                        // ToDo: open post
-                        // data.userData.placeId, data.userData.feedId
+                        // show badge
+                        // this.setState({ showBadgeOnHome: true, badgeOnHomeCount: 0 });
                     } break;
                 }
             }
@@ -350,8 +350,16 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.post: {
-                        // ToDo: open post
-                        // data.userData.placeId, data.userData.feedId
+                        // hide badge
+                        // this.setState({ showBadgeOnHome: false, badgeOnHomeCount: -1 });
+
+                        // open explore
+                        const placeName = data.userData.placeName;
+                        const placeId = data.userData.placeId;
+                        const latitude = data.userData.latitude;
+                        const longitude = data.userData.longitude;
+
+                        this.moveToExplore(placeName, placeId, latitude, longitude);
                     } break;
                 }
             }
@@ -432,6 +440,41 @@ export default class App extends React.Component {
         const extra = { placeCounts };
 
         NavigationService.navigate("postPreview", { post: post, extra, from: 'Profile' });
+    }
+
+    async moveToExplore(placeName, placeId, latitude, longitude) {
+        let count = 0;
+        let placeCounts = null;
+
+        const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
+        if (!placeDoc.exists) {
+            // nothing to do here
+        } else {
+            let place = placeDoc.data();
+
+            // count = this._getPlaceCount(place, Vars.showMe);
+            if (Vars.showMe === 'Men') count = place.men;
+            else if (Vars.showMe === 'Women') count = place.women;
+            else count = place.count;
+
+            const counts = {
+                count: place.count,
+                men: place.men,
+                women: place.women
+            };
+            placeCounts = counts;
+        }
+
+        const place = {
+            name: placeName,
+            place_id: placeId,
+            length: count,
+            placeCounts,
+            lat: latitude,
+            lng: longitude
+        };
+
+        this.props.navigation.navigate("home", { place: place });
     }
 
     moveToCheckProfile() {

@@ -376,12 +376,14 @@ export async function unsubscribeToTopic(topic) {
     Firebase.removeTokenToTopic(topic, __token);
 }
 
-export function sendPushNotificationToTopic(type, placeName, placeId, feedId, topic) {
+export function sendPushNotificationToTopic(type, placeName, placeId, feedId, lat, lng, topic) {
     let formData = new FormData();
     formData.append("type", type);
     formData.append("placeName", placeName);
     formData.append("placeId", placeId);
     formData.append("feedId", feedId);
+    formData.append("latitude", lat);
+    formData.append("longitude", lng);
     formData.append("topic", topic);
 
     fetch(SERVER_ENDPOINT + "sendPushNotificationToTopic", {

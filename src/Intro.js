@@ -400,7 +400,7 @@ export default class Intro extends React.Component<InjectedProps> {
             // location: result.location
             lat: result.location.lat,
             lng: result.location.lng
-        }
+        };
 
         this.props.navigation.navigate("home", { place: place });
     }
