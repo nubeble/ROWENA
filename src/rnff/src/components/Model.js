@@ -152,7 +152,11 @@ export type Review = {
     rating: number,
     timestamp: number,
     comment: string,
-    reply: Reply
+    reply: Reply,
+    name: string,
+    picture: Picture,
+    place: string,
+    reporters: Array<string>
 };
 
 export type ReviewEntry = { review: Review, profile: Profile };

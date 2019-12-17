@@ -149,6 +149,7 @@ export default class ReviewStore {
     }
 
     addToReview(entries: ReviewEntry[]) {
+        console.log('addToReview', entries);
         const _reviews = _.uniqBy([...this.reviews.slice(), ...entries], entry => entry.review.id);
 
         this.reviews = _.orderBy(_reviews, entry => entry.review.timestamp, ["desc"]);
