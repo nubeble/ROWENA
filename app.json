@@ -52,7 +52,7 @@
         },
         "android": {
             "package": "com.nubeble.rowena",
-            "versionCode": 6,
+            "versionCode": 7,
             "adaptiveIcon": {
                 "foregroundImage": "./assets/android_icon.png",
                 "backgroundColor": "#CD5E77"
