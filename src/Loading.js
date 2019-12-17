@@ -219,11 +219,14 @@ export default class Loading extends React.Component<InjectedProps> {
                 //////// set up environment ////////
 
                 // 1. distance unit
-                const place = profile.place;
+                // 2. post filter
+                let place = null;
+                let postFilter = null;
+                if (profile) {
+                    place = profile.place;
+                    postFilter = profile.postFilter;
+                }
                 this.setDistanceUnit(place);
-
-                // 2.
-                const postFilter = profile.postFilter;
                 this.setPostFilter(postFilter);
 
                 ////////////////////////////////////
