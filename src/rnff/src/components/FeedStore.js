@@ -248,13 +248,10 @@ export default class FeedStore {
     }
 
     async joinProfiles(posts: Post[]): Promise<FeedEntry[]> {
-        // console.log('jdub', 'FeedStore.joinProfiles');
-
         const uids = posts.map(post => post.d.uid).filter(uid => this.profiles[uid] === undefined);
 
         const profilePromises = _.uniq(uids).map(uid => (async () => {
             try {
-                // load database
                 const profileDoc = await Firebase.firestore.collection("users").doc(uid).get();
                 this.profiles[uid] = profileDoc.data();
             } catch (e) {
@@ -267,8 +264,8 @@ export default class FeedStore {
         return posts.map(post => {
             const profile = this.profiles[post.d.uid];
 
-            // return { profile, post };
-            if (profile) return { profile, post };
+            return { profile, post };
+            // if (profile) return { profile, post };
         });
     }
 

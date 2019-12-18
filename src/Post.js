@@ -2339,7 +2339,7 @@ export default class Post extends React.Component<InjectedProps> {
             placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
         } else { // user removed
             uid = _review.uid;
-            picture = _review.picture;
+            picture = _review.picture.uri;
             name = _review.name;
 
             place = _review.place ? _review.place : 'Not specified';

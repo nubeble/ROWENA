@@ -168,7 +168,11 @@ type Comment = {
     uid: string, // boss's uid
     comment: string,
     placeId: string,
-    feedId: string
+    feedId: string,
+    name: string,
+    picture: string,
+    placeName: string,
+    reporters: Array<string>
 };
 
 export type CommentEntry = { comment: Comment, post: Post };

@@ -127,8 +127,8 @@ export default class CommentStore {
         return reviews.map(review => {
             const profile = this.profiles[review.uid];
 
-            // return { profile, review };
-            if (profile) return { profile, review };
+            return { profile, review };
+            // if (profile) return { profile, review };
         });
     }
 
