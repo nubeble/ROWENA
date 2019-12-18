@@ -51,7 +51,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
     unsubscribeToProfile: () => void;
     */
 
-    static getDerivedStateFromProps({ profile, post }: PostProps): PostState {
+    static getDerivedStateFromProps({ profile, post }: PostProps): PostState { // componentWillReceiveProps의 대체 역할로 작성된 메서드로 컴포넌트가 인스턴스화 된 후, 새 props를 받았을 때 호출
         return { post, profile };
     }
 
@@ -82,6 +82,12 @@ export default class PostComp extends React.Component<PostProps, PostState> {
     render(): React.Node {
         const { navigation, extra } = this.props;
         const { post, profile } = this.state;
+
+        // ToDo: The owner of the post was removed.
+        /*
+        if (!profile) {
+        }
+        */
 
         if (!post) { // removed
             return (

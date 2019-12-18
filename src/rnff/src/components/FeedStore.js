@@ -265,7 +265,6 @@ export default class FeedStore {
             const profile = this.profiles[post.d.uid];
 
             return { profile, post };
-            // if (profile) return { profile, post };
         });
     }
 

@@ -144,9 +144,7 @@ export default class ReviewStore {
             const profile = this.profiles[review.uid];
 
             return { profile, review };
-            // if (profile) return { profile, review };
         });
-        // }).filter(review => review.profile);
     }
 
     addToReview(entries: ReviewEntry[]) {

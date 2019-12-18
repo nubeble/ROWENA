@@ -46,7 +46,6 @@ type CommentRef = {
     userUid: string, // receiver
     commentId: string,
     // comment: string
-
     name: string,
     placeName: string,
     picture: string
@@ -154,8 +153,8 @@ export type Review = {
     comment: string,
     reply: Reply,
     name: string,
-    picture: Picture,
     place: string,
+    picture: Picture,
     reporters: Array<string>
 };
 
@@ -170,8 +169,8 @@ type Comment = {
     placeId: string,
     feedId: string,
     name: string,
-    picture: string,
     placeName: string,
+    picture: string,
     reporters: Array<string>
 };
 

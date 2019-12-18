@@ -128,7 +128,6 @@ export default class CommentStore {
             const profile = this.profiles[review.uid];
 
             return { profile, review };
-            // if (profile) return { profile, review };
         });
     }
 
