@@ -200,15 +200,12 @@ export default class ProfileStore {
 
 
                         // check if a review added on my feed
-                        // const resultReview = this.checkReviewAddedOnFeed(data.feeds);
-                        // if (!resultReview) {
                         const resultReview = this.compareReviewAddedOnFeed(__profile.feeds, data.feeds);
-                        if (resultReview === false) {
+                        if (!resultReview) {
                             if (this.reviewAddedOnFeedCallback) this.reviewAddedOnFeedCallback();
                         }
 
                         // check if a reply added on my received review
-                        // const resultReply = this.checkReplyAddedOnReview(data.reviews);
                         const resultReply = this.compareReplyAddedOnReview(__profile.reviews, data.reviews);
                         if (!resultReply) {
                             this.callReplyAddedOnReviewCallback();
@@ -272,7 +269,7 @@ export default class ProfileStore {
 
     compareLikes(oldLikes, newLikes) {
         // 1. size
-        if (oldLikes.length !== newLikes.length) return false;
+        if (oldLikes.length < newLikes.length) return false;
 
         // 2. contents
         for (let i = 0; i < oldLikes.length; i++) {
@@ -288,7 +285,7 @@ export default class ProfileStore {
 
     compareReviews(oldReviews, newReviews) {
         // 1. size
-        if (oldReviews.length !== newReviews.length) return false;
+        if (oldReviews.length < newReviews.length) return false;
 
         // 2. contents
         for (let i = 0; i < oldReviews.length; i++) {
@@ -305,7 +302,7 @@ export default class ProfileStore {
 
     compareComments(oldComments, newComments) {
         // 1. size
-        if (oldComments.length !== newComments.length) return false;
+        if (oldComments.length < newComments.length) return false;
 
         // 2. contents
         for (let i = 0; i < oldComments.length; i++) {
@@ -339,24 +336,24 @@ export default class ProfileStore {
     */
 
     compareReviewAddedOnFeed(oldFeeds, newFeeds) {
-        if (oldFeeds.length !== newFeeds.length) return null; // can not make a decision
+        if (oldFeeds.length !== newFeeds.length) return true; // can not make a decision
 
         for (let i = 0; i < oldFeeds.length; i++) {
             const a = oldFeeds[i];
             const b = newFeeds[i];
 
-            if (a.placeId !== b.placeId) return null; // can not make a decision
-            if (a.feedId !== b.feedId) return null; // can not make a decision
+            if (a.placeId !== b.placeId) return true; // can not make a decision
+            if (a.feedId !== b.feedId) return true; // can not make a decision
 
             if (a.reviewAdded !== b.reviewAdded) return false;
         }
 
-        return true;
+        return true; // nothing is changed
     }
 
     compareReplyAddedOnReview(oldReviews, newReviews) {
         // 1. size
-        if (oldReviews.length !== newReviews.length) return false;
+        if (oldReviews.length < newReviews.length) return false;
 
         // 2. review added
         for (let i = 0; i < oldReviews.length; i++) {

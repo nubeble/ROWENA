@@ -5,7 +5,7 @@
         "slug": "rowena",
         "privacy": "public",
         "sdkVersion": "33.0.0",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "platforms": [
             "ios",
             "android"
@@ -34,7 +34,7 @@
         "facebookDisplayName": "Rowena",
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
-            "buildNumber": "1.1.30",
+            "buildNumber": "1.2.1",
             "icon": "./assets/ios_icon.png",
             "supportsTablet": true,
             "infoPlist": {
