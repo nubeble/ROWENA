@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, Animated, AsyncStorage
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, Platform, BackHandler, Animated, AsyncStorage, StatusBar
 } from "react-native";
 import { Header } from 'react-navigation';
 import * as Location from 'expo-location';
@@ -326,6 +326,8 @@ export default class Intro extends React.Component<InjectedProps> {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+
+        StatusBar.setHidden(false);
 
         if (Intro.places.length === 0) this.getPlaces();
         this.getFeeds();

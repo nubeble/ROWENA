@@ -16,10 +16,6 @@
         "assetBundlePatterns": [
             "**/*"
         ],
-        "androidStatusBar": {
-            "barStyle": "dark-content",
-            "backgroundColor": "#FFFFFF"
-        },
         "notification": {
             "icon": "./assets/noti_icon.png",
             "color": "#CD5E77",
@@ -52,7 +48,7 @@
         },
         "android": {
             "package": "com.nubeble.rowena",
-            "versionCode": 8,
+            "versionCode": 9,
             "adaptiveIcon": {
                 "foregroundImage": "./assets/android_icon.png",
                 "backgroundColor": "#CD5E77"

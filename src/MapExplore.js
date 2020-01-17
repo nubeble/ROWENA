@@ -140,8 +140,6 @@ export default class MapExplore extends React.Component<InjectedProps> {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
-        // StatusBar.setHidden(false);
-
         this.closed = true;
     }
 

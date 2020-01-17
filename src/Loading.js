@@ -59,8 +59,6 @@ export default class Loading extends React.Component<InjectedProps> {
         this.imageOpacity = new Animated.Value(0);
 
         SplashScreen.hide();
-
-        StatusBar.setHidden(true);
     }
 
     componentDidMount() {
@@ -233,8 +231,6 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 if (Loading.userAutoAuthenticated) {
                     if (Vars.signUpType === null) { // for the auto sign in
-                        StatusBar.setHidden(false);
-
                         // check verification if EMAIL user
                         if (user.email && !user.emailVerified && user) {
                             if (user.providerData && user.providerData.length > 0 && user.providerData[0].providerId === "facebook.com") {
@@ -249,6 +245,7 @@ export default class Loading extends React.Component<InjectedProps> {
                             await this.checkUpdates();
                         }
 
+                        // StatusBar.setHidden(false);
                         console.log('jdub', '[auto sign in] move to main');
                         navigation.navigate("mainStackNavigator");
                     } else { // for the resign in after sign out / delete account
@@ -410,11 +407,21 @@ export default class Loading extends React.Component<InjectedProps> {
 
 const styles = StyleSheet.create({
     androidIndicator: {
+        /*
         position: 'absolute',
         top: Constants.statusBarHeight,
         left: 0,
         width: windowWidth,
         height: windowHeight - Constants.statusBarHeight,
+        zIndex: 1000,
+        justifyContent: 'center',
+        alignItems: 'center'
+        */
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         zIndex: 1000,
         justifyContent: 'center',
         alignItems: 'center'
@@ -430,5 +437,3 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
-
-

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, BackHandler, Dimensions } from 'react-native';
+import { StyleSheet, View, Image, BackHandler, Dimensions, StatusBar } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { LinearGradient } from 'expo';
 import { Ionicons, Entypo, FontAwesome, MaterialIcons, Feather } from '@expo/vector-icons';
@@ -62,12 +62,15 @@ const slides = [
 export default class Tutorial extends React.Component {
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        StatusBar.setHidden(true);
     }
 
     @autobind
     handleHardwareBackPress() {
         // --
         console.log('jdub', 'move to main');
+        // StatusBar.setHidden(false);
         this.props.navigation.navigate("mainStackNavigator");
         // --
 
@@ -178,7 +181,9 @@ export default class Tutorial extends React.Component {
     onDone() {
         setTimeout(() => {
             if (this.closed) return;
+
             console.log('jdub', 'move to main');
+            // StatusBar.setHidden(false);
             this.props.navigation.navigate("mainStackNavigator");
         }, Cons.buttonTimeout);
     }

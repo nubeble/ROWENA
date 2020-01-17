@@ -65,6 +65,12 @@ export default class App extends React.Component {
         badgeOnProfileCount: -1
     };
 
+    constructor(props) {
+        super(props);
+
+        StatusBar.setHidden(true);
+    }
+
     componentDidMount() {
         console.log('jdub', 'App.componentDidMount');
         console.log('jdub', 'width', Dimensions.get('window').width);
@@ -73,11 +79,11 @@ export default class App extends React.Component {
         /*
         StatusBar.setBarStyle('light-content');
         if (Platform.OS === "android") {
-            StatusBar.setBackgroundColor(Theme.color.background);
+            // StatusBar.setBackgroundColor(Theme.color.background);
+            StatusBar.setTranslucent(true);
+            StatusBar.setBackgroundColor('transparent');
         }
         */
-
-        // StatusBar.setHidden(true);
 
         AppState.addEventListener('change', this.handleAppStateChange);
         this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
@@ -488,9 +494,9 @@ export default class App extends React.Component {
 
         const statusBar = (
             <StatusBar
-                translucent
-                backgroundColor="transparent"
                 barStyle="light-content"
+                backgroundColor="transparent"
+                translucent={true}
             />
         );
 
