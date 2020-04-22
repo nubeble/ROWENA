@@ -168,7 +168,7 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
             throw "Error subscribing to topic: " + response.status + " - " + response.text();
         }
 
-        console.log('Subscribed to "' + topic + '"');
+        // console.log('Subscribed to "' + topic + '"');
     }).catch(function (err) {
         console.error(err);
     });

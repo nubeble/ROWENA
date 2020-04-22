@@ -152,6 +152,7 @@ export default class ProfileStore {
             snap => {
                 if (snap.exists) {
                     console.log('jdub', 'ProfileStore, profile changed.');
+                    console.log('new data:', snap.data());
 
                     const data = snap.data();
 
@@ -270,6 +271,7 @@ export default class ProfileStore {
     compareLikes(oldLikes, newLikes) {
         // 1. size
         if (oldLikes.length < newLikes.length) return false;
+        if (oldLikes.length > newLikes.length) return true;
 
         // 2. contents
         for (let i = 0; i < oldLikes.length; i++) {
@@ -286,11 +288,12 @@ export default class ProfileStore {
     compareReviews(oldReviews, newReviews) {
         // 1. size
         if (oldReviews.length < newReviews.length) return false;
+        if (oldReviews.length > newReviews.length) return true;
 
         // 2. contents
         for (let i = 0; i < oldReviews.length; i++) {
-            const a = oldReviews[i]; // LikeRef
-            const b = newReviews[i]; // LikeRef
+            const a = oldReviews[i];
+            const b = newReviews[i];
 
             if (a.placeId !== b.placeId) return false;
             if (a.feedId !== b.feedId) return false;
@@ -303,6 +306,7 @@ export default class ProfileStore {
     compareComments(oldComments, newComments) {
         // 1. size
         if (oldComments.length < newComments.length) return false;
+        if (oldComments.length > newComments.length) return true;
 
         // 2. contents
         for (let i = 0; i < oldComments.length; i++) {
@@ -354,6 +358,7 @@ export default class ProfileStore {
     compareReplyAddedOnReview(oldReviews, newReviews) {
         // 1. size
         if (oldReviews.length < newReviews.length) return false;
+        if (oldReviews.length > newReviews.length) return true;
 
         // 2. review added
         for (let i = 0; i < oldReviews.length; i++) {
